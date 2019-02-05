@@ -1,5 +1,3 @@
-"""Module for IO operations"""
-
 import numpy
 import matplotlib.pyplot as plt
 from matplotlib import cm
