@@ -3,13 +3,15 @@ import numpy
 def getAnalytical(grid,asol):
 	for i in range(grid.nx+2):
 		for j in range(grid.ny+2):
-			grid.data[i,j,asol] = numpy.cos(2*numpy.pi*grid.x[i])*numpy.cos(2*numpy.pi*grid.y[j])
+			value = numpy.cos(2*numpy.pi*grid.x_center[i])*numpy.cos(2*numpy.pi*grid.y_center[j])
+			grid.set_value(asol,i,j,value)
 	return
 
 def getRHS(grid,rvar):
 	for i in range(grid.nx+2):
 		for j in range(grid.ny+2):
-			grid.data[i,j,rvar] = -8*numpy.pi*numpy.pi*numpy.cos(2*numpy.pi*grid.x[i])*numpy.cos(2*numpy.pi*grid.y[j])
+			value = -8*numpy.pi*numpy.pi*numpy.cos(2*numpy.pi*grid.x_center[i])*numpy.cos(2*numpy.pi*grid.y_center[j])
+			grid.set_value(rvar,i,j,value)
 	return
 
 def solveJacobi(grid,ivar,rvar):
