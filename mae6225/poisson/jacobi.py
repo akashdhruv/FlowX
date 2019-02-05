@@ -1,7 +1,7 @@
 import numpy
 import misc
 
-def solveJacobi(grid,ivar,rvar,max_iterations=3000,tol=1e-9):
+def solve_jacobi(grid,ivar,rvar,max_iterations=3000,tol=1e-9):
 	"""
 	Function to solve the Poisson equation using iterative (Jacobi) method
 
@@ -56,7 +56,7 @@ def solveJacobi(grid,ivar,rvar,max_iterations=3000,tol=1e-9):
                                                  (1/(grid.dx**2))             + \
                                                  (1/(grid.dy**2))))
 
-		misc.applyBC(grid.data[:,:,ivar])
+		misc.apply_BC(grid.data[:,:,ivar])
 
 		residual = numpy.sqrt(numpy.sum((grid.data[:,:,ivar]-phi_old)**2)/((grid.nx+2)*(grid.ny+2)))
 

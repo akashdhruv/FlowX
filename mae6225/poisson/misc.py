@@ -1,6 +1,6 @@
 import numpy
 
-def getError(grid,eror,ivar,asol):
+def get_error(grid,eror,ivar,asol):
 	"""
 	Function to calculate absoulte error between numerical and exact solution
 
@@ -24,7 +24,7 @@ def getError(grid,eror,ivar,asol):
 
 	return
 
-def applyBC(phi):	
+def apply_BC(phi):	
 
 	"""
 	Function to apply boundary conditions
