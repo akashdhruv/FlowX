@@ -99,7 +99,7 @@ def solveJacobi(grid,ivar,rvar,max_iterations,tol):
 
 		applyBC(grid.data[:,:,ivar])
 
-		residual = numpy.sum((grid.data[:,:,ivar]-phi_old)**2)/((grid.nx+2)*(grid.ny+2))
+		residual = numpy.sqrt(numpy.sum((grid.data[:,:,ivar]-phi_old)**2)/((grid.nx+2)*(grid.ny+2)))
 
 		if(residual < tol and residual != 0.0):
 			break			
