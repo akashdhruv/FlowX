@@ -2,7 +2,7 @@
 
 import numpy
 
-def getAnalytical(grid,asol):
+def get_analytical(grid,asol):
 	"""
 	Function to calculate exact solution of the variable phi
 
@@ -25,7 +25,7 @@ def getAnalytical(grid,asol):
 
 	return
 
-def getRHS(grid,rvar):
+def get_RHS(grid,rvar):
 	"""
 	Function to calculate the RHS of the poisson equation
 

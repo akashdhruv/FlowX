@@ -1,10 +1,8 @@
-"""Module for IO operations"""
-
 import numpy
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
-def plotContour(grid,var):
+def plot_contour(grid,var):
 	"""
 	Function to plot contours on a meshgrid
 
