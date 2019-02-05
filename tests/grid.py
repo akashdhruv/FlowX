@@ -35,7 +35,7 @@ class TestCG(unittest.TestCase):
     def test_set_get_value(self):
         ivar = self.num - 1
         value = 0.123456
-        i, j = random.randint(0, self.nx + 2), random.randint(0, self.ny + 2)
+        i, j = random.randint(0, self.nx + 1), random.randint(0, self.ny + 1)
         self.grid.set_value(ivar, i, j, value)
         value2 = self.grid.get_value(ivar, i, j)
         self.assertEqual(value, value2)
