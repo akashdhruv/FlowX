@@ -1,4 +1,4 @@
-"Module for IO operations"
+"""Module for IO operations"""
 
 import numpy
 import matplotlib.pyplot as plt

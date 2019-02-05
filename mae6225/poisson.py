@@ -1,48 +1,8 @@
-"Module for Poisson solver unit"
+"""Module for Poisson solver unit"""
 
 import numpy
 
-def getAnalytical(grid,asol):
-	"""
-	Function to calculate exact solution of the variable phi
-
-	Arguments
-	---------
-	grid : object of class Grid
-
-	asol : scalar integer
-	     index where the spatial variable is stored within grid data structure
-
-    
-	"""
-	
-	for i in range(grid.nx+2):
-		for j in range(grid.ny+2):
-			value = numpy.cos(2*numpy.pi*grid.x_center[i])*numpy.cos(2*numpy.pi*grid.y_center[j])
-			grid.set_value(asol,i,j,value)
-	return
-
-def getRHS(grid,rvar):
-	"""
-	Function to calculate the RHS of the poisson equation
-
-	Arguments
-	---------
-
-	grid : object of class Grid
-
-	rvar : scalar integer
-	     index where the spatial variable is stored within the grid data structure
-
-	"""
-
-	for i in range(grid.nx+2):
-		for j in range(grid.ny+2):
-			value = -8*numpy.pi*numpy.pi*numpy.cos(2*numpy.pi*grid.x_center[i])*numpy.cos(2*numpy.pi*grid.y_center[j])
-			grid.set_value(rvar,i,j,value)
-	return
-
-def solveJacobi(grid,ivar,rvar,max_iterations,tol):
+def solveJacobi(grid,ivar,rvar,max_iterations=3000,tol=1e-9):
 	"""
 	Function to solve the Poisson equation using iterative (Jacobi) method
 
