@@ -60,8 +60,7 @@ class Grid(object):
         self.data[:, :, idx] = values
 
     def get_values(self, idx):
-        """
-        Get the data of a variable (as a copy).
+        """Get the data of a variable (as a copy).
 
         Parameters
         ----------
@@ -118,7 +117,8 @@ class Grid(object):
     def get_cell_centered_coordinates(self):
         """Return the cell-centered gridline coordinates.
 
-        The gridline coordinates also contain the boundaries.
+        The gridline coordinates also contain the coordinate of the
+        boundary ghost cell.
 
         Returns
         -------
@@ -128,12 +128,8 @@ class Grid(object):
             y-coordinates along a gridline as a 1D array of floats.
 
         """
-        x_face = numpy.linspace(self.xmin, self.xmax, num=self.nx + 1)
-        x = numpy.concatenate(([self.xmin-0.5*self.dx],
-                               0.5 * (x_face[:-1] + x_face[1:]),
-                               [self.xmax+0.5*self.dx]))
-        y_face = numpy.linspace(self.ymin, self.ymax, num=self.ny + 1)
-        y = numpy.concatenate(([self.ymin-0.5*self.dy],
-                               0.5 * (y_face[:-1] + y_face[1:]),
-                               [self.ymax+0.5*self.dy]))
+        x = numpy.linspace(self.xmin - self.dx / 2, self.xmax + self.dx / 2,
+                           num=self.nx + 2)
+        y = numpy.linspace(self.ymin - self.dy / 2, self.ymax + self.dy / 2,
+                           num=self.ny + 2)
         return x, y
