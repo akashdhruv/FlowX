@@ -34,7 +34,7 @@ class Grid(object):
         self.dx = abs(self.xmax - self.xmin) / nx
         self.dy = abs(self.ymax - self.ymin) / ny
         self.x_center, self.y_center = self.get_cell_centered_coordinates()
-        self.data = numpy.empty((nx + 2, ny + 2, num), dtype=numpy.float64)
+        self.data = numpy.zeros((nx + 2, ny + 2, num), dtype=numpy.float64)
 
     def __repr__(self):
         """Return a representation of the object."""
@@ -129,11 +129,11 @@ class Grid(object):
 
         """
         x_face = numpy.linspace(self.xmin, self.xmax, num=self.nx + 1)
-        x = numpy.concatenate(([self.xmin],
+        x = numpy.concatenate(([self.xmin-0.5*self.dx],
                                0.5 * (x_face[:-1] + x_face[1:]),
-                               [self.xmax]))
+                               [self.xmax+0.5*self.dx]))
         y_face = numpy.linspace(self.ymin, self.ymax, num=self.ny + 1)
-        y = numpy.concatenate(([self.ymin],
+        y = numpy.concatenate(([self.ymin-0.5*self.dy],
                                0.5 * (y_face[:-1] + y_face[1:]),
-                               [self.ymax]))
+                               [self.ymax+0.5*self.dy]))
         return x, y
