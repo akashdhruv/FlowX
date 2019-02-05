@@ -1,0 +1,6 @@
+name: py36-mae6225
+dependencies:
+- python=3.6
+- numpy
+- matplotlib
+- jupyter
