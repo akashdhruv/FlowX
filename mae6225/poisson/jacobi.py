@@ -55,9 +55,7 @@ def solve_jacobi(grid,ivar,rvar,max_iterations=3000,tol=1e-9):
                                                                (1/(grid.dx**2))             + \
                                                                (1/(grid.dy**2))))
 
-		grid.bc_mask[:]    = False
-		grid.bc_mask[grid.bc_vars[ivar]] = True
-		grid.fill_guard_cells()
+		grid.fill_guard_cells([ivar])
 
 		residual = numpy.sqrt(numpy.sum((grid.data[:,:,grid.center_vars[ivar]]-phi_old)**2)/((grid.nx+2)*(grid.ny+2)))
 

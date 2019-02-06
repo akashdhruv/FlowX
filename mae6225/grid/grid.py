@@ -43,13 +43,12 @@ class Grid(object):
         self.x_center, self.y_center = self.get_cell_centered_coordinates()
 
         # Cell center data
-        self.center_vars = center_vars
+        self.center_vars = self.set_var_dict(center_vars)
         self.num = len(center_vars)
         self.data = numpy.zeros((nx + 2, ny + 2, self.num), dtype=numpy.float64)
 
         # Boundary condition information
-        self.bc_mask = numpy.full((self.num,1), False)
-        self.bc_type,self.bc_val,self.bc_data_struct,self.bc_vars = self.set_bc()
+        self.bc_type,self.bc_val,self.bc_data_struct = self.set_bc()
         self.set_user_bc(user_bc_type,user_bc_val) 
 
     def __repr__(self):
@@ -62,31 +61,39 @@ class Grid(object):
                                                           self.ymax) +
                 " - number of variables: {}\n".format(self.num))
 
+    def set_var_dict(self,var_list):
+        """Set var dictionary"""
+
+        var_dict  = dict()
+        var_count = 0
+
+        for i in range(len(var_list)):
+            var_dict[var_list[i]] = var_count
+            var_count = var_count + 1
+
+        return var_dict
+
     def set_bc(self):
         """Set boundary conditions for variables"""
 
         bc_type        = dict()
         bc_val         = dict()
-        bc_vars        = dict()
         bc_data_struct = dict()
-
-        var_count  = 0
 
         for key in self.center_vars:
             bc_type[key]        = ['neumann','neumann','neumann','neumann'] 
             bc_val[key]         = [0.,0.,0.,0.]
             bc_data_struct[key] = 'center' 
-            bc_vars[key]        = var_count
 
-            var_count = var_count + 1
-
-        return bc_type,bc_val,bc_data_struct,bc_vars
+        return bc_type,bc_val,bc_data_struct
 
     def set_user_bc(self,user_bc_type,user_bc_val):
         """Set user defined BC"""
  
         for key in user_bc_type:
             self.bc_type[key] = user_bc_type[key]
+
+        for key in user_bc_val:
             self.bc_val[key]  = user_bc_val[key]
 
         return
@@ -179,39 +186,41 @@ class Grid(object):
                            num=self.ny + 2)
         return x, y
 
-    def fill_guard_cells(self):
+    def fill_guard_cells(self,var_list):
 
         """
         Function to apply boundary condition
 
         """
  
-        for key in self.bc_vars:
+        for i in range(len(var_list)):
 
-            if(self.bc_mask[self.bc_vars[key]]):     
+            key = var_list[i]
             
-                if(self.bc_data_struct[key] == 'center'):
+            if(self.bc_data_struct[key] == 'center'):
 
-                    # xmin BC
-                    if(self.bc_type[key][0] == 'neumann'):
-                        self.data[:,0,self.center_vars[key]]  =  self.bc_val[key][0]*self.dx + self.data[:,1,self.center_vars[key]]
-                    else:
-                        self.data[:,0,self.center_vars[key]]  =  2.0*self.bc_val[key][0]     - self.data[:,1,self.center_vars[key]]
-                    # xmax BC
-                    if(self.bc_type[key][1] == 'neumann'):
-                        self.data[:,-1,self.center_vars[key]] = -self.bc_val[key][1]*self.dx + self.data[:,-2,self.center_vars[key]]
-                    else:
-                        self.data[:,-1,self.center_vars[key]] =  2.0*self.bc_val[key][1]     - self.data[:,-2,self.center_vars[key]]
+                # xmin BC
+                if(self.bc_type[key][0] == 'neumann'):
+                    self.data[:,0,self.center_vars[key]]  =  self.bc_val[key][0]*self.dx + self.data[:,1,self.center_vars[key]]
+                else:
+                    self.data[:,0,self.center_vars[key]]  =  2.0*self.bc_val[key][0]     - self.data[:,1,self.center_vars[key]]
 
-                    # ymin BC
-                    if(self.bc_type[key][2] == 'neumann'):
-                        self.data[0,:,self.center_vars[key]]  =  self.bc_val[key][2]*self.dy + self.data[1,:,self.center_vars[key]]
-                    else:
-                        self.data[0,:,self.center_vars[key]]  =  2.0*self.bc_val[key][2]     - self.data[1,:,self.center_vars[key]]
-                    # ymax BC
-                    if(self.bc_type[key][3] == 'neumann'):
-                        self.data[-1,:,self.center_vars[key]] = -self.bc_val[key][3]*self.dy + self.data[-2,:,self.center_vars[key]]
-                    else:
-                        self.data[-1,:,self.center_vars[key]] = 2.0*self.bc_val[key][3]      - self.data[-2,:,self.center_vars[key]]
+                # xmax BC
+                if(self.bc_type[key][1] == 'neumann'):
+                    self.data[:,-1,self.center_vars[key]] = -self.bc_val[key][1]*self.dx + self.data[:,-2,self.center_vars[key]]
+                else:
+                    self.data[:,-1,self.center_vars[key]] =  2.0*self.bc_val[key][1]     - self.data[:,-2,self.center_vars[key]]
+
+                # ymin BC
+                if(self.bc_type[key][2] == 'neumann'):
+                    self.data[0,:,self.center_vars[key]]  =  self.bc_val[key][2]*self.dy + self.data[1,:,self.center_vars[key]]
+                else:
+                    self.data[0,:,self.center_vars[key]]  =  2.0*self.bc_val[key][2]     - self.data[1,:,self.center_vars[key]]
+
+                # ymax BC
+                if(self.bc_type[key][3] == 'neumann'):
+                    self.data[-1,:,self.center_vars[key]] = -self.bc_val[key][3]*self.dy + self.data[-2,:,self.center_vars[key]]
+                else:
+                    self.data[-1,:,self.center_vars[key]] = 2.0*self.bc_val[key][3]      - self.data[-2,:,self.center_vars[key]]
     
         return
