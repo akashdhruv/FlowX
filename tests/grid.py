@@ -13,10 +13,11 @@ class TestCG(unittest.TestCase):
         self.nx, self.ny = 10, 20
         self.xmin, self.xmax = 0.0, 1.0
         self.ymin, self.ymax = -0.5, 0.5
+        self.bc_type = "neumann"
         self.grid = mae6225.Grid(self.num,
                                  self.nx, self.ny,
                                  self.xmin, self.xmax,
-                                 self.ymin, self.ymax)
+                                 self.ymin, self.ymax,self.bc_type)
 
     def test_init(self):
         names = ['num', 'nx', 'ny', 'xmin', 'xmax', 'ymin', 'ymax']
