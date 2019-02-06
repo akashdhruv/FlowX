@@ -20,6 +20,6 @@ def get_error(grid,eror,ivar,asol):
 
 	"""
 
-	grid.data[:,:,eror] = numpy.absolute(grid.data[:,:,ivar]-grid.data[:,:,asol])
+	grid.data[:,:,grid.center_vars[eror]] = numpy.absolute(grid.data[:,:,grid.center_vars[ivar]]-grid.data[:,:,grid.center_vars[asol]])
 
 	return

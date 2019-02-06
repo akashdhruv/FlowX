@@ -21,7 +21,7 @@ def plot_contour(grid,var):
 	Y.transpose()
 
 	plt.figure()
-	plt.contourf(X,Y,grid.data[:,:,var],cmap=cm.jet)
+	plt.contourf(X,Y,grid.data[:,:,grid.center_vars[var]],cmap=cm.jet)
 	plt.colorbar()
 	plt.axis('equal')
 	plt.show()

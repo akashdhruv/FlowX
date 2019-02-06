@@ -20,10 +20,8 @@ def get_analytical(grid,asol):
 	X.transpose()
 	Y.transpose()
 
-	if(grid.bc_type == 'Neumann' or grid.bc_type == 'neumann'):
-		values = numpy.cos(2*numpy.pi*X)*numpy.cos(2*numpy.pi*Y)
-	else:
-		values = numpy.sin(2*numpy.pi*X)*numpy.sin(2*numpy.pi*Y)
+	#values = numpy.cos(2*numpy.pi*X)*numpy.cos(2*numpy.pi*Y)	
+	values = numpy.sin(2*numpy.pi*X)*numpy.sin(2*numpy.pi*Y)
 
 	grid.set_values(asol,values)
 
@@ -47,10 +45,8 @@ def get_RHS(grid,rvar):
 	X.transpose()
 	Y.transpose()
 
-	if(grid.bc_type == 'Neumann' or grid.bc_type == 'neumann'):
-		values = -8*numpy.pi*numpy.pi*numpy.cos(2*numpy.pi*X)*numpy.cos(2*numpy.pi*Y)
-	else:
-		values = -8*numpy.pi*numpy.pi*numpy.sin(2*numpy.pi*X)*numpy.sin(2*numpy.pi*Y)
+	#values = -8*numpy.pi*numpy.pi*numpy.cos(2*numpy.pi*X)*numpy.cos(2*numpy.pi*Y)
+	values = -8*numpy.pi*numpy.pi*numpy.sin(2*numpy.pi*X)*numpy.sin(2*numpy.pi*Y)
 
 	grid.set_values(rvar,values)
 
