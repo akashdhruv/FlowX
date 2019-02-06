@@ -6,7 +6,7 @@ import numpy
 class Grid(object):
     """A Grid object stores data about the grid and the variables."""
 
-    def __init__(self, num, nx, ny, xmin, xmax, ymin, ymax):
+    def __init__(self, num, nx, ny, xmin, xmax, ymin, ymax, bc_type):
         """Initialize the Grid object and allocate the data.
 
         Parameters
@@ -35,6 +35,9 @@ class Grid(object):
         self.dy = abs(self.ymax - self.ymin) / ny
         self.x_center, self.y_center = self.get_cell_centered_coordinates()
         self.data = numpy.zeros((nx + 2, ny + 2, num), dtype=numpy.float64)
+        self.bc_type = bc_type
+        self.gc_mask = numpy.full((num,1), False)
+        self.total_vars = num
 
     def __repr__(self):
         """Return a representation of the object."""
@@ -133,3 +136,30 @@ class Grid(object):
         y = numpy.linspace(self.ymin - self.dy / 2, self.ymax + self.dy / 2,
                            num=self.ny + 2)
         return x, y
+
+    def fill_guard_cells(self):
+
+        """
+        Function to apply boundary condition
+
+        """
+
+        for i in range(self.total_vars):
+
+                if(self.gc_mask[i]):
+
+                     if(self.bc_type == 'Neumann' or self.bc_type == 'neumann'):
+
+                          self.data[:,0,i]  =  self.data[:,1,i]
+                          self.data[:,-1,i] =  self.data[:,-2,i]
+                          self.data[0,:,i]  =  self.data[1,:,i]
+                          self.data[-1,:,i] =  self.data[-2,:,i]
+
+                     else:
+
+                          self.data[:,0,i]  = -self.data[:,1,i]
+                          self.data[:,-1,i] = -self.data[:,-2,i]
+                          self.data[0,:,i]  = -self.data[1,:,i]
+                          self.data[-1,:,i] = -self.data[-2,:,i]
+	
+        return

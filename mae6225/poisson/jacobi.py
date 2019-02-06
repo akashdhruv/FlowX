@@ -1,5 +1,4 @@
 import numpy
-from .misc import apply_BC
 
 def solve_jacobi(grid,ivar,rvar,max_iterations=3000,tol=1e-9):
 	"""
@@ -56,7 +55,9 @@ def solve_jacobi(grid,ivar,rvar,max_iterations=3000,tol=1e-9):
                                                  (1/(grid.dx**2))             + \
                                                  (1/(grid.dy**2))))
 
-		apply_BC(grid.data[:,:,ivar])
+		grid.gc_mask[:]    = False
+		grid.gc_mask[ivar] = True
+		grid.fill_guard_cells()
 
 		residual = numpy.sqrt(numpy.sum((grid.data[:,:,ivar]-phi_old)**2)/((grid.nx+2)*(grid.ny+2)))
 

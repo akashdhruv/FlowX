@@ -23,29 +23,3 @@ def get_error(grid,eror,ivar,asol):
 	grid.data[:,:,eror] = numpy.absolute(grid.data[:,:,ivar]-grid.data[:,:,asol])
 
 	return
-
-def apply_BC(phi):	
-
-	"""
-	Function to apply boundary conditions
-
-	Arguments
-	---------
-
-	phi : float array
-	    variable on which the BC needs to be applied
-	"""
-
-	# Homogeneous Neumann BC
-	phi[:,0]  = phi[:,1]
-	phi[:,-1] = phi[:,-2]
-	phi[0,:]  = phi[1,:]
-	phi[-1,:] = phi[-2,:]
-
-	# Homogeneous Dirichlet BC
-	#phi[:,0]  = -phi[:,1]
-	#phi[:,-1] = -phi[:,-2]
-	#phi[0,:]  = -phi[1,:]
-	#phi[-1,:] = -phi[-2,:]
-
-	return
