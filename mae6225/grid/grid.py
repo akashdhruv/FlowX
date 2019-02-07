@@ -1,4 +1,4 @@
-"""Implementation of the class `Grid`."""
+"""Module with the implementation of the class `Grid`."""
 
 import numpy
 
@@ -6,7 +6,8 @@ import numpy
 class Grid(object):
     """A Grid object stores data about the grid and the variables."""
 
-    def __init__(self, center_vars, nx, ny, xmin, xmax, ymin, ymax, user_bc_type, user_bc_val):
+    def __init__(self, center_vars, nx, ny, xmin, xmax, ymin, ymax,
+                 user_bc_type=None, user_bc_val=None):
         """Initialize the Grid object and allocate the data.
 
         Parameters
@@ -25,13 +26,12 @@ class Grid(object):
             Domain limit at the bottom side.
         ymax : float
             Domain limit at the top side.
-
-        user_bc_type: dictionary for user defined BCs
-
-        user_bc_val: dictionary for user defined BC values
+        user_bc_type : dictionary of (string, list) items
+            User-defined boundary types to overwrite default ones.
+        user_bc_val : dictionary of (string, list) items
+            User-defined boundary values to overwrite default ones.
 
         """
-
         # Domain information
         self.nx, self.ny = nx, ny
         self.xmin, self.xmax = xmin, xmax
@@ -39,17 +39,18 @@ class Grid(object):
         self.dx = abs(self.xmax - self.xmin) / nx
         self.dy = abs(self.ymax - self.ymin) / ny
 
-        # Cell center co-ordinates
+        # Cell-centered coordinates
         self.x_center, self.y_center = self.get_cell_centered_coordinates()
 
-        # Cell center data
-        self.center_vars = self.set_var_dict(center_vars)
+        # Cell-centered data
         self.num = len(center_vars)
-        self.data = numpy.zeros((nx + 2, ny + 2, self.num), dtype=numpy.float64)
+        self.center_vars = dict(zip(center_vars, range(self.num)))
+        self.data = numpy.zeros((nx + 2, ny + 2, self.num))
 
         # Boundary condition information
-        self.bc_type,self.bc_val,self.bc_data_struct = self.set_bc()
-        self.set_user_bc(user_bc_type,user_bc_val) 
+        self.set_default_bc()
+        if user_bc_type is not None and user_bc_val is not None:
+            self.set_user_bc(user_bc_type, user_bc_val)
 
     def __repr__(self):
         """Return a representation of the object."""
@@ -61,63 +62,73 @@ class Grid(object):
                                                           self.ymax) +
                 " - number of variables: {}\n".format(self.num))
 
-    def set_var_dict(self,var_list):
-        """Set var dictionary"""
+    def set_default_bc(self):
+        """Set default boundary conditions (homogeneous Neumann)."""
+        var_names = list(self.center_vars.keys())
+        num = len(var_names)
+        self.bc_type = dict(zip(var_names, num * 4 * ['neumann']))
+        self.bc_val = dict(zip(var_names, num * 4 * [0.0]))
+        self.bc_data_struct = dict(zip(var_names, num * ['center']))
 
-        var_dict  = dict()
-        var_count = 0
+    def set_user_bc(self, user_bc_type, user_bc_val):
+        """Overwrite default boundary conditions with user-provided ones.
 
-        for i in range(len(var_list)):
-            var_dict[var_list[i]] = var_count
-            var_count = var_count + 1
+        Parameters
+        ----------
+        user_bc_type : dictionary of (string, list) items
+            User-defined boundary types.
+        user_bc_val : dictionary of (string, list) items
+            User-defined boundary values.
 
-        return var_dict
+        """
+        # Overwrite default boundary types
+        self.bc_type = {**self.bc_type, **user_bc_type}
+        # Oeverwrite default boundary values
+        self.bc_val = {**self.bc_val, **user_bc_val}
 
-    def set_bc(self):
-        """Set boundary conditions for variables"""
+    def get_variable_indices(self, var_names):
+        """Get the grid index of given variable names.
 
-        bc_type        = dict()
-        bc_val         = dict()
-        bc_data_struct = dict()
+        Parameters
+        ----------
+        var_names : string or list of strings
+            The name of the variable(s).
 
-        for key in self.center_vars:
-            bc_type[key]        = ['neumann','neumann','neumann','neumann'] 
-            bc_val[key]         = [0.,0.,0.,0.]
-            bc_data_struct[key] = 'center' 
+        Returns
+        -------
+        indices : list of integers
+            Index of the grid variables.
 
-        return bc_type,bc_val,bc_data_struct
+        """
+        # Convert single string to list
+        if var_names is str:
+            var_names = [var_names]
+        indices = []
+        for name in var_names:
+            indices.append(self.center_vars[name])
+        return indices
 
-    def set_user_bc(self,user_bc_type,user_bc_val):
-        """Set user defined BC"""
- 
-        for key in user_bc_type:
-            self.bc_type[key] = user_bc_type[key]
-
-        for key in user_bc_val:
-            self.bc_val[key]  = user_bc_val[key]
-
-        return
-
-    def set_values(self, idx, values):
+    def set_values(self, var_name, values):
         """Set the values of a variable.
 
         Parameters
         ----------
-        idx : integer
-            Index of the variable in the data array.
+        var_name : string
+            Name of the variable.
         values : numpy.ndarray
             2D array with the values to set.
 
         """
-        self.data[:, :, self.center_vars[idx]] = values
+        idx = self.center_vars[var_name]
+        self.data[:, :, idx] = values
 
-    def get_values(self, idx):
+    def get_values(self, var_name):
         """Get the data of a variable (as a copy).
 
         Parameters
         ----------
-        idx : integer
-            Index of the variable in the data array.
+        var_name : string
+            Name of the variable.
 
         Returns
         -------
@@ -125,16 +136,17 @@ class Grid(object):
             Variable's data as a 2D array of floats.
 
         """
-        data = self.data[:, :, self.center_vars[idx]]
+        idx = self.center_vars[var_name]
+        data = self.data[:, :, idx]
         return data
 
-    def set_value(self, idx, i, j, value):
+    def set_value(self, var_name, i, j, value):
         """Set a value using (i, j) indexation.
 
         Parameters
         ----------
-        idx : integer
-            Index of the variable in the data array.
+        var_name : string
+            Name of the variable.
         i : integer
             Index in the x-direction.
         j : integer
@@ -143,15 +155,16 @@ class Grid(object):
             Value to set.
 
         """
-        self.data[i, j, self.center_vars[idx]] = value
+        idx = self.center_vars[var_name]
+        self.data[i, j, idx] = value
 
-    def get_value(self, idx, i, j):
+    def get_value(self, var_name, i, j):
         """Get a value using (i, j) indexation.
 
         Parameters
         ----------
-        idx : integer
-            Index of the variable in the data array.
+        var_name : string
+            Name of the variable.
         i : integer
             Index in the x-direction.
         j : integer
@@ -163,7 +176,8 @@ class Grid(object):
             Value of the variable at index (i, j).
 
         """
-        value = self.data[i, j, self.center_vars[idx]]
+        idx = self.center_vars[var_name]
+        value = self.data[i, j, idx]
         return value
 
     def get_cell_centered_coordinates(self):
@@ -186,41 +200,88 @@ class Grid(object):
                            num=self.ny + 2)
         return x, y
 
-    def fill_guard_cells(self,var_list):
+    def fill_guard_cells(self, var_names):
+        """Fill value at guard cells for given variable names.
+
+        Parameters
+        ----------
+        var_names : string or list of strings
+            Name of variables to update.
 
         """
-        Function to apply boundary condition
+        # Convert single string to a list
+        if type(var_names) is str:
+            var_names = [var_names]
+        # Set locations and delta value (either dx or dy)
+        locs = ['left', 'right', 'bottom', 'top']
+        deltas = [self.dx, self.dx, self.dy, self.dy]
+        # Fill guard cells for each variable
+        for name in var_names:
+            # Only fill guard cells for cell-centered variables
+            if self.bc_data_struct[name] == 'center':
+                bc_types = self.bc_type[name]
+                bc_vals = self.bc_val[name]
+                # Fill guard cells for each boundary
+                for loc, delta, bc_type, bc_val in zip(locs, deltas,
+                                                       bc_types, bc_vals):
+                    if bc_type == 'neumann':
+                        self.fill_guard_cells_neumann(name, loc, bc_val, delta)
+                    elif bc_type == 'dirichlet':
+                        self.fill_guard_cells_dirichlet(name, loc, bc_val)
+                    else:
+                        raise ValueError('Boundary type "{}" not implemented'
+                                         .format(bc_type))
+
+    def fill_guard_cells_neumann(self, var_name, loc, bc_val, delta):
+        """Fill guard cells using a Neumann condition.
+
+        Parameters
+        ----------
+        var_name : string
+            Name of the variable to update.
+        loc : string
+            Boundary location;
+            choices: ['left', 'right', 'bottom', 'top'].
+        bc_val : float
+            Neumann boundary value.
+        delta : float
+            Grid-cell width.
 
         """
- 
-        for i in range(len(var_list)):
+        idx = self.center_vars[var_name]
+        if loc == 'left':
+            self.data[:, 0, idx] = bc_val * delta + self.data[:, 1, idx]
+        elif loc == 'right':
+            self.data[:, -1, idx] = bc_val * delta + self.data[:, -2, idx]
+        elif loc == 'bottom':
+            self.data[0, :, idx] = bc_val * delta + self.data[1, :, idx]
+        elif loc == 'top':
+            self.data[-1, :, idx] = bc_val * delta + self.data[-2, :, idx]
+        else:
+            raise ValueError('Unknown boundary location "{}"'.format(loc))
 
-            key = var_list[i]
-            
-            if(self.bc_data_struct[key] == 'center'):
+    def fill_guard_cells_dirichlet(self, var_name, loc, bc_val):
+        """Fill guard cells using a Dirichlet condition.
 
-                # xmin BC
-                if(self.bc_type[key][0] == 'neumann'):
-                    self.data[:,0,self.center_vars[key]]  =  self.bc_val[key][0]*self.dx + self.data[:,1,self.center_vars[key]]
-                else:
-                    self.data[:,0,self.center_vars[key]]  =  2.0*self.bc_val[key][0]     - self.data[:,1,self.center_vars[key]]
+        Parameters
+        ----------
+        var_name : string
+            Name of the variable to update.
+        loc : string
+            Boundary location;
+            choices: ['left', 'right', 'bottom', 'top'].
+        bc_val : float
+            Neumann boundary value.
 
-                # xmax BC
-                if(self.bc_type[key][1] == 'neumann'):
-                    self.data[:,-1,self.center_vars[key]] = -self.bc_val[key][1]*self.dx + self.data[:,-2,self.center_vars[key]]
-                else:
-                    self.data[:,-1,self.center_vars[key]] =  2.0*self.bc_val[key][1]     - self.data[:,-2,self.center_vars[key]]
-
-                # ymin BC
-                if(self.bc_type[key][2] == 'neumann'):
-                    self.data[0,:,self.center_vars[key]]  =  self.bc_val[key][2]*self.dy + self.data[1,:,self.center_vars[key]]
-                else:
-                    self.data[0,:,self.center_vars[key]]  =  2.0*self.bc_val[key][2]     - self.data[1,:,self.center_vars[key]]
-
-                # ymax BC
-                if(self.bc_type[key][3] == 'neumann'):
-                    self.data[-1,:,self.center_vars[key]] = -self.bc_val[key][3]*self.dy + self.data[-2,:,self.center_vars[key]]
-                else:
-                    self.data[-1,:,self.center_vars[key]] = 2.0*self.bc_val[key][3]      - self.data[-2,:,self.center_vars[key]]
-    
-        return
+        """
+        idx = self.center_vars[var_name]
+        if loc == 'left':
+            self.data[:, 0, idx] = 2.0 * bc_val - self.data[:, 1, idx]
+        elif loc == 'right':
+            self.data[:, -1, idx] = 2.0 * bc_val - self.data[:, -2, idx]
+        elif loc == 'bottom':
+            self.data[0, :, idx] = 2.0 * bc_val - self.data[1, :, idx]
+        elif loc == 'top':
+            self.data[-1, :, idx] = 2.0 * bc_val - self.data[-2, :, idx]
+        else:
+            raise ValueError('Unknown boundary location "{}"'.format(loc))

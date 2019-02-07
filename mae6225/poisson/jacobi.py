@@ -1,68 +1,57 @@
+"""Module with iterative solvers for the Poisson system."""
+
 import numpy
 
-def solve_jacobi(grid,ivar,rvar,max_iterations=3000,tol=1e-9):
-	"""
-	Function to solve the Poisson equation using iterative (Jacobi) method
 
-	Arguments
-	---------
+def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9):
+    """Solve the Poisson system using a Jacobi method.
 
-	grid : object of class Grid
+    Arguments
+    ---------
+    grid : Grid object
+        Grid containing data.
+    ivar : string
+        Name of the grid variable of the numerical solution.
+    rvar : string
+        Name of the grid variable of the right-hand side.
+    maxiter : integer, optional
+        Maximum number of iterations;
+        default: 3000
+    tol : float, optional
+        Exit-criterion tolerance;
+        default: 1e-9
 
-	ivar : scalar integer
-	     index to store numerical solution
+    Returns
+    -------
+    ites: integer
+        Number of iterations computed.
+    residual: float
+        Final residual.
 
-	rvar : scalar integer
-	     index where the right hand side is stored
+    """
+    i_ivar, i_rvar = grid.get_variable_indices([ivar, rvar])
+    dx, dy = grid.dx, grid.dy
 
-	max_iterations : scalar integer
-		       limit on number of iterations
+    ites = 0
+    residual = tol + 1.0
+    while ites < maxiter and residual > tol:
+        phi_old = numpy.copy(grid.data[:, :, i_ivar])  # previous solution
+        grid.data[1:-1, 1:-1, i_ivar] = (((phi_old[1:-1, :-2] +
+                                           phi_old[1:-1, 2:]) * dy**2 +
+                                          (phi_old[:-2, 1:-1] +
+                                           phi_old[2:, 1:-1]) * dx**2 -
+                                          grid.data[1:-1, 1:-1, i_rvar] *
+                                          dx**2 * dy**2) /
+                                         (2.0 * (dx**2 + dy**2)))
 
-	tol : scalar float
-	    tolerance for convergence check
+        grid.fill_guard_cells(ivar)
 
-	-----------------
-	Returned variables
-	----------------
+        residual = (numpy.sqrt(numpy.sum((grid.data[:, :, i_ivar] -
+                                          phi_old)**2) /
+                    ((grid.nx + 2) * (grid.ny + 2))))
+        ites += 1
 
-	iteration_counter : scalar integer
-			  total number of iterations until convergence
+    if ites == maxiter:
+        print('Warning: maximum number of iterations reached!')
 
-	residual : scalar float
-		 residual error between after completion
-
-	---------------
-	Local variables
-	---------------
-
-	phi_old : float array
-		variable to store numerical solution from the previous iteration
-
-	"""
-
-	iteration_counter = 1
-	phi_old           = numpy.copy(grid.data[:,:,grid.center_vars[ivar]])
-
-	while iteration_counter <= max_iterations:
-
-		grid.data[1:-1,1:-1,grid.center_vars[ivar]] = ((phi_old[1:-1,2:]/(grid.dy**2))  + \
-		                                               (phi_old[1:-1,:-2]/(grid.dy**2)) + \
-					                       (phi_old[2:,1:-1]/(grid.dx**2))  + \
-				                               (phi_old[:-2,1:-1]/(grid.dx**2)) - \
-				                                grid.data[1:-1,1:-1,grid.center_vars[rvar]])       * \
-                                                               (1/((1/(grid.dx**2))             + \
-                                                               (1/(grid.dy**2))             + \
-                                                               (1/(grid.dx**2))             + \
-                                                               (1/(grid.dy**2))))
-
-		grid.fill_guard_cells([ivar])
-
-		residual = numpy.sqrt(numpy.sum((grid.data[:,:,grid.center_vars[ivar]]-phi_old)**2)/((grid.nx+2)*(grid.ny+2)))
-
-		if(residual < tol and residual != 0.0):
-			break			
-
-		iteration_counter = iteration_counter + 1
-		phi_old           = numpy.copy(grid.data[:,:,grid.center_vars[ivar]])
-
-	return iteration_counter, residual
+    return ites, residual

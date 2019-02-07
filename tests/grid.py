@@ -10,14 +10,14 @@ import mae6225
 class TestCG(unittest.TestCase):
     def setUp(self):
         self.num = 3
+        self.center_vars = ['a', 'b', 'c']
         self.nx, self.ny = 10, 20
         self.xmin, self.xmax = 0.0, 1.0
         self.ymin, self.ymax = -0.5, 0.5
-        self.bc_type = "neumann"
-        self.grid = mae6225.Grid(self.num,
+        self.grid = mae6225.Grid(self.center_vars,
                                  self.nx, self.ny,
                                  self.xmin, self.xmax,
-                                 self.ymin, self.ymax,self.bc_type)
+                                 self.ymin, self.ymax)
 
     def test_init(self):
         names = ['num', 'nx', 'ny', 'xmin', 'xmax', 'ymin', 'ymax']
@@ -27,18 +27,18 @@ class TestCG(unittest.TestCase):
         self.assertEqual(self.grid.data.size, size)
 
     def test_set_get_values(self):
-        ivar = self.num - 1
+        var_name = self.center_vars[0]
         values = numpy.ones((self.nx + 2, self.ny + 2))
-        self.grid.set_values(ivar, values)
-        values2 = self.grid.get_values(ivar)
+        self.grid.set_values(var_name, values)
+        values2 = self.grid.get_values(var_name)
         self.assertTrue(numpy.allclose(values, values2, atol=1e-12))
 
     def test_set_get_value(self):
-        ivar = self.num - 1
+        var_name = self.center_vars[0]
         value = 0.123456
         i, j = random.randint(0, self.nx + 1), random.randint(0, self.ny + 1)
-        self.grid.set_value(ivar, i, j, value)
-        value2 = self.grid.get_value(ivar, i, j)
+        self.grid.set_value(var_name, i, j, value)
+        value2 = self.grid.get_value(var_name, i, j)
         self.assertEqual(value, value2)
 
     def test_get_cell_centered_coordinates(self):
