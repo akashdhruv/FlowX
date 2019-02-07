@@ -66,8 +66,10 @@ class Grid(object):
         """Set default boundary conditions (homogeneous Neumann)."""
         var_names = list(self.center_vars.keys())
         num = len(var_names)
-        self.bc_type = dict(zip(var_names, num * [['neumann','neumann','neumann','neumann']]))
-        self.bc_val = dict(zip(var_names, num * [[0.,0.,0.,0.]]))
+        default_bc_type = 4 * ['neumann']
+        self.bc_type = dict(zip(var_names, num * [default_bc_type]))
+        default_bc_val = 4 * [0.0]
+        self.bc_val = dict(zip(var_names, num * [default_bc_val]))
         self.bc_data_struct = dict(zip(var_names, num * ['center']))
 
     def set_user_bc(self, user_bc_type, user_bc_val):
