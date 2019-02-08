@@ -1,4 +1,4 @@
-"""Tests for `mae6225/grid.py`."""
+"""Tests for `mae6225/grid/grid.py`."""
 
 import numpy
 import random
@@ -7,7 +7,7 @@ import unittest
 import mae6225
 
 
-class TestCG(unittest.TestCase):
+class TestGrid(unittest.TestCase):
     def setUp(self):
         self.num = 3
         self.center_vars = ['a', 'b', 'c']

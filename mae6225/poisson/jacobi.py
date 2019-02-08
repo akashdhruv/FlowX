@@ -3,7 +3,7 @@
 import numpy
 
 
-def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9):
+def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9, verbose=False):
     """Solve the Poisson system using a Jacobi method.
 
     Arguments
@@ -27,6 +27,9 @@ def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9):
         Number of iterations computed.
     residual: float
         Final residual.
+    verbose : bool, optional
+        Set True to display convergence information;
+        default: False.
 
     """
     i_ivar, i_rvar = grid.get_variable_indices([ivar, rvar])
@@ -51,7 +54,11 @@ def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9):
                     ((grid.nx + 2) * (grid.ny + 2))))
         ites += 1
 
-    if ites == maxiter:
-        print('Warning: maximum number of iterations reached!')
+    if verbose:
+        print('Jacobi method:')
+        if ites == maxiter:
+            print('Warning: maximum number of iterations reached!')
+        print('- Number of iterations: {}'.format(ites))
+        print('- Final residual: {}'.format(residual))
 
     return ites, residual
