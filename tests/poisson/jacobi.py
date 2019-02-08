@@ -35,7 +35,7 @@ class TestPoissonJacobi(unittest.TestCase):
         X, Y = numpy.meshgrid(x_center, y_center)
         Lx = self.grid.xmax - self.grid.xmin
         Ly = self.grid.ymax - self.grid.ymin
-        values = (-2.0 * numpy.pi / Lx * numpy.pi / Ly *
+        values = (-((numpy.pi / Lx)**2 + (numpy.pi / Ly)**2) *
                   numpy.sin(numpy.pi * X / Lx) *
                   numpy.cos(numpy.pi * Y / Ly))
         self.grid.set_values(var_name, values)
