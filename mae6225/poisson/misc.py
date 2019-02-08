@@ -1,51 +1,25 @@
+"""Module with helper functions for the Poisson solver."""
+
 import numpy
 
-def get_error(grid,eror,ivar,asol):
-	"""
-	Function to calculate absoulte error between numerical and exact solution
 
-	Arguments
-	---------
+def get_error(grid, eror, ivar, asol):
+    """Compute the error between the numerical and analytical solutions.
 
-	grid : object of class Grid
+    The error is defined as the absolute difference between the two solutions.
 
-	eror : scalar integer
-	     index to store the absolute error within the grid data structure
+    Arguments
+    ---------
+    grid : Grid object
+        Grid containing the data.
+    eror: string
+        Name of the grid variable of the error.
+    ivar: string
+        Name of the grid variable of the numerical solution.
+    asol: string
+        Name of the grid variable of the analytical solution.
 
-	ivar : scalar integer
-	     index where the numerical solution is stored
-
-	asol : scalar integer
-	     index where the exact solution is stored
-
-	"""
-
-	grid.data[:,:,eror] = numpy.absolute(grid.data[:,:,ivar]-grid.data[:,:,asol])
-
-	return
-
-def apply_BC(phi):	
-
-	"""
-	Function to apply boundary conditions
-
-	Arguments
-	---------
-
-	phi : float array
-	    variable on which the BC needs to be applied
-	"""
-
-	# Homogeneous Neumann BC
-	phi[:,0]  = phi[:,1]
-	phi[:,-1] = phi[:,-2]
-	phi[0,:]  = phi[1,:]
-	phi[-1,:] = phi[-2,:]
-
-	# Homogeneous Dirichlet BC
-	#phi[:,0]  = -phi[:,1]
-	#phi[:,-1] = -phi[:,-2]
-	#phi[0,:]  = -phi[1,:]
-	#phi[-1,:] = -phi[-2,:]
-
-	return
+    """
+    i_eror, i_ivar, i_asol = grid.get_variable_indices([eror, ivar, asol])
+    grid.data[:, :, i_eror] = numpy.abs(grid.data[:, :, i_ivar] -
+                                        grid.data[:, :, i_asol])
