@@ -88,27 +88,22 @@ class Grid(object):
         # Overwrite default boundary values
         self.bc_val = {**self.bc_val, **user_bc_val}
 
-    def get_variable_indices(self, var_names):
+    def get_variable_indices(self, *var_names):
         """Get the grid index of given variable names.
 
         Parameters
         ----------
-        var_names : string or list of strings
+        var_names : tuple of strings
             The name of the variable(s).
 
         Returns
         -------
-        indices : list of integers
+        indices : integer or list of integers
             Index of the grid variables.
 
         """
-        # Convert single string to list
-        if var_names is str:
-            var_names = [var_names]
-        indices = []
-        for name in var_names:
-            indices.append(self.center_vars[name])
-        return indices
+        indices = [self.center_vars[name] for name in var_names]
+        return indices[0] if len(indices) == 1 else indices
 
     def set_values(self, var_name, values):
         """Set the values of a variable.
@@ -217,7 +212,7 @@ class Grid(object):
             Name of the grid variable of the analytical solution.
 
         """
-        i_eror, i_ivar, i_asol = self.get_variable_indices([eror, ivar, asol])
+        i_eror, i_ivar, i_asol = self.get_variable_indices(eror, ivar, asol)
         self.data[:, :, i_eror] = numpy.abs(self.data[:, :, i_ivar] -
                                             self.data[:, :, i_asol])
 
@@ -235,7 +230,7 @@ class Grid(object):
             The L2-norm.
 
         """
-        i_eror = self.get_variable_indices([eror])
+        i_eror = self.get_variable_indices(eror)
 
         l2_norm = (numpy.sqrt(numpy.sum(self.data[:, :, i_eror]**2)) /
                    ((self.nx + 2) * (self.ny + 2)))
