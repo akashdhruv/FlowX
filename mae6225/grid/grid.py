@@ -205,34 +205,40 @@ class Grid(object):
     def get_error(self, eror, ivar, asol):
         """Compute the error between the numerical and analytical solutions.
 
-        The error is defined as the absolute difference between the two solutions.
+        Error is defined as the absolute difference between the two solutions.
 
         Arguments
         ---------
-        eror: string
+        eror : string
             Name of the grid variable of the error.
-        ivar: string
+        ivar : string
             Name of the grid variable of the numerical solution.
-        asol: string
+        asol : string
             Name of the grid variable of the analytical solution.
 
         """
         i_eror, i_ivar, i_asol = self.get_variable_indices([eror, ivar, asol])
         self.data[:, :, i_eror] = numpy.abs(self.data[:, :, i_ivar] -
-                                        self.data[:, :, i_asol])
+                                            self.data[:, :, i_asol])
 
     def get_l2_norm(self, eror):
-        """Compute the norm for a given variable"
-       
+        """Compute the L2 norm for a given variable.
+
         Arguments
         ---------
-        eror: string
+        eror : string
             Name of the grid variable for which norm is desired
-      
+
+        Returns
+        -------
+        l2_norm : float
+            The L2-norm.
+
         """
         i_eror = self.get_variable_indices([eror])
 
-        l2_norm = numpy.sqrt(numpy.sum(self.data[:,:,i_eror]**2))/((self.nx+2)*(self.ny+2)) 
+        l2_norm = (numpy.sqrt(numpy.sum(self.data[:, :, i_eror]**2)) /
+                   ((self.nx + 2) * (self.ny + 2)))
 
         return l2_norm
 
