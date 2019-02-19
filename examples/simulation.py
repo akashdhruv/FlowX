@@ -3,7 +3,7 @@
 import numpy
 
 
-def get_analytical(grid, asol):
+def get_analytical(grid, asol, user_bc):
     """Compute and set the analytical solution.
 
     Arguments
@@ -15,11 +15,16 @@ def get_analytical(grid, asol):
 
     """
     X, Y = numpy.meshgrid(grid.x_center, grid.y_center)
-    values = numpy.sin(2 * numpy.pi * X) * numpy.sin(2 * numpy.pi * Y)
+
+    if(user_bc == 'dirichlet'):
+        values = numpy.sin(2 * numpy.pi * X) * numpy.sin(2 * numpy.pi * Y)
+    else:
+        values = numpy.cos(2 * numpy.pi * X) * numpy.cos(2 * numpy.pi * Y)
+
     grid.set_values(asol, values.transpose())
 
 
-def get_rhs(grid, rvar):
+def get_rhs(grid, rvar, user_bc):
     """Compute and set the right-hand side of the Poisson system.
 
     Arguments
@@ -31,6 +36,12 @@ def get_rhs(grid, rvar):
 
     """
     X, Y = numpy.meshgrid(grid.x_center, grid.y_center)
-    values = (-8 * numpy.pi**2 *
-              numpy.sin(2 * numpy.pi * X) * numpy.sin(2 * numpy.pi * Y))
+
+    if(user_bc == 'dirichlet'):
+        values = (-8 * numpy.pi**2 *
+                  numpy.sin(2 * numpy.pi * X) * numpy.sin(2 * numpy.pi * Y))
+    else:
+        values = (-8 * numpy.pi**2 *
+                  numpy.cos(2 * numpy.pi * X) * numpy.cos(2 * numpy.pi * Y))
+ 
     grid.set_values(rvar, values.transpose())

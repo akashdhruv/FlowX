@@ -8,7 +8,10 @@ import mae6225
 
 
 class TestPoissonJacobi(unittest.TestCase):
+    """Unit-tests for the Poisson Jacobi solver."""
+
     def setUp(self):
+        """Set up the grid and the variables of the Poisson system."""
         center_vars = ['ivar', 'rvar', 'asol', 'eror']
         nx, ny = 40, 40
         xmin, xmax = 0.0, 1.0
@@ -23,6 +26,7 @@ class TestPoissonJacobi(unittest.TestCase):
         self._set_rhs('rvar')
 
     def _set_analytical(self, var_name):
+        """Private method to set the analytical solution."""
         x_center, y_center = self.grid.get_cell_centered_coordinates()
         X, Y = numpy.meshgrid(x_center, y_center)
         Lx = self.grid.xmax - self.grid.xmin
@@ -31,6 +35,7 @@ class TestPoissonJacobi(unittest.TestCase):
         self.grid.set_values(var_name, values)
 
     def _set_rhs(self, var_name):
+        """Private method to set the right-hand side of the system."""
         x_center, y_center = self.grid.get_cell_centered_coordinates()
         X, Y = numpy.meshgrid(x_center, y_center)
         Lx = self.grid.xmax - self.grid.xmin
@@ -41,6 +46,7 @@ class TestPoissonJacobi(unittest.TestCase):
         self.grid.set_values(var_name, values)
 
     def test_number_of_iterations(self):
+        """Test the solver reaches the maximum number of iterations."""
         maxiter, tol = 0, 1e-12
         ites, _ = mae6225.poisson.solve_jacobi(self.grid, 'ivar', 'rvar',
                                                maxiter=maxiter, tol=tol)
@@ -51,6 +57,7 @@ class TestPoissonJacobi(unittest.TestCase):
         self.assertEqual(ites, maxiter)
 
     def test_residual(self):
+        """Test the solver convergence."""
         maxiter, tol = 3000, 1e-6
         ites, res = mae6225.poisson.solve_jacobi(self.grid, 'ivar', 'rvar',
                                                  maxiter=maxiter, tol=tol)
@@ -58,10 +65,11 @@ class TestPoissonJacobi(unittest.TestCase):
         self.assertTrue(ites < maxiter)
 
     def test_error(self):
+        """Test the solver results as we decrease the exit tolerance."""
         maxiter, tol = 3000, 1e-3
         ites1, res1 = mae6225.poisson.solve_jacobi(self.grid, 'ivar', 'rvar',
                                                    maxiter=maxiter, tol=tol)
-        mae6225.poisson.get_error(self.grid, 'eror', 'ivar', 'asol')
+        self.grid.get_error('eror', 'ivar', 'asol')
         error1 = numpy.max(numpy.abs(self.grid.get_values('eror')))
         # Reset numerical solutio for second solve
         self.grid.set_values('ivar', numpy.zeros((self.grid.nx + 2,
@@ -69,7 +77,7 @@ class TestPoissonJacobi(unittest.TestCase):
         maxiter, tol = 3000, 1e-6
         ites2, res2 = mae6225.poisson.solve_jacobi(self.grid, 'ivar', 'rvar',
                                                    maxiter=maxiter, tol=tol)
-        mae6225.poisson.get_error(self.grid, 'eror', 'ivar', 'asol')
+        self.grid.get_error('eror', 'ivar', 'asol')
         error2 = numpy.max(numpy.abs(self.grid.get_values('eror')))
         self.assertTrue(ites1 <= ites2)
         self.assertTrue(res1 >= res2)
