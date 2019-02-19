@@ -32,7 +32,7 @@ def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9, verbose=False):
         default: False.
 
     """
-    i_ivar, i_rvar = grid.get_variable_indices([ivar, rvar])
+    i_ivar, i_rvar = grid.get_variable_indices(ivar, rvar)
     dx, dy = grid.dx, grid.dy
 
     ites = 0

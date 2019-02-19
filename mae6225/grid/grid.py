@@ -88,27 +88,22 @@ class Grid(object):
         # Overwrite default boundary values
         self.bc_val = {**self.bc_val, **user_bc_val}
 
-    def get_variable_indices(self, var_names):
+    def get_variable_indices(self, *var_names):
         """Get the grid index of given variable names.
 
         Parameters
         ----------
-        var_names : string or list of strings
+        var_names : tuple of strings
             The name of the variable(s).
 
         Returns
         -------
-        indices : list of integers
+        indices : integer or list of integers
             Index of the grid variables.
 
         """
-        # Convert single string to list
-        if var_names is str:
-            var_names = [var_names]
-        indices = []
-        for name in var_names:
-            indices.append(self.center_vars[name])
-        return indices
+        indices = [self.center_vars[name] for name in var_names]
+        return indices[0] if len(indices) == 1 else indices
 
     def set_values(self, var_name, values):
         """Set the values of a variable.
@@ -201,6 +196,46 @@ class Grid(object):
         y = numpy.linspace(self.ymin - self.dy / 2, self.ymax + self.dy / 2,
                            num=self.ny + 2)
         return x, y
+
+    def get_error(self, eror, ivar, asol):
+        """Compute the error between the numerical and analytical solutions.
+
+        Error is defined as the absolute difference between the two solutions.
+
+        Arguments
+        ---------
+        eror : string
+            Name of the grid variable of the error.
+        ivar : string
+            Name of the grid variable of the numerical solution.
+        asol : string
+            Name of the grid variable of the analytical solution.
+
+        """
+        i_eror, i_ivar, i_asol = self.get_variable_indices(eror, ivar, asol)
+        self.data[:, :, i_eror] = numpy.abs(self.data[:, :, i_ivar] -
+                                            self.data[:, :, i_asol])
+
+    def get_l2_norm(self, eror):
+        """Compute the L2 norm for a given variable.
+
+        Arguments
+        ---------
+        eror : string
+            Name of the grid variable for which norm is desired
+
+        Returns
+        -------
+        l2_norm : float
+            The L2-norm.
+
+        """
+        i_eror = self.get_variable_indices(eror)
+
+        l2_norm = (numpy.sqrt(numpy.sum(self.data[:, :, i_eror]**2)) /
+                   ((self.nx + 2) * (self.ny + 2)))
+
+        return l2_norm
 
     def fill_guard_cells(self, var_names):
         """Fill value at guard cells for given variable names.
