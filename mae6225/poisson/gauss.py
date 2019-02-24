@@ -1,4 +1,3 @@
-
 import numpy
 
 def solve_gauss(grid, ivar, rvar, maxiter=3000, tol=1e-9, verbose=False):
@@ -41,12 +40,10 @@ def solve_gauss(grid, ivar, rvar, maxiter=3000, tol=1e-9, verbose=False):
         for j in range(1, grid.ny+1):
             for i in range(1, grid.nx+1):
                 grid.data[i, j, i_ivar] = (((grid.data[i, j-1, i_ivar] + grid.data[i, j+1, i_ivar]) * dy**2 +
-                                                  (grid.data[i-1, j, i_ivar] + grid.data[i+1, j, i_ivar]) * dx**2 -
-                                                               grid.data[i, j, i_rvar] * dx**2 * dy**2) /
-                                                         (2.0 * (dx**2 + dy**2)))
-
-                
-                
+                                            (grid.data[i-1, j, i_ivar] + grid.data[i+1, j, i_ivar]) * dx**2 -
+                                                             grid.data[i, j, i_rvar] * dx**2 * dy**2) /
+                                           (2.0 * (dx**2 + dy**2)))
+      
         grid.fill_guard_cells(ivar)
 
         residual = (numpy.sqrt(numpy.sum((grid.data[:, :, i_ivar] -
