@@ -3,8 +3,7 @@
 import sys
 import unittest
 
-
-tests = ['grid.grid', 'poisson.jacobi', 'poisson.gauss']
+tests = ['grid.grid', 'poisson.jacobi', 'poisson.SOR','poisson.gauss']
 
 suite = unittest.TestSuite()
 
