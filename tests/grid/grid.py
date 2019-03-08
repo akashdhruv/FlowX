@@ -13,11 +13,12 @@ class TestGrid(unittest.TestCase):
     def setUp(self):
         """Set up the grid with 3 cell-centered variables."""
         self.num = 3
-        self.center_vars = ['ivar', 'asol', 'eror']
+        self.var_names = ['ivar', 'asol', 'eror']
         self.nx, self.ny = 10, 20
         self.xmin, self.xmax = 0.0, 1.0
         self.ymin, self.ymax = -0.5, 0.5
-        self.grid = mae6225.Grid(self.center_vars,
+        self.grid = mae6225.Grid('cell-centered',
+                                 self.var_names,
                                  self.nx, self.ny,
                                  self.xmin, self.xmax,
                                  self.ymin, self.ymax)
@@ -32,7 +33,7 @@ class TestGrid(unittest.TestCase):
 
     def test_set_get_values(self):
         """Test set/get values of a cell-centered variables."""
-        var_name = self.center_vars[0]
+        var_name = self.var_names[0]
         values = numpy.ones((self.nx + 2, self.ny + 2))
         self.grid.set_values(var_name, values)
         values2 = self.grid.get_values(var_name)
@@ -40,7 +41,7 @@ class TestGrid(unittest.TestCase):
 
     def test_set_get_value(self):
         """Test set/get value of a cell-centered variables."""
-        var_name = self.center_vars[0]
+        var_name = self.var_names[0]
         value = 0.123456
         i, j = random.randint(0, self.nx + 1), random.randint(0, self.ny + 1)
         self.grid.set_value(var_name, i, j, value)
@@ -49,19 +50,18 @@ class TestGrid(unittest.TestCase):
 
     def test_get_cell_centered_coordinates(self):
         """Test gridline coordinates of a cell-centered grid."""
-        x, y = self.grid.get_cell_centered_coordinates()
         dx = (self.xmax - self.xmin) / self.nx
         dy = (self.ymax - self.ymin) / self.ny
         x_test = numpy.linspace(self.xmin - dx / 2, self.xmax + dx / 2,
                                 num=self.nx + 2)
-        self.assertTrue(numpy.allclose(x, x_test, atol=1e-8))
+        self.assertTrue(numpy.allclose(self.grid.x, x_test, atol=1e-8))
         y_test = numpy.linspace(self.ymin - dy / 2, self.ymax + dy / 2,
                                 num=self.ny + 2)
-        self.assertTrue(numpy.allclose(y, y_test, atol=1e-8))
+        self.assertTrue(numpy.allclose(self.grid.y, y_test, atol=1e-8))
 
     def test_get_error(self):
         """Test the error between two identical data arrays is zero."""
-        ivar, asol, eror = self.center_vars
+        ivar, asol, eror = self.var_names
         values = numpy.random.rand(self.nx + 2, self.ny + 2)
         self.grid.set_values(ivar, values)
         self.grid.set_values(asol, values)
@@ -72,7 +72,7 @@ class TestGrid(unittest.TestCase):
 
     def test_get_l2_norm(self):
         """Compare the L2-norm implementation with the NumPy implementation."""
-        ivar = self.center_vars[0]
+        ivar = self.var_names[0]
         values = numpy.random.rand(self.nx + 2, self.ny + 2)
         self.grid.set_values(ivar, values)
         l2_norm = self.grid.get_l2_norm(ivar)

@@ -14,7 +14,7 @@ def get_analytical(grid, asol, user_bc):
         Name of the variable on the grid.
 
     """
-    X, Y = numpy.meshgrid(grid.x_center, grid.y_center)
+    X, Y = numpy.meshgrid(grid.x, grid.y)
 
     if(user_bc == 'dirichlet'):
         values = numpy.sin(2 * numpy.pi * X) * numpy.sin(2 * numpy.pi * Y)
@@ -35,7 +35,7 @@ def get_rhs(grid, rvar, user_bc):
         Name of the variable on the grid.
 
     """
-    X, Y = numpy.meshgrid(grid.x_center, grid.y_center)
+    X, Y = numpy.meshgrid(grid.x, grid.y)
 
     if(user_bc == 'dirichlet'):
         values = (-8 * numpy.pi**2 *
@@ -43,5 +43,5 @@ def get_rhs(grid, rvar, user_bc):
     else:
         values = (-8 * numpy.pi**2 *
                   numpy.cos(2 * numpy.pi * X) * numpy.cos(2 * numpy.pi * Y))
- 
+
     grid.set_values(rvar, values.transpose())

@@ -1,19 +1,19 @@
-"""Module with the implementation of the class `Grid`."""
+"""Module with implementation of the Grid classes."""
 
 import numpy
 
 
-class Grid(object):
-    """A Grid object stores data about the grid and the variables."""
+class GridBase(object):
+    """Base class for the Grid."""
 
-    def __init__(self, center_vars, nx, ny, xmin, xmax, ymin, ymax,
+    def __init__(self, var_names, nx, ny, xmin, xmax, ymin, ymax,
                  user_bc_type=None, user_bc_val=None):
         """Initialize the Grid object and allocate the data.
 
         Parameters
         ----------
-        center_vars : dictionary for cell center variables
-
+        var_names : list of strings
+            List of names for the variables to create.
         nx : integer
             Number of cells in the x-direction.
         ny : integer
@@ -33,19 +33,18 @@ class Grid(object):
 
         """
         # Domain information
-        self.nx, self.ny = nx, ny
-        self.xmin, self.xmax = xmin, xmax
-        self.ymin, self.ymax = ymin, ymax
-        self.dx = abs(self.xmax - self.xmin) / nx
-        self.dy = abs(self.ymax - self.ymin) / ny
+        self.nx, self.ny = nx, ny  # number of cells in each direction
+        self.xmin, self.xmax = xmin, xmax  # domain limits (x direction)
+        self.ymin, self.ymax = ymin, ymax  # domain limits (y direction)
+        self.dx = abs(self.xmax - self.xmin) / nx  # cell-width (x direction)
+        self.dy = abs(self.ymax - self.ymin) / ny  # cell-width (y direction)
+        self.set_gridline_coordinates()
 
-        # Cell-centered coordinates
-        self.x_center, self.y_center = self.get_cell_centered_coordinates()
-
-        # Cell-centered data
-        self.num = len(center_vars)
-        self.center_vars = dict(zip(center_vars, range(self.num)))
-        self.data = numpy.zeros((nx + 2, ny + 2, self.num))
+        # Initialize the data
+        self.num = len(var_names)
+        self.vars = dict(zip(var_names, range(self.num)))
+        self.data = None
+        self.initialize_data()
 
         # Boundary condition information
         self.set_default_bc()
@@ -55,6 +54,7 @@ class Grid(object):
     def __repr__(self):
         """Return a representation of the object."""
         return ("Grid:\n" +
+                " - type: {}\n".format(type(self)) +
                 " - size: {} x {}\n".format(self.nx, self.ny) +
                 " - domain: [{}, {}] x [{}, {}]\n".format(self.xmin,
                                                           self.xmax,
@@ -62,9 +62,25 @@ class Grid(object):
                                                           self.ymax) +
                 " - number of variables: {}\n".format(self.num))
 
+    def set_gridline_coordinates(self):
+        """Set the gridline coordinates.
+
+        Method implemented in the child class.
+
+        """
+        raise NotImplementedError()
+
+    def initialize_data(self):
+        """Initialize the data with zeros.
+
+        Method implemented in child classes.
+
+        """
+        raise NotImplementedError()
+
     def set_default_bc(self):
         """Set default boundary conditions (homogeneous Neumann)."""
-        var_names = list(self.center_vars.keys())
+        var_names = list(self.vars.keys())
         num = len(var_names)
         default_bc_type = 4 * ['neumann']
         self.bc_type = dict(zip(var_names, num * [default_bc_type]))
@@ -102,7 +118,7 @@ class Grid(object):
             Index of the grid variables.
 
         """
-        indices = [self.center_vars[name] for name in var_names]
+        indices = [self.vars[name] for name in var_names]
         return indices[0] if len(indices) == 1 else indices
 
     def set_values(self, var_name, values):
@@ -116,7 +132,7 @@ class Grid(object):
             2D array with the values to set.
 
         """
-        idx = self.center_vars[var_name]
+        idx = self.vars[var_name]
         self.data[:, :, idx] = values
 
     def get_values(self, var_name):
@@ -133,7 +149,7 @@ class Grid(object):
             Variable's data as a 2D array of floats.
 
         """
-        idx = self.center_vars[var_name]
+        idx = self.vars[var_name]
         data = self.data[:, :, idx]
         return data
 
@@ -152,7 +168,7 @@ class Grid(object):
             Value to set.
 
         """
-        idx = self.center_vars[var_name]
+        idx = self.vars[var_name]
         self.data[i, j, idx] = value
 
     def get_value(self, var_name, i, j):
@@ -173,29 +189,9 @@ class Grid(object):
             Value of the variable at index (i, j).
 
         """
-        idx = self.center_vars[var_name]
+        idx = self.vars[var_name]
         value = self.data[i, j, idx]
         return value
-
-    def get_cell_centered_coordinates(self):
-        """Return the cell-centered gridline coordinates.
-
-        The gridline coordinates also contain the coordinate of the
-        boundary ghost cell.
-
-        Returns
-        -------
-        x : numpy.ndarray
-            x-coordinates along a gridline as a 1D array of floats.
-        y : numpy.ndarray
-            y-coordinates along a gridline as a 1D array of floats.
-
-        """
-        x = numpy.linspace(self.xmin - self.dx / 2, self.xmax + self.dx / 2,
-                           num=self.nx + 2)
-        y = numpy.linspace(self.ymin - self.dy / 2, self.ymax + self.dy / 2,
-                           num=self.ny + 2)
-        return x, y
 
     def get_error(self, eror, ivar, asol):
         """Compute the error between the numerical and analytical solutions.
@@ -269,6 +265,24 @@ class Grid(object):
                         raise ValueError('Boundary type "{}" not implemented'
                                          .format(bc_type))
 
+    def fill_guard_cells_dirichlet(self, var_name, loc, bc_val):
+        """Fill guard cells using a Dirichlet condition.
+
+        Method implemented in child classes.
+
+        Parameters
+        ----------
+        var_name : string
+            Name of the variable to update.
+        loc : string
+            Boundary location;
+            choices: ['left', 'right', 'bottom', 'top'].
+        bc_val : float
+            Neumann boundary value.
+
+        """
+        raise NotImplementedError()
+
     def fill_guard_cells_neumann(self, var_name, loc, bc_val, delta):
         """Fill guard cells using a Neumann condition.
 
@@ -285,7 +299,7 @@ class Grid(object):
             Grid-cell width.
 
         """
-        idx = self.center_vars[var_name]
+        idx = self.vars[var_name]
         if loc == 'left':
             self.data[:, 0, idx] = bc_val * delta + self.data[:, 1, idx]
         elif loc == 'right':
@@ -296,6 +310,32 @@ class Grid(object):
             self.data[-1, :, idx] = bc_val * delta + self.data[-2, :, idx]
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))
+
+
+class GridCellCentered(GridBase):
+    """Class for a cell-centered grid."""
+
+    def __init__(self, *args, **kwargs):
+        """Call the constructor of the base class."""
+        super(GridCellCentered, self).__init__(*args, **kwargs)
+
+    @classmethod
+    def check_gridtype(cls, gridtype):
+        """Check if grid type if 'cell-centered'."""
+        return gridtype == 'cell-centered'
+
+    def set_gridline_coordinates(self):
+        """Set the gridline coordinates."""
+        self.x = numpy.linspace(self.xmin - self.dx / 2,
+                                self.xmax + self.dx / 2,
+                                num=self.nx + 2)
+        self.y = numpy.linspace(self.ymin - self.dy / 2,
+                                self.ymax + self.dy / 2,
+                                num=self.ny + 2)
+
+    def initialize_data(self):
+        """Initialize the data with zeros."""
+        self.data = numpy.zeros((self.nx + 2, self.ny + 2, self.num))
 
     def fill_guard_cells_dirichlet(self, var_name, loc, bc_val):
         """Fill guard cells using a Dirichlet condition.
@@ -311,7 +351,7 @@ class Grid(object):
             Neumann boundary value.
 
         """
-        idx = self.center_vars[var_name]
+        idx = self.vars[var_name]
         if loc == 'left':
             self.data[:, 0, idx] = 2.0 * bc_val - self.data[:, 1, idx]
         elif loc == 'right':
@@ -322,3 +362,143 @@ class Grid(object):
             self.data[-1, :, idx] = 2.0 * bc_val - self.data[-2, :, idx]
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))
+
+
+class GridFaceX(GridBase):
+    """Class for a x-face centered grid."""
+
+    def __init__(self, *args, **kwargs):
+        """Call the constructor of the base class."""
+        super(GridFaceX, self).__init__(*args, **kwargs)
+
+    @classmethod
+    def check_gridtype(cls, gridtype):
+        """Check if grid type if 'x-face'."""
+        return gridtype == 'x-face'
+
+    def set_gridline_coordinates(self):
+        """Set the gridline coordinates."""
+        self.x = numpy.linspace(self.xmin, self.xmax, num=self.nx + 1)
+        self.y = numpy.linspace(self.ymin - self.dy / 2,
+                                self.ymax + self.dy / 2,
+                                num=self.ny + 2)
+
+    def initialize_data(self):
+        """Initialize the data with zeros."""
+        self.data = numpy.zeros((self.nx + 1, self.ny + 2, self.num))
+
+    def fill_guard_cells_dirichlet(self, var_name, loc, bc_val):
+        """Fill guard cells using a Dirichlet condition.
+
+        Parameters
+        ----------
+        var_name : string
+            Name of the variable to update.
+        loc : string
+            Boundary location;
+            choices: ['left', 'right', 'bottom', 'top'].
+        bc_val : float
+            Neumann boundary value.
+
+        """
+        idx = self.vars[var_name]
+        if loc == 'left':
+            self.data[:, 0, idx] = bc_val
+        elif loc == 'right':
+            self.data[:, -1, idx] = bc_val
+        elif loc == 'bottom':
+            self.data[0, :, idx] = 2.0 * bc_val - self.data[1, :, idx]
+        elif loc == 'top':
+            self.data[-1, :, idx] = 2.0 * bc_val - self.data[-2, :, idx]
+        else:
+            raise ValueError('Unknown boundary location "{}"'.format(loc))
+
+
+class GridFaceY(GridBase):
+    """Class for a y-face centered grid."""
+
+    def __init__(self, *args, **kwargs):
+        """Call the constructor of the base class."""
+        super(GridFaceY, self).__init__(*args, **kwargs)
+
+    @classmethod
+    def check_gridtype(cls, gridtype):
+        """Check if grid type if 'y-face'."""
+        return gridtype == 'y-face'
+
+    def set_gridline_coordinates(self):
+        """Set the gridline coordinates."""
+        self.x = numpy.linspace(self.xmin - self.dx / 2,
+                                self.xmax + self.dx / 2,
+                                num=self.nx + 2)
+        self.y = numpy.linspace(self.ymin, self.ymax, num=self.ny + 1)
+
+    def initialize_data(self):
+        """Initialize the data with zeros."""
+        self.data = numpy.zeros((self.nx + 2, self.ny + 1, self.num))
+
+    def fill_guard_cells_dirichlet(self, var_name, loc, bc_val):
+        """Fill guard cells using a Dirichlet condition.
+
+        Parameters
+        ----------
+        var_name : string
+            Name of the variable to update.
+        loc : string
+            Boundary location;
+            choices: ['left', 'right', 'bottom', 'top'].
+        bc_val : float
+            Neumann boundary value.
+
+        """
+        idx = self.vars[var_name]
+        if loc == 'left':
+            self.data[:, 0, idx] = 2.0 * bc_val - self.data[:, 1, idx]
+        elif loc == 'right':
+            self.data[:, -1, idx] = 2.0 * bc_val - self.data[:, -2, idx]
+        elif loc == 'bottom':
+            self.data[0, :, idx] = bc_val
+        elif loc == 'top':
+            self.data[-1, :, idx] = bc_val
+        else:
+            raise ValueError('Unknown boundary location "{}"'.format(loc))
+
+
+def Grid(gridtype, *args, **kwargs):
+    """Return an instance of the GridBase child class based on type.
+
+    Parameters
+    ----------
+    gridtype : string
+        Type of grid;
+        choices: ['cell-centered', 'x-face', 'y-face'].
+    var_names : list of strings
+            List of names for the variables to create.
+    nx : integer
+        Number of cells in the x-direction.
+    ny : integer
+        Number of cells in the y-direction.
+    xmin : float
+        Domain limit at the left side.
+    xmax : float
+        Domain limit at the right side.
+    ymin : float
+        Domain limit at the bottom side.
+    ymax : float
+        Domain limit at the top side.
+    user_bc_type : dictionary of (string, list) items
+        User-defined boundary types to overwrite default ones.
+    user_bc_val : dictionary of (string, list) items
+        User-defined boundary values to overwrite default ones.
+
+    Returns
+    -------
+    obj : instance of the GridBase child
+        The grid object.
+
+    """
+    for cls in GridBase.__subclasses__():
+        if cls.check_gridtype(gridtype):
+            return cls(*args, **kwargs)
+    raise ValueError('Parameter "gridtype" should be either '
+                     '"cell-centered", "x-face", or "y-face"')
