@@ -18,7 +18,8 @@ class TestPoissonJacobi(unittest.TestCase):
         ymin, ymax = -0.5, 0.5
         bc_type = {'ivar': 4 * ['dirichlet']}
         bc_val = {'ivar': 4 * [0.0]}
-        self.grid = mae6225.Grid(center_vars,
+        self.grid = mae6225.Grid('cell-centered',
+                                 center_vars,
                                  nx, ny,
                                  xmin, xmax, ymin, ymax,
                                  user_bc_type=bc_type, user_bc_val=bc_val)
@@ -27,8 +28,7 @@ class TestPoissonJacobi(unittest.TestCase):
 
     def _set_analytical(self, var_name):
         """Private method to set the analytical solution."""
-        x_center, y_center = self.grid.get_cell_centered_coordinates()
-        X, Y = numpy.meshgrid(x_center, y_center)
+        X, Y = numpy.meshgrid(self.grid.x, self.grid.y)
         Lx = self.grid.xmax - self.grid.xmin
         Ly = self.grid.ymax - self.grid.ymin
         values = numpy.sin(numpy.pi * X / Lx) * numpy.cos(numpy.pi * Y / Ly)
@@ -36,8 +36,7 @@ class TestPoissonJacobi(unittest.TestCase):
 
     def _set_rhs(self, var_name):
         """Private method to set the right-hand side of the system."""
-        x_center, y_center = self.grid.get_cell_centered_coordinates()
-        X, Y = numpy.meshgrid(x_center, y_center)
+        X, Y = numpy.meshgrid(self.grid.x, self.grid.y)
         Lx = self.grid.xmax - self.grid.xmin
         Ly = self.grid.ymax - self.grid.ymin
         values = (-((numpy.pi / Lx)**2 + (numpy.pi / Ly)**2) *
