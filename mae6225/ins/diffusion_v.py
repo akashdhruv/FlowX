@@ -1,6 +1,6 @@
 #Diffusion function
 import numpy
-def diffv(gridy,vvar,dfvar, Re):
+def diffusion_v(gridy,vvar,dfvar, Re):
     
     #Define input variables
     #Re = Reynold's number
