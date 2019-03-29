@@ -25,8 +25,8 @@ def divergence(gridc, gridx, gridy, ivar, dvar):
     div_ivar = gridc.get_variable_indices(dvar) 
     dx, dy = gridc.dx, gridc.dy
     
-    Udata = numpy.copy(gridx.data[:,:,u_ivar])
-    Vdata = numpy.copy(gridy.data[:,:,v_ivar])
+    Udata = gridx.data[:,:,u_ivar]
+    Vdata = gridy.data[:,:,v_ivar]
 
     gridc.data[1:-1, 1:-1, div_ivar] = ((Udata[1:, 1:-1] - Udata[:-1, 1:-1])/dx 
                                      +  (Vdata[1:-1, 1:] - Vdata[1:-1, :-1])/dy)

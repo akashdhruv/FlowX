@@ -1,6 +1,6 @@
 import numpy
 
-def convection_v(gridx, gridy, ivar, cvar)
+def convective_v(gridx, gridy, ivar, cvar)
     """ Solving convection in the y-direction for incompressible NS Equation.
     
     Arguments
