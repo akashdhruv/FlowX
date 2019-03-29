@@ -1,6 +1,6 @@
 import numpy
 
-def convective_v(gridx, gridy, ivar, cvar)
+def convective_v(gridx, gridy, ivar, cvar):
     """ Solving convection in the y-direction for incompressible NS Equation.
     
     Arguments
@@ -27,7 +27,7 @@ def convective_v(gridx, gridy, ivar, cvar)
         
     """
     
-    i_ivar, i_cvar= grid.get_variable_indices(ivar, cvar)
+    i_var, c_var= gridy.get_variable_indices(ivar, cvar)
     dx, dy = gridy.dx, gridy.dy
     nx, ny = gridy.nx, gridy.ny
     C = numpy.zeros((nx+2,ny+1))
@@ -74,7 +74,7 @@ def convective_v(gridx, gridy, ivar, cvar)
     
     #Compute convection-v value in y-direction
     
-            C[i,j] = ((-dv_2_dx) - (duv_dx))
+            C[i,j] = ((-dv_2_dy) - (duv_dx))
     
     # store the convection-term values in the grid object
     

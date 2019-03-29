@@ -21,7 +21,7 @@ def diffusion_v(gridy,vvar,dfvar, Re):
     
     for j in range(1,ny):
         for i in range(1,nx+1):
-              D[i,j] = nu *(gridy.data[i+1,j,i_vvar] - 2*gridy.data[i,j,i_vvar] + gridy.data[i-1,j,i_vvar]) / dx**2 +                                    (gridy.data[i,j+1,i_ivar] - 2*gridy.data[i,j,i_vvar] + gridy.data[i,j-1, i_vvar]) / dy**2
+              D[i,j] = nu *(gridy.data[i+1,j,i_vvar] - 2*gridy.data[i,j,i_vvar] + gridy.data[i-1,j,i_vvar]) / dx**2 + (gridy.data[i,j+1,i_vvar] - 2*gridy.data[i,j,i_vvar] + gridy.data[i,j-1, i_vvar]) / dy**2
     
     #Store diffusion values in grid object
     gridy.set_values(dfvar,D)

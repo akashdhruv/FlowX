@@ -30,5 +30,7 @@ def divergence(gridc, gridx, gridy, ivar, dvar):
 
     gridc.data[1:-1, 1:-1, div_ivar] = ((Udata[1:, 1:-1] - Udata[:-1, 1:-1])/dx 
                                      +  (Vdata[1:-1, 1:] - Vdata[1:-1, :-1])/dy)
-   
+  
+    gridc.fill_guard_cells(dvar)
+
     return

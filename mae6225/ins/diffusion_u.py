@@ -10,4 +10,4 @@ def diffusion_u(gridx, ivar, dvar, Re):
                                      + (gridx.data[1:-1,2:,i_ivar] - 2.0*gridx.data[1:-1,1:-1,i_ivar] 
                                      + gridx.data[1:-1,:-2,i_ivar])/(dy**2))
                     
-return
+    return
