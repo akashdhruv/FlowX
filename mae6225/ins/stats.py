@@ -1,6 +1,6 @@
 import numpy
 
-def corrector(gridc, gridx, gridy, ivar, pvar, ifac):
+def stats(gridc, gridx, gridy, ivar, pvar, divc):
     """ Velocity correction in x and y direction.
         
     Arguments
@@ -20,22 +20,29 @@ def corrector(gridc, gridx, gridy, ivar, pvar, ifac):
     pvar: string
         Name of the grid variable of the pressure solution
 
-    ifac: float
-        Time-step
+    divc: string
+        Name of the grid variable for divergence
+
+    Returns
+    -------
+
+    ins_stats : float
+	      Array for stats
     
     """
     
     u = gridx.get_values(ivar)
     v = gridy.get_values(ivar)
     
-    p = gridc.get_values(pvar)
+    p   = gridc.get_values(pvar)
+    div = gridc.get_values(divc)
      
-    dx,dy = gridc.dx, gridc.dy
-    
-    u[1:-1,1:-1] = u[1:-1,1:-1] - ifac*(p[2:-1,1:-1]-p[1:-2,1:-1])/dx
-    v[1:-1,1:-1] = v[1:-1,1:-1] - ifac*(p[1:-1,2:-1]-p[1:-1,1:-2])/dy
-    
-    gridx.fill_guard_cells(ivar)
-    gridy.fill_guard_cells(ivar)
+    max_u, min_u     = numpy.amax(u), numpy.amin(u)
+    max_v, min_v     = numpy.amax(v), numpy.amin(v)
+    max_p, min_p     = numpy.amax(p), numpy.amin(p)
+    max_div, min_div = numpy.amax(div), numpy.amin(div)
 
-    return
+    ins_stats = [max_u, min_u, max_v, min_v, max_p, min_p, max_div, min_div]
+
+    return ins_stats
+

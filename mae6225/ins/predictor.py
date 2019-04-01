@@ -1,29 +1,44 @@
 import numpy
-from .convective_u import *
-from .convective_v import *
-from .diffusion_u  import *
-from .diffusion_v  import *
+from .convective_facex import *
+from .convective_facey import *
+from .diffusion  import *
 
-def predictor(gridx, gridy, ivar, cvar, dvar, Re, dt):
+def predictor(gridx, gridy, ivar, hvar, Re, ifac):
+    """ Velocity prediction step in x and y direction.
+        
+    Arguments
+    ---------
+    gridx : grid object (x-direction)
+        Grid containing data in x-direction
 
+    gridy : grid object  (y-direction)
+        Grid containing data in y-direction
 
-    convective_u(gridx, gridy, ivar, cvar)
-    convective_v(gridx, gridy, ivar, cvar)
+    ivar  : string
+        Name of the grid variable of the velocity solution
 
-    diffusion_u(gridx, ivar, dvar, Re)
-    diffusion_v(gridy, ivar, dvar, Re)
+    hvar  : string
+        Name of the grid variable to store convective + diffusion terms
+
+    Re    : float
+	Reynolds number
+
+    ifac  : float
+        Time-step
+    
+    """
+
+    hx = gridx.get_values(hvar) 
+    hy = gridy.get_values(hvar)
+
+    hx[1:-1,1:-1] = convective_facex(gridx, gridy, ivar) + diffusion(gridx, ivar, 1/Re)
+    hy[1:-1,1:-1] = convective_facey(gridx, gridy, ivar) + diffusion(gridy, ivar, 1/Re)
 
     u  = gridx.get_values(ivar)
     v  = gridy.get_values(ivar)
     
-    convx = gridx.get_values(cvar) 
-    convy = gridy.get_values(cvar)
-
-    diffx = gridx.get_values(dvar)
-    diffy = gridy.get_values(dvar)
-
-    u[1:-1,1:-1] = u[1:-1,1:-1] + dt*(convx[1:-1,1:-1] + diffx[1:-1,1:-1])
-    v[1:-1,1:-1] = v[1:-1,1:-1] + dt*(convy[1:-1,1:-1] + diffy[1:-1,1:-1])
+    u[1:-1,1:-1] = u[1:-1,1:-1] + ifac*(hx[1:-1,1:-1])
+    v[1:-1,1:-1] = v[1:-1,1:-1] + ifac*(hy[1:-1,1:-1])
 
     gridx.fill_guard_cells(ivar)
     gridy.fill_guard_cells(ivar)

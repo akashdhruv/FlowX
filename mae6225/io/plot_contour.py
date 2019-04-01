@@ -16,11 +16,12 @@ def plot_contour(grid, var):
 
     """
     X, Y = numpy.meshgrid(grid.x, grid.y)
+
     pyplot.rc('font', family='serif', size=16)
     pyplot.figure()
     pyplot.xlabel('x')
     pyplot.ylabel('y')
-    pyplot.contourf(X, Y, grid.data[:, :, grid.get_variable_indices(var)])
+    pyplot.contourf(X, Y, grid.get_values(var).transpose())
     pyplot.colorbar(label=var)
     pyplot.axis('scaled', asjustable='box')
     pyplot.xlim(X.min(), X.max())

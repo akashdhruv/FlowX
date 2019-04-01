@@ -1,35 +1,41 @@
 import numpy
 
-def divergence(gridc, gridx, gridy, ivar, dvar):
-    """Solve the divergence 
+def divergence(gridc, gridx, gridy, ivar, dvar, ifac=1.):
+    """Divergence operator
     
     Arguments
     ---------
-    gridc : grid object
-        Grid containing data
-    gridx : 
-    
-    gridy :
-        
+    gridc : grid object (center)
+        Grid containing data in on cell centers
+
+    gridx : grid object (x-direction)
+        Grid containing data in x-direction
+
+    gridy : grid object (y-direction)
+        Grid containing data in y-direction
+       
     ivar : string
-        Name of the grid variable of the u and v data
+        Name of the face-centered grid variable for velocity
+
     dvar : string
-        Name of the grid variable of the divergence
+        Name of the cell-centered grid variable to store divergence
+
+    ifac : float (optional)
+	 Multiplying factor for time-step
     
     """
-    
-    u_ivar = gridx.get_variable_indices(ivar)
 
-    v_ivar = gridy.get_variable_indices(ivar)
+    u   = gridx.get_values(ivar)
+    v   = gridy.get_values(ivar)
+
+    div = gridc.get_values(dvar)
     
-    div_ivar = gridc.get_variable_indices(dvar) 
     dx, dy = gridc.dx, gridc.dy
     
-    Udata = gridx.data[:,:,u_ivar]
-    Vdata = gridy.data[:,:,v_ivar]
 
-    gridc.data[1:-1, 1:-1, div_ivar] = ((Udata[1:, 1:-1] - Udata[:-1, 1:-1])/dx 
-                                     +  (Vdata[1:-1, 1:] - Vdata[1:-1, :-1])/dy)
+    div[1:-1,1:-1] = ((u[1:, 1:-1] - u[:-1, 1:-1])/dx
+                     +(v[1:-1, 1:] - v[1:-1, :-1])/dy)/ifac
+
   
     gridc.fill_guard_cells(dvar)
 
