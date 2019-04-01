@@ -2,7 +2,7 @@
 
 import numpy
 
-def display_stats(t,ites,res,stats):
+def display_stats(t,stats):
     """display stats specified by user
 
     Arguments
@@ -10,11 +10,11 @@ def display_stats(t,ites,res,stats):
 
     """
 
-    print('-----Time = {}-------'.format(t))
-    print('Number of poisson iterations: {}'.format(ites))
-    print('Final poisson residual residual: {}'.format(res))
-    print('Max, Min, U: {} {}'.format(stats[0],stats[1]))
-    print('Max, Min, V: {} {}'.format(stats[2],stats[3]))
-    print('Max, Min, P: {} {}'.format(stats[4],stats[5]))
-    print('Max, Min, DIV: {} {}'.format(stats[6],stats[7]))
+    print('------------ Time = {} ---------------'.format(t))
+    print('Number of poisson iterations    : {}'.format(stats['ites']))
+    print('Final poisson residual residual : {}'.format(stats['res']))
+    print('Max, Min, U   : {}, {}'.format(stats['max_u'],stats['min_u']))
+    print('Max, Min, V   : {}, {}'.format(stats['max_v'],stats['min_v']))
+    print('Max, Min, P   : {}, {}'.format(stats['max_p'],stats['min_p']))
+    print('Max, Min, DIV : {}, {}'.format(stats['max_div'],stats['min_div']))
     print('\n')
