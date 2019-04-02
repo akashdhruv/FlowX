@@ -23,8 +23,7 @@ def stats(gridc, gridx, gridy, ivar, pvar, divc):
 
     Returns
     -------
-    ins_stats : float
-        Array for stats
+    ins_stats : dictionary for stats
 
     """
     u = gridx.get_values(ivar)
