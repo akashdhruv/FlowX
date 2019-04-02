@@ -23,7 +23,7 @@ def plot_contour(grid, var):
     pyplot.ylabel('y')
     pyplot.contourf(X, Y, grid.get_values(var).transpose())
     pyplot.colorbar(label=var)
-    pyplot.axis('scaled', asjustable='box')
+    pyplot.axis('scaled', adjustable='box')
     pyplot.xlim(X.min(), X.max())
     pyplot.ylim(Y.min(), Y.max())
     pyplot.show()

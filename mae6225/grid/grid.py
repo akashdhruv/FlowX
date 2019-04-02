@@ -405,11 +405,11 @@ class GridFaceX(GridBase):
         if loc == 'left':
             self.data[0, :, idx] = bc_val
         elif loc == 'right':
-            self.data[-1,:, idx] = bc_val
+            self.data[-1, :, idx] = bc_val
         elif loc == 'bottom':
             self.data[:, 0, idx] = 2.0 * bc_val - self.data[:, 1, idx]
         elif loc == 'top':
-            self.data[:,-1, idx] = 2.0 * bc_val - self.data[:, -2, idx]
+            self.data[:, -1, idx] = 2.0 * bc_val - self.data[:, -2, idx]
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))
 
@@ -455,7 +455,7 @@ class GridFaceY(GridBase):
         if loc == 'left':
             self.data[0, :, idx] = 2.0 * bc_val - self.data[1, :, idx]
         elif loc == 'right':
-            self.data[-1,:, idx] = 2.0 * bc_val - self.data[-2, :, idx]
+            self.data[-1, :, idx] = 2.0 * bc_val - self.data[-2, :, idx]
         elif loc == 'bottom':
             self.data[:, 0, idx] = bc_val
         elif loc == 'top':
