@@ -6,6 +6,8 @@ import numpy
 class GridBase(object):
     """Base class for the Grid."""
 
+    type_ = 'base'
+
     def __init__(self, var_names, nx, ny, xmin, xmax, ymin, ymax,
                  user_bc_type=None, user_bc_val=None):
         """Initialize the Grid object and allocate the data.
@@ -315,6 +317,8 @@ class GridBase(object):
 class GridCellCentered(GridBase):
     """Class for a cell-centered grid."""
 
+    type_ = 'cell-centered'
+
     def __init__(self, *args, **kwargs):
         """Call the constructor of the base class."""
         super(GridCellCentered, self).__init__(*args, **kwargs)
@@ -367,6 +371,8 @@ class GridCellCentered(GridBase):
 class GridFaceX(GridBase):
     """Class for a x-face centered grid."""
 
+    type_ = 'x-face'
+
     def __init__(self, *args, **kwargs):
         """Call the constructor of the base class."""
         super(GridFaceX, self).__init__(*args, **kwargs)
@@ -416,6 +422,8 @@ class GridFaceX(GridBase):
 
 class GridFaceY(GridBase):
     """Class for a y-face centered grid."""
+
+    type_ = 'y-face'
 
     def __init__(self, *args, **kwargs):
         """Call the constructor of the base class."""
