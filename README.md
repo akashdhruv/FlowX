@@ -1,8 +1,7 @@
 # Incompressible Navier-Stokes Solver
 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/Balaras-Group/MAE-6225/raw/master/LICENSE)
-
-[![Travis](https://img.shields.io/travis/Balaras-Group/MAE-6225/master.svg?style=flat-square&logo=travis)](https://travis-ci.org/Balaras-Group/MAE-6225)
+[![Travis](https://img.shields.io/travis/com/Balaras-Group/MAE-6225/develop.svg?style=flat-square&logo=travis)](https://travis-ci.com/Balaras-Group/MAE-6225)
 
 `mae6225` is a Python package that contains all necessary objects to build a solver for the two-dimensional incompressible Navier-Stokes equations.
 
