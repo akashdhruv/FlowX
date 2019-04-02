@@ -1,4 +1,4 @@
-"""Tests for `mae6225/poisson/SOR.py`."""
+"""Tests for `mae6225/poisson/sor.py`."""
 
 import numpy
 import random
@@ -7,7 +7,7 @@ import unittest
 import mae6225
 
 
-class TestPoissonJacobi(unittest.TestCase):
+class TestPoissonSOR(unittest.TestCase):
     """Unit-tests for the Poisson SOR solver."""
 
     def setUp(self):
@@ -47,18 +47,18 @@ class TestPoissonJacobi(unittest.TestCase):
     def test_number_of_iterations(self):
         """Test the solver reaches the maximum number of iterations."""
         maxiter, tol = 0, 1e-12
-        ites, _ = mae6225.poisson.solve_SOR(self.grid, 'ivar', 'rvar',
+        ites, _ = mae6225.poisson.solve_sor(self.grid, 'ivar', 'rvar',
                                             maxiter=maxiter, tol=tol)
         self.assertEqual(ites, maxiter)
         maxiter, tol = 100, 1e-12
-        ites, _ = mae6225.poisson.solve_SOR(self.grid, 'ivar', 'rvar',
+        ites, _ = mae6225.poisson.solve_sor(self.grid, 'ivar', 'rvar',
                                             maxiter=maxiter, tol=tol)
         self.assertEqual(ites, maxiter)
 
     def test_residual(self):
         """Test the solver convergence."""
         maxiter, tol = 3000, 1e-6
-        ites, res = mae6225.poisson.solve_SOR(self.grid, 'ivar', 'rvar',
+        ites, res = mae6225.poisson.solve_sor(self.grid, 'ivar', 'rvar',
                                               maxiter=maxiter, tol=tol)
         self.assertTrue(res <= tol)
         self.assertTrue(ites < maxiter)
@@ -66,7 +66,7 @@ class TestPoissonJacobi(unittest.TestCase):
     def test_error(self):
         """Test the solver results as we decrease the exit tolerance."""
         maxiter, tol = 3000, 1e-3
-        ites1, res1 = mae6225.poisson.solve_SOR(self.grid, 'ivar', 'rvar',
+        ites1, res1 = mae6225.poisson.solve_sor(self.grid, 'ivar', 'rvar',
                                                 maxiter=maxiter, tol=tol)
         self.grid.get_error('eror', 'ivar', 'asol')
         error1 = numpy.max(numpy.abs(self.grid.get_values('eror')))
@@ -74,7 +74,7 @@ class TestPoissonJacobi(unittest.TestCase):
         self.grid.set_values('ivar', numpy.zeros((self.grid.nx + 2,
                                                   self.grid.ny + 2)))
         maxiter, tol = 3000, 1e-6
-        ites2, res2 = mae6225.poisson.solve_SOR(self.grid, 'ivar', 'rvar',
+        ites2, res2 = mae6225.poisson.solve_sor(self.grid, 'ivar', 'rvar',
                                                 maxiter=maxiter, tol=tol)
         self.grid.get_error('eror', 'ivar', 'asol')
         error2 = numpy.max(numpy.abs(self.grid.get_values('eror')))
