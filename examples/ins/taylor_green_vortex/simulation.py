@@ -95,20 +95,19 @@ def get_analytical(gridc, gridx, gridy, asol, ifac):
     return
 
 
-def update_bc_val(t, gridx, gridy, ivar):
+def update_bc_val(gridx, gridy, ivar, t):
     """Update Dirichlet boundary values for the velocity components.
 
     Parameters
     ----------
-    t : float
-        Time.
     gridx : mae6225.GridFaceX object
         The grid for the x-component of the velocity.
     gridy : mae6225.GridFaceY object
         The grid for the y-component of the velocity.
     ivar : string
         Name of the velocity variable in the Grid structures.
-
+    t : float
+        Time.
     """
     coeff = numpy.exp(-2 * t)
     bc_val_u = [-coeff * numpy.cos(gridx.xmin) * numpy.sin(gridx.y),
