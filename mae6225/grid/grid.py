@@ -88,7 +88,6 @@ class GridBase(object):
         self.bc_type = dict(zip(var_names, num * [default_bc_type]))
         default_bc_val = 4 * [0.0]
         self.bc_val = dict(zip(var_names, num * [default_bc_val]))
-        self.bc_data_struct = dict(zip(var_names, num * ['center']))
 
     def set_user_bc(self, user_bc_type, user_bc_val):
         """Overwrite default boundary conditions with user-provided ones.
@@ -104,6 +103,17 @@ class GridBase(object):
         # Overwrite default boundary types
         self.bc_type = {**self.bc_type, **user_bc_type}
         # Overwrite default boundary values
+        self.bc_val = {**self.bc_val, **user_bc_val}
+
+    def update_bc_val(self, user_bc_val):
+        """Overwrite boundary condition values with user-provided ones.
+
+        Parameters
+        ----------
+        user_bc_val : dictionary of (string, list) items
+            User-defined boundary values.
+
+        """
         self.bc_val = {**self.bc_val, **user_bc_val}
 
     def get_variable_indices(self, *var_names):
@@ -252,20 +262,18 @@ class GridBase(object):
         deltas = [self.dx, self.dx, self.dy, self.dy]
         # Fill guard cells for each variable
         for name in var_names:
-            # Only fill guard cells for cell-centered variables
-            if self.bc_data_struct[name] == 'center':
-                bc_types = self.bc_type[name]
-                bc_vals = self.bc_val[name]
-                # Fill guard cells for each boundary
-                for loc, delta, bc_type, bc_val in zip(locs, deltas,
-                                                       bc_types, bc_vals):
-                    if bc_type == 'neumann':
-                        self.fill_guard_cells_neumann(name, loc, bc_val, delta)
-                    elif bc_type == 'dirichlet':
-                        self.fill_guard_cells_dirichlet(name, loc, bc_val)
-                    else:
-                        raise ValueError('Boundary type "{}" not implemented'
-                                         .format(bc_type))
+            bc_types = self.bc_type[name]
+            bc_vals = self.bc_val[name]
+            # Fill guard cells for each boundary
+            for loc, delta, bc_type, bc_val in zip(locs, deltas,
+                                                   bc_types, bc_vals):
+                if bc_type == 'neumann':
+                    self.fill_guard_cells_neumann(name, loc, bc_val, delta)
+                elif bc_type == 'dirichlet':
+                    self.fill_guard_cells_dirichlet(name, loc, bc_val)
+                else:
+                    raise ValueError('Boundary type "{}" not implemented'
+                                     .format(bc_type))
 
     def fill_guard_cells_dirichlet(self, var_name, loc, bc_val):
         """Fill guard cells using a Dirichlet condition.
