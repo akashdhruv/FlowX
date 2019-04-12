@@ -7,7 +7,7 @@ from .convective_facey import *
 from .diffusion import *
 
 
-def predictor_rk3(gridx, gridy, ivar, hvar, Re, ifac, hconst):
+def predictor_RK3(gridx, gridy, ivar, hvar, Re, ifac, hconst):
     """Velocity prediction step in x and y direction.
 
     Arguments
