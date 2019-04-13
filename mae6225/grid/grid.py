@@ -52,6 +52,7 @@ class GridBase(object):
         self.set_default_bc()
         if user_bc_type is not None and user_bc_val is not None:
             self.set_user_bc(user_bc_type, user_bc_val)
+        self.fill_guard_cells(var_names)
 
     def __repr__(self):
         """Return a representation of the object."""
@@ -309,15 +310,15 @@ class GridBase(object):
             Grid-cell width.
 
         """
-        idx = self.vars[var_name]
+        var = self.get_values(var_name)
         if loc == 'left':
-            self.data[:, 0, idx] = bc_val * delta + self.data[:, 1, idx]
+            var[0, :] = bc_val * delta + var[1, :]
         elif loc == 'right':
-            self.data[:, -1, idx] = bc_val * delta + self.data[:, -2, idx]
+            var[-1, :] = bc_val * delta + var[-2, :]
         elif loc == 'bottom':
-            self.data[0, :, idx] = bc_val * delta + self.data[1, :, idx]
+            var[:, 0] = bc_val * delta + var[:, 1]
         elif loc == 'top':
-            self.data[-1, :, idx] = bc_val * delta + self.data[-2, :, idx]
+            var[:, -1] = bc_val * delta + var[:, -2]
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))
 
@@ -363,15 +364,15 @@ class GridCellCentered(GridBase):
             Neumann boundary value.
 
         """
-        idx = self.vars[var_name]
+        var = self.get_values(var_name)
         if loc == 'left':
-            self.data[:, 0, idx] = 2.0 * bc_val - self.data[:, 1, idx]
+            var[0, :] = 2 * bc_val - var[1, :]
         elif loc == 'right':
-            self.data[:, -1, idx] = 2.0 * bc_val - self.data[:, -2, idx]
+            var[-1, :] = 2 * bc_val - var[-2, :]
         elif loc == 'bottom':
-            self.data[0, :, idx] = 2.0 * bc_val - self.data[1, :, idx]
+            var[:, 0] = 2 * bc_val - var[:, 1]
         elif loc == 'top':
-            self.data[-1, :, idx] = 2.0 * bc_val - self.data[-2, :, idx]
+            var[:, -1] = 2 * bc_val - var[:, -2]
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))
 
@@ -415,15 +416,15 @@ class GridFaceX(GridBase):
             Neumann boundary value.
 
         """
-        idx = self.vars[var_name]
+        var = self.get_values(var_name)
         if loc == 'left':
-            self.data[0, :, idx] = bc_val
+            var[0, :] = bc_val
         elif loc == 'right':
-            self.data[-1, :, idx] = bc_val
+            var[-1, :] = bc_val
         elif loc == 'bottom':
-            self.data[:, 0, idx] = 2.0 * bc_val - self.data[:, 1, idx]
+            var[:, 0] = 2 * bc_val - var[:, 1]
         elif loc == 'top':
-            self.data[:, -1, idx] = 2.0 * bc_val - self.data[:, -2, idx]
+            var[:, -1] = 2 * bc_val - var[:, -2]
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))
 
@@ -467,15 +468,15 @@ class GridFaceY(GridBase):
             Neumann boundary value.
 
         """
-        idx = self.vars[var_name]
+        var = self.get_values(var_name)
         if loc == 'left':
-            self.data[0, :, idx] = 2.0 * bc_val - self.data[1, :, idx]
+            var[0, :] = 2 * bc_val - var[1, :]
         elif loc == 'right':
-            self.data[-1, :, idx] = 2.0 * bc_val - self.data[-2, :, idx]
+            var[-1, :] = 2 * bc_val - var[-2, :]
         elif loc == 'bottom':
-            self.data[:, 0, idx] = bc_val
+            var[:, 0] = bc_val
         elif loc == 'top':
-            self.data[:, -1, idx] = bc_val
+            var[:, -1] = bc_val
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))
 
