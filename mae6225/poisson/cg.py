@@ -44,14 +44,14 @@ def solve_cg(grid, ivar, rvar, maxiter=1000, tol=1e-9, verbose=False):
         x[:, 0] = bc_val * dy + x[:, 1]
         x[:, -1] = bc_val * dy + x[:, -2]
 
-    p = grid.get_values(ivar)
-    b = grid.get_values(rvar)
-    dx, dy = grid.dx, grid.dy
+    p = grid.get_values(ivar)  # initial guess
+    b = grid.get_values(rvar)  # RHS of the system
+    dx, dy = grid.dx, grid.dy  # cell widths
 
-    r = b[1:-1, 1:-1] - A(p)
-    rk_norm = numpy.sum(r * r)
-    d = numpy.zeros_like(p)
-    d[1:-1, 1:-1] = r
+    r = b[1:-1, 1:-1] - A(p)  # initial residuals
+    rk_norm = numpy.sum(r * r)  # inner product
+    d = numpy.zeros_like(p)  # search direction
+    d[1:-1, 1:-1] = r  # set direction to initial residual
 
     # Check for Neumann boundary conditions.
     bc_type, bc_val = grid.bc_type[ivar][0], grid.bc_val[ivar][0]
@@ -59,18 +59,18 @@ def solve_cg(grid, ivar, rvar, maxiter=1000, tol=1e-9, verbose=False):
         # Apply Neumann boundary conditions to search direction.
         fill_guard_cells_neumann(d, bc_val, dx, dy)
 
-    ites = 0
-    res = tol + 1.0
+    ites = 0  # iteration index
+    res = tol + 1.0  # initial residual
     while ites < maxiter and res > tol:
         Ad = A(d)
-        alpha = rk_norm / numpy.sum(d[1:-1, 1:-1] * Ad)
-        p[1:-1, 1:-1] += alpha * d[1:-1, 1:-1]
+        alpha = rk_norm / numpy.sum(d[1:-1, 1:-1] * Ad)  # step size
+        p[1:-1, 1:-1] += alpha * d[1:-1, 1:-1]  # update solution
         grid.fill_guard_cells(ivar)
-        r -= alpha * Ad
-        r_norm = numpy.sum(r * r)
+        r -= alpha * Ad  # update residuals
+        r_norm = numpy.sum(r * r)  # inner product
         beta = r_norm / rk_norm
         rk_norm = r_norm
-        d[1:-1, 1:-1] = r + beta * d[1:-1, 1:-1]
+        d[1:-1, 1:-1] = r + beta * d[1:-1, 1:-1]  # update search direction
         if bc_type == 'neumann':
             fill_guard_cells_neumann(d, bc_val, dx, dy)
         res = r_norm
