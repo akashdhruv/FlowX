@@ -1,4 +1,4 @@
-"""Module with iterative solvers for the Poisson system."""
+"""Routine to solve the Poisson system with Jacobi."""
 
 import numpy
 
