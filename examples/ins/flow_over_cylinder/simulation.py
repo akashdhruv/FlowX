@@ -1,30 +1,35 @@
-"""User defined module for simulation."""
-  
+"""User-defined module for simulation."""
+
 import numpy
 
+
 def set_initial_velocity(gridx, gridy, ivar):
-    """Set initial condition for velocity.
+    """Set the initial velocity field.
+
+    The x- and y-components of the velocity are set to 1.0 and 0.0,
+    respectively.
 
     Arguments
-    ---------   
+    ---------
     gridx : mae6225.Grid object
-        Grid containing x-face data
+        Grid containing x-face data.
     gridy : mae6225.Grid object
-        Grid containing y-face data
+        Grid containing y-face data.
     ivar : string
         Name of the velocity variable on the grid.
-    """
 
+    """
     u = gridx.get_values(ivar)
     v = gridy.get_values(ivar)
 
-    u[:,:]  =  1.0
-    v[:,:]  =  0.0
+    u[:, :] = 1.0
+    v[:, :] = 0.0
 
     return
 
-def get_qinqout(grid, ivar, bctype, flag):
-    """Get Qin and Qout.
+
+def get_qin(grid, ivar, bc_type):
+    """Compute and return the mass getting in the domain.
 
     Arguments
     ---------
@@ -32,61 +37,72 @@ def get_qinqout(grid, ivar, bctype, flag):
         Grid containing data.
     ivar : string
         Name of the velocity variable on the grid.
-    bctype : bc_type at different boundaries
-    flag : logical
-        Qin/Qout flag
+    bctype : dictionary
+        Type of boundary conditions for the variable `ivar`.
 
     Returns
-    --------
-    Qaux : float
-        Qinout value
+    -------
+    Qin : float
+        Mass getting in the domain.
+
     """
-
     vel = grid.get_values(ivar)
+    dx, dy = grid.dx, grid.dy
 
-    dx,dy = grid.dx, grid.dy
+    Qin = 0.0
 
-    Qaux = 0
-   
-    if(flag == True):
-  
-        if(grid.type_ == 'x-face'):
+    if grid.type_ is 'x-face':
+        if bc_type[0] is not 'outflow':
+            Qin += numpy.sum(vel[0, 1:-1]) * dy
+        if bc_type[1] is not 'outflow':
+            Qin -= numpy.sum(vel[-1, 1:-1]) * dy
+    elif grid.type_ is 'y-face':
+        if bc_type[2] is not 'outflow':
+            Qin += numpy.sum(vel[1:-1, 0]) * dx
+        if bc_type[3] is not 'outflow':
+            Qin -= numpy.sum(vel[1:-1, -1]) * dx
 
-            if(bctype[ivar][0] != 'outflow'):
-                Qaux = Qaux + numpy.sum(vel[0,1:-1])*dy
+    return Qin
 
-            if(bctype[ivar][1] != 'outflow'):
-                Qaux = Qaux - numpy.sum(vel[-1,1:-1])*dy
-    
-        elif(grid.type_ == 'y-face'):
 
-            if(bctype[ivar][2] != 'outflow'):
-                Qaux = Qaux + numpy.sum(vel[1:-1,0])*dx
+def get_qout(grid, ivar, bc_type):
+    """Compute and return the mass getting out the domain.
 
-            if(bctype[ivar][3] != 'outflow'):
-                Qaux = Qaux - numpy.sum(vel[1:-1,-1])*dx
+    Arguments
+    ---------
+    grid : mae6225.Grid object
+        Grid containing data.
+    ivar : string
+        Name of the velocity variable on the grid.
+    bctype : dictionary
+        Type of boundary conditions for the variable `ivar`.
 
-    elif(flag == False):
-  
-        if(grid.type_ == 'x-face'):
+    Returns
+    -------
+    Qout : float
+        Mass getting out the domain.
 
-            if(bctype[ivar][0] == 'outflow'):
-                Qaux = Qaux - numpy.sum(vel[0,1:-1])*dy
+    """
+    vel = grid.get_values(ivar)
+    dx, dy = grid.dx, grid.dy
 
-            if(bctype[ivar][1] == 'outflow'):
-                Qaux = Qaux + numpy.sum(vel[-1,1:-1])*dy
-    
-        elif(grid.type_ == 'y-face'):
+    Qout = 0.0
 
-            if(bctype[ivar][2] == 'outflow'):
-                Qaux = Qaux - numpy.sum(vel[1:-1,0])*dx
+    if grid.type_ is 'x-face':
+        if bc_type[0] is 'outflow':
+            Qout -= numpy.sum(vel[0, 1:-1]) * dy
+        if bc_type[1] is 'outflow':
+            Qout += numpy.sum(vel[-1, 1:-1]) * dy
+    elif grid.type_ is 'y-face':
+        if bc_type[2] is 'outflow':
+            Qout -= numpy.sum(vel[1:-1, 0]) * dx
+        if bc_type[3] is not 'outflow':
+            Qout += numpy.sum(vel[1:-1, -1]) * dx
 
-            if(bctype[ivar][3] == 'outflow'):
-                Qaux = Qaux + numpy.sum(vel[1:-1,-1])*dx
- 
-    return Qaux
+    return Qout
 
-def rescale_velocity(grid, ivar, bctype, Qin, Qout):
+
+def rescale_velocity(grid, ivar, bc_type, Qin, Qout):
     """Rescale velocity.
 
     Arguments
@@ -95,40 +111,37 @@ def rescale_velocity(grid, ivar, bctype, Qin, Qout):
         Grid containing data.
     ivar : string
         Name of the velocity variable on the grid.
-    bctype : bc_type at different boundaries
+    bctype : dictionary
+        Type of boundary conditions for the variable `ivar`.
     Qin : float
-        Mass in
+        Mass in.
     Qout : float
-        Mass out
-    """
+        Mass out.
 
+    """
     vel = grid.get_values(ivar)
 
     Qinout = 1.0
-
-    if(Qout > 1e-13):
+    if Qout > 0.0:
         Qinout = Qin/Qout
 
-    if(grid.type_ == 'x-face'):
+    if grid.type_ is 'x-face':
+        if bc_type[0] is 'outflow':
+            vel[0, 1:-1] *= Qinout
+        if bc_type[1] is 'outflow':
+            vel[-1, 1:-1] *= Qinout
 
-        if(bctype[ivar][0] == 'outflow'):
-            vel[0,1:-1] = vel[0,1:-1]*Qinout
+    if grid.type_ is 'y-face':
+        if bc_type[2] is 'outflow':
+            vel[1:-1, 0] *= Qinout
+        if bc_type[3] is 'outflow':
+            vel[1:-1, -1] *= Qinout
 
-        if(bctype[ivar][1] == 'outflow'):
-            vel[-1,1:-1] = vel[-1,1:-1]*Qinout
-
-    if(grid.type_ == 'y-face'):
-    
-        if(bctype[ivar][2] == 'outflow'):
-            vel[1:-1,0] = vel[1:-1,0]*Qinout
-
-        if(bctype[ivar][3] == 'outflow'):
-            vel[1:-1,-1] = vel[1:-1,-1]*Qinout
-  
     return
 
+
 def get_convvel(grid, ivar):
-    """get convective outflow velocity.
+    """Get convective outflow velocity.
 
     Arguments
     ---------
@@ -138,49 +151,53 @@ def get_convvel(grid, ivar):
         Name of the velocity variable on the grid.
 
     Returns
-    --------
+    -------
     convvel : float
-          Variable containing outflow velocity
-    """
+        Variable containing outflow velocity.
 
+    """
     vel = grid.get_values(ivar)
 
-    convvel = numpy.mean(vel[-1,:])
+    convvel = numpy.mean(vel[-1, :])
 
     return convvel
 
-def update_outflow_bc(grid, ivar, convvel=0., dt=1., flg=False):
-    """Update Dirichlet boundary values for the velocity components.
+
+def update_outflow_bc(grid, ivar, dt, convvel=None):
+    """Update the value of the velocity at the right boundary.
+
+    The function uses a linear convective equation in the x-direction
+    where the convective velocity is defined as the mean x-velocity
+    along the right boundary.
 
     Parameters
     ----------
     grid : mae6225.GridFaceX object
         The grid for the velocity.
     ivar : string
-        Name of the velocity variable in the Grid structures.
-    convvel : float
-        Convective velocity   
+        Name of the variable in the Grid structure.
     dt : float
-       Time step
-    flg : logical
-      Flag for pred-corr
+       Time-step size.
+    convvel : float (optional)
+        Convective velocity;
+        default: None (will compute the convective velocity).
+
     """
-
     vel = grid.get_values(ivar)
+    dx = grid.dx
 
-    dx,dy = grid.dx, grid.dy
+    if convvel is None:
+        convvel = get_convvel(grid, ivar)
 
-    if(flg):
-        bc_val = vel[-1,:] - convvel*(dt/dx)*(vel[-1,:]-vel[-2,:]) 
-    else:
-        bc_val = vel[-1,:]
-
-    grid.update_bc_val({ivar: [1.0,bc_val,0.0,0.0]})
+    bc_val = grid.bc_val[ivar]
+    bc_val[1] = vel[-1, :] - convvel * dt * (vel[-1, :] - vel[-2, :]) / dx
+    grid.update_bc_val({ivar: bc_val})
 
     return
 
-def ibm_tag_body(grid,ivar,ibm_x,ibm_y,ibm_r):
-    """Tag immersed boundary
+
+def ibm_tag_body(grid, ivar, ibm_x, ibm_y, ibm_r):
+    """Tag immersed boundary.
 
     Arguments
     ---------
@@ -188,12 +205,13 @@ def ibm_tag_body(grid,ivar,ibm_x,ibm_y,ibm_r):
         Grid containing data.
     ivar : string
         Name of the ibm tagging variable on the grid.
-    """
 
+    """
     return
 
-def ibm_apply_forcing(grid,ivar,ibmf,forc,ifac):
-    """Apply immersed boundary forcing
+
+def ibm_apply_forcing(grid, ivar, ibmf, forc, ifac):
+    """Apply immersed boundary forcing.
 
     Arguments
     ---------
@@ -202,8 +220,9 @@ def ibm_apply_forcing(grid,ivar,ibmf,forc,ifac):
     ivar : string
         Name of the velocity variable on the grid.
     ibmf : string
-        Name of the tagging variable
+        Name of the tagging variable.
     forc : string
-        Name of the forcing variable
+        Name of the forcing variable.
+
     """
-    returnn
+    return

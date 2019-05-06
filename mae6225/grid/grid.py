@@ -273,7 +273,7 @@ class GridBase(object):
                 elif bc_type == 'dirichlet':
                     self.fill_guard_cells_dirichlet(name, loc, bc_val)
                 elif bc_type == 'outflow':
-                    self.fill_guard_cells_outflow(name, loc, bc_val)
+                    self.fill_guard_cells_dirichlet(name, loc, bc_val)
                 else:
                     raise ValueError('Boundary type "{}" not implemented'
                                      .format(bc_type))
@@ -430,25 +430,6 @@ class GridFaceX(GridBase):
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))
 
-    def fill_guard_cells_outflow(self, var_name, loc, bc_val):
-        """Fill guard cells using a outflow condition.
-
-        Parameters
-        ----------
-        var_name : string
-            Name of the variable to update.
-        loc : string
-            Boundary location;
-            choices: ['left', 'right', 'bottom', 'top'].
-        bc_val : float
-            Neumann boundary value.
-
-        """
-        var = self.get_values(var_name)
-        if loc == 'right': 
-            var[-1, :] = bc_val
-        else:
-            raise ValueError('Unknown boundary location "{}"'.format(loc))
 
 class GridFaceY(GridBase):
     """Class for a y-face centered grid."""
