@@ -60,7 +60,7 @@ def solve_cg(grid, ivar, rvar, maxiter=1000, tol=1e-9, verbose=False):
         fill_guard_cells_neumann(d, bc_val, dx, dy)
 
     ites = 0  # iteration index
-    res = tol + 1.0  # initial residual
+    res = rk_norm  # initial residual
     while ites < maxiter and res > tol:
         Ad = A(d)
         alpha = rk_norm / numpy.sum(d[1:-1, 1:-1] * Ad)  # step size
