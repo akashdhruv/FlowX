@@ -99,7 +99,7 @@ def get_qout(grid, ivar, bc_type):
     elif grid.type_ is 'y-face':
         if bc_type[2] is 'outflow':
             Qout -= numpy.sum(vel[1:-1, 0]) * dx
-        if bc_type[3] is not 'outflow':
+        if bc_type[3] is 'outflow':
             Qout += numpy.sum(vel[1:-1, -1]) * dx
 
     return Qout
