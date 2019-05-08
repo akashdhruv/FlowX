@@ -65,7 +65,6 @@ def solve_cg(grid, ivar, rvar, maxiter=1000, tol=1e-9, verbose=False):
         Ad = A(d)
         alpha = rk_norm / numpy.sum(d[1:-1, 1:-1] * Ad)  # step size
         p[1:-1, 1:-1] += alpha * d[1:-1, 1:-1]  # update solution
-        grid.fill_guard_cells(ivar)
         r -= alpha * Ad  # update residuals
         r_norm = numpy.sum(r * r)  # inner product
         beta = r_norm / rk_norm
@@ -75,6 +74,8 @@ def solve_cg(grid, ivar, rvar, maxiter=1000, tol=1e-9, verbose=False):
             fill_guard_cells_neumann(d, bc_val, dx, dy)
         res = r_norm
         ites += 1
+
+    grid.fill_guard_cells(ivar)
 
     if verbose:
         print('CG method:')
