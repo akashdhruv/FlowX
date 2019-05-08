@@ -209,11 +209,20 @@ def ibm_tag_body(grid, ivar, ibm_x, ibm_y, ibm_r):
     ivar : string
         Name of the ibm tagging variable on the grid.
 
+    ibm_x : float
+        x location of immersed boundary
+ 
+    ibm_y : float
+        y location of immersed boundary
+
+    ibm_r : float
+        radius of immersed boundary
+
     """
 
-    phi = grid.get_values(ivar)
+    phi = grid.get_values(ivar) # tagging variable
 
-    X,Y = numpy.meshgrid(grid.x, grid.y)
+    X,Y = numpy.meshgrid(grid.x, grid.y) # x,y mesh points
 
     X = X.transpose()
     Y = Y.transpose()
@@ -221,13 +230,20 @@ def ibm_tag_body(grid, ivar, ibm_x, ibm_y, ibm_r):
     return
 
 
-def ibm_apply_forcing(gridc, gridx, gridy, ibmf, ivar, forc, ifac):
+def ibm_apply_forcing(gridc, gridx, gridy, ibmf, ivar, forc):
     """Apply immersed boundary forcing.
 
     Arguments
     ---------
-    grid : mae6225.Grid object
+    gridc : mae6225.Grid object
         Grid containing data.
+
+    gridx : mae6225.Grid object
+        Grid containing x-face data
+
+    gridy : mae6225.Grid object
+        Grid containing y-face data
+
     ivar : string
         Name of the velocity variable on the grid.
     ibmf : string
@@ -237,16 +253,18 @@ def ibm_apply_forcing(gridc, gridx, gridy, ibmf, ivar, forc, ifac):
 
     """
  
-    phi = gridc.get_values(ibmf)
+    phi_c = gridc.get_values(ibmf) # IBM tag cell-centered
+    phi_u = gridx.get_values(ibmf) # IBM tag x face
+    phi_v = gridx.get_values(ibmf) # IBM tag y face
 
-    u = gridx.get_values(ivar)
-    v = gridy.get_values(ivar)
+    u = gridx.get_values(ivar) # u velocity
+    v = gridy.get_values(ivar) # v velocity
 
-    fu = gridx.get_values(forc)
-    fv = gridy.get_values(forc)
+    fu = gridx.get_values(forc) # u forcing
+    fv = gridy.get_values(forc) # v forcing
 
-    nx = numpy.shape(phi)[0]
-    ny = numpy.shape(phi)[1]
+    nxc = numpy.shape(phi_c)[0] # number of cell centered points x
+    nyc = numpy.shape(phi_c)[1] # number of cell centered points y
 
     dx,dy = gridc.dx, gridc.dy
 
