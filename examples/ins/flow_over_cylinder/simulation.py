@@ -3,7 +3,7 @@
 import numpy
 
 
-def set_initial_velocity(gridx, gridy, ivar):
+def set_initial_velocity(gridc, gridx, gridy, ivar, pres):
     """Set the initial velocity field.
 
     The x- and y-components of the velocity are set to 1.0 and 0.0,
@@ -19,11 +19,14 @@ def set_initial_velocity(gridx, gridy, ivar):
         Name of the velocity variable on the grid.
 
     """
+
     u = gridx.get_values(ivar)
     v = gridy.get_values(ivar)
+    p = gridc.get_values(pres)
 
     u[:, :] = 1.0
     v[:, :] = 0.0
+    p[:, :] = 0.0
 
     return
 
@@ -207,10 +210,18 @@ def ibm_tag_body(grid, ivar, ibm_x, ibm_y, ibm_r):
         Name of the ibm tagging variable on the grid.
 
     """
+
+    phi = grid.get_values(ivar)
+
+    X,Y = numpy.meshgrid(grid.x, grid.y)
+
+    X = X.transpose()
+    Y = Y.transpose()
+
     return
 
 
-def ibm_apply_forcing(grid, ivar, ibmf, forc, ifac):
+def ibm_apply_forcing(gridc, gridx, gridy, ibmf, ivar, forc, ifac):
     """Apply immersed boundary forcing.
 
     Arguments
@@ -225,4 +236,21 @@ def ibm_apply_forcing(grid, ivar, ibmf, forc, ifac):
         Name of the forcing variable.
 
     """
+ 
+    phi = gridc.get_values(ibmf)
+
+    u = gridx.get_values(ivar)
+    v = gridy.get_values(ivar)
+
+    fu = gridx.get_values(forc)
+    fv = gridy.get_values(forc)
+
+    nx = numpy.shape(phi)[0]
+    ny = numpy.shape(phi)[1]
+
+    dx,dy = gridc.dx, gridc.dy
+
+    fu[:,:] = 0.0
+    fv[:,:] = 0.0
+
     return
