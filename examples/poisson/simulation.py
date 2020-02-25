@@ -8,7 +8,7 @@ def get_analytical(grid, asol, user_bc):
 
     Arguments
     ---------
-    grid : mae6225.Grid object
+    grid : flowx.Grid object
         Grid containing data.
     asol : string
         Name of the variable on the grid.
@@ -29,7 +29,7 @@ def get_rhs(grid, rvar, user_bc):
 
     Arguments
     ---------
-    grid : mae6225.Grid object
+    grid : flowx.Grid object
         Grid containing data.
     rvar : string
         Name of the variable on the grid.

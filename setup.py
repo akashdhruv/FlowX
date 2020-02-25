@@ -8,7 +8,7 @@ except ImportError:
 
 
 # Get version and release info.
-version_file = os.path.join('mae6225', 'version.py')
+version_file = os.path.join('flowx', 'version.py')
 with open(version_file) as infile:
     exec(infile.read())
 

@@ -8,13 +8,13 @@ def get_initial(gridc, gridx, gridy, ivar, pvar):
 
     Arguments
     ---------
-    gridc : mae6225.Grid object
+    gridc : flowx.Grid object
         Grid containing cell-center data.
     
-    gridx : mae6225.Grid object
+    gridx : flowx.Grid object
         Grid containing x-face data
 
-    girdy : mae6225.Grid object
+    girdy : flowx.Grid object
         Grid containing y-face data
 
     ivar : string
@@ -54,13 +54,13 @@ def get_analytical(gridc, gridx, gridy, asol, ifac):
 
     Arguments
     ---------
-    gridc : mae6225.Grid object
+    gridc : flowx.Grid object
         Grid containing cell-center data.
     
-    gridx : mae6225.Grid object
+    gridx : flowx.Grid object
         Grid containing x-face data
 
-    girdy : mae6225.Grid object
+    girdy : flowx.Grid object
         Grid containing y-face data
 
     asol : string
@@ -100,9 +100,9 @@ def update_bc_val(gridx, gridy, ivar, t):
 
     Parameters
     ----------
-    gridx : mae6225.GridFaceX object
+    gridx : flowx.GridFaceX object
         The grid for the x-component of the velocity.
-    gridy : mae6225.GridFaceY object
+    gridy : flowx.GridFaceY object
         The grid for the y-component of the velocity.
     ivar : string
         Name of the velocity variable in the Grid structures.

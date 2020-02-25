@@ -1,4 +1,4 @@
-name: py36-mae6225
+name: py36-flowx
 dependencies:
 - python=3.6
 - numpy

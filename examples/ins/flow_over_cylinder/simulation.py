@@ -11,9 +11,9 @@ def set_initial_velocity(gridc, gridx, gridy, ivar, pres):
 
     Arguments
     ---------
-    gridx : mae6225.Grid object
+    gridx : flowx.Grid object
         Grid containing x-face data.
-    gridy : mae6225.Grid object
+    gridy : flowx.Grid object
         Grid containing y-face data.
     ivar : string
         Name of the velocity variable on the grid.
@@ -36,7 +36,7 @@ def get_qin(grid, ivar, bc_type):
 
     Arguments
     ---------
-    grid : mae6225.Grid object
+    grid : flowx.Grid object
         Grid containing data.
     ivar : string
         Name of the velocity variable on the grid.
@@ -73,7 +73,7 @@ def get_qout(grid, ivar, bc_type):
 
     Arguments
     ---------
-    grid : mae6225.Grid object
+    grid : flowx.Grid object
         Grid containing data.
     ivar : string
         Name of the velocity variable on the grid.
@@ -110,7 +110,7 @@ def rescale_velocity(grid, ivar, bc_type, Qin, Qout):
 
     Arguments
     ---------
-    grid : mae6225.Grid object
+    grid : flowx.Grid object
         Grid containing data.
     ivar : string
         Name of the velocity variable on the grid.
@@ -148,7 +148,7 @@ def get_convvel(grid, ivar):
 
     Arguments
     ---------
-    grid : mae6225.Grid object
+    grid : flowx.Grid object
         Grid containing data.
     ivar : string
         Name of the velocity variable on the grid.
@@ -175,7 +175,7 @@ def update_outflow_bc(grid, ivar, dt, convvel=None):
 
     Parameters
     ----------
-    grid : mae6225.GridFaceX object
+    grid : flowx.GridFaceX object
         The grid for the velocity.
     ivar : string
         Name of the variable in the Grid structure.
@@ -204,7 +204,7 @@ def ibm_tag_body(grid, ivar, ibm_x, ibm_y, ibm_r):
 
     Arguments
     ---------
-    grid : mae6225.Grid object
+    grid : flowx.Grid object
         Grid containing data.
     ivar : string
         Name of the ibm tagging variable on the grid.
@@ -235,13 +235,13 @@ def ibm_apply_forcing(gridc, gridx, gridy, ibmf, ivar, forc):
 
     Arguments
     ---------
-    gridc : mae6225.Grid object
+    gridc : flowx.Grid object
         Grid containing data.
 
-    gridx : mae6225.Grid object
+    gridx : flowx.Grid object
         Grid containing x-face data
 
-    gridy : mae6225.Grid object
+    gridy : flowx.Grid object
         Grid containing y-face data
 
     ivar : string

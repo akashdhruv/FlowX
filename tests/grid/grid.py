@@ -1,10 +1,10 @@
-"""Tests for `mae6225/grid/grid.py`."""
+"""Tests for `flowx/grid/grid.py`."""
 
 import numpy
 import random
 import unittest
 
-import mae6225
+import flowx
 
 
 class TestGrid(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestGrid(unittest.TestCase):
         self.nx, self.ny = 10, 20
         self.xmin, self.xmax = 0.0, 1.0
         self.ymin, self.ymax = -0.5, 0.5
-        self.grid = mae6225.Grid('cell-centered',
+        self.grid = flowx.Grid('cell-centered',
                                  self.var_names,
                                  self.nx, self.ny,
                                  self.xmin, self.xmax,
