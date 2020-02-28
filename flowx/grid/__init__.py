@@ -1,2 +1,1 @@
-from .grid import Grid
-from .parameters import Parameters
+from .grid import Grid, Scalars
