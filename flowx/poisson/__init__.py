@@ -1,1 +1,1 @@
-from .jacobi import *
+from .jacobi import solve_jacobi
