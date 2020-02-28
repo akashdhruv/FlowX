@@ -1,1 +1,2 @@
-from .grid import *
+from .grid import Grid
+from .parameters import Parameters
