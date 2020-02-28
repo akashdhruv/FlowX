@@ -523,29 +523,31 @@ def Grid(gridtype, *args, **kwargs):
                      '"cell-centered", "x-face", or "y-face"')
 
 class Scalars(object):
+    """
+    Class to store and advance scalar data such as simulation time, 
+    time-step, Reynolds number, etc.
+    """
 
     def __init__(self, *args, **kwargs):
+
+        self.var = dict()
+        self.stats = dict()
 
         self._set_default_values()
         self._set_user_values(*args, **kwargs)
 
     def _set_default_values(self):
-        self.to = 0.0
-        self.tmax = 0.0
-        self.time = 0.0
-        self.dt = 1.0
-        self.nstep = 0
-        self.Re = 1.0
-        self.stats = dict()
+        self.var['to'] = 0.0
+        self.var['tmax'] = 0.0
+        self.var['time'] = 0.0
+        self.var['dt'] = 1.0
+        self.var['nstep'] = 0
+        self.var['Re'] = 1.0
 
     def _set_user_values(self, *args, **kwargs):
-        if 'to' in kwargs: self.to = kwargs.get('to')
-        if 'tmax' in kwargs: self.tmax = kwargs.get('tmax')
-        if 'time' in kwargs: self.time = kwargs.get('time')
-        if 'dt' in kwargs: self.dt = kwargs.get('dt')        
-        if 'nstep' in kwargs: self.nstep = kwargs.get('nstep')
-        if 'Re' in kwargs: self.Re = kwargs.get('Re')
+        for key,value in kwargs.items():
+            self.var[key] = value
 
     def advance(self):
-        self.time += self.dt
-        self.nstep += 1
+        self.var['time'] += self.var['dt']
+        self.var['nstep'] += 1
