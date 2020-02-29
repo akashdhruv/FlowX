@@ -521,33 +521,3 @@ def Grid(gridtype, *args, **kwargs):
             return cls(*args, **kwargs)
     raise ValueError('Parameter "gridtype" should be either '
                      '"cell-centered", "x-face", or "y-face"')
-
-class Scalars(object):
-    """
-    Class to store and advance scalar data such as simulation time, 
-    time-step, Reynolds number, etc.
-    """
-
-    def __init__(self, *args, **kwargs):
-
-        self.var = dict()
-        self.stats = dict()
-
-        self._set_default_values()
-        self._set_user_values(*args, **kwargs)
-
-    def _set_default_values(self):
-        self.var['to'] = 0.0
-        self.var['tmax'] = 0.0
-        self.var['time'] = 0.0
-        self.var['dt'] = 1.0
-        self.var['nstep'] = 0
-        self.var['Re'] = 1.0
-
-    def _set_user_values(self, *args, **kwargs):
-        for key,value in kwargs.items():
-            self.var[key] = value
-
-    def advance(self):
-        self.var['time'] += self.var['dt']
-        self.var['nstep'] += 1

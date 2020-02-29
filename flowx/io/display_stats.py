@@ -3,22 +3,19 @@
 import numpy
 
 
-def display_stats(t, stats):
+def display_stats(scalars):
     """Display stats specified by user.
 
     Arguments
     ---------
-    t : float
-        The time.
-    stats : dictionary
-        Dictionary with the stats to display.
-
+    scalars : object
+            Scalar class object containing neccesary information for head up display
     """
-    print('------------ Time = {} ---------------'.format(t))
-    print('Number of poisson iterations    : {}'.format(stats['ites']))
-    print('Final poisson residual : {}'.format(stats['res']))
-    print('Max, Min, U   : {}, {}'.format(stats['max_u'], stats['min_u']))
-    print('Max, Min, V   : {}, {}'.format(stats['max_v'], stats['min_v']))
-    print('Max, Min, P   : {}, {}'.format(stats['max_p'], stats['min_p']))
-    print('Max, Min, DIV : {}, {}'.format(stats['max_div'], stats['min_div']))
+    print('------------ Time = {} ---------------'.format(scalars.variable['time']))
+    print('Number of poisson iterations    : {}'.format(scalars.stats['ites']))
+    print('Final poisson residual : {}'.format(scalars.stats['res']))
+    print('Max, Min, U   : {}, {}'.format(scalars.stats['max_u'], scalars.stats['min_u']))
+    print('Max, Min, V   : {}, {}'.format(scalars.stats['max_v'], scalars.stats['min_v']))
+    print('Max, Min, P   : {}, {}'.format(scalars.stats['max_p'], scalars.stats['min_p']))
+    print('Max, Min, DIV : {}, {}'.format(scalars.stats['max_div'], scalars.stats['min_div']))
     print('\n')

@@ -1,3 +1,3 @@
-from .display_stats import *
-from .plot_contour import *
-from .plot_vector import *
+from .display_stats import display_stats
+from .plot_contour import plot_contour
+from .plot_vector import plot_vector
