@@ -1,2 +1,2 @@
-from .grid import Grid
-from .scalars import Scalars
+import flowx.grid.serial
+import flowx.grid.parallel
