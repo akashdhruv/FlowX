@@ -1,31 +1,73 @@
-"""Routine to solve the Poisson equation."""
+"""Interface for Poisson solver module"""
 
-from flowx.poisson.solvers.serial.jacobi import solve_serial_jacobi
-from flowx.poisson.solvers.serial.cg import solve_serial_cg
-from flowx.poisson.solvers.parallel.jacobi import solve_parallel_jacobi
-from flowx.poisson.solvers.parallel.cg import solve_parallel_cg
+from flowx.poisson.poisson_interface import poisson_interface
 
-def solve_poisson(grid, grid_var_list, **kwargs):
+class poisson_main(poisson_interface):
 
-    _solver_type = 'serial_cg'
+    def __init__(self, poisson_vars, **kwargs):
 
-    if 'poisson_solver' in kwargs: _solver_type = kwargs.get('poisson_solver')
+        """
+        Constructor for the ins unit
 
-    if _solver_type is 'serial_jacobi':
-        solve_poisson = solve_serial_jacobi
+        Arguments
+        ---------
 
-    elif _solver_type is 'serial_cg':
-        solve_poisson = solve_serial_cg 
+        poisson_vars : list
+                List of string for field variables required by poisson unit
+               
+                poisson_vars[0] --> Phi (numerical solution)
+                poisson_vars[1] --> RHS
 
-    elif _solver_type is 'parallel_jacobi':
-        solve_poisson = solve_parallel_jacobi 
+        **kwargs : Dictionary of keyword arguments
 
-    elif _solver_type is 'parallel_cg':
-        solve_poisson = solve_parallel_cg
+        'solver_type' keyword refers to the type of solver to be used
+        kwargs['solver_type'] = 'serial_cg' --> default
+                              = 'serial_jacobi'
 
-    ivar = grid_var_list[0]
-    rvar = grid_var_list[1]
+        kwargs['maxiter'] = maximum number of iterations --> default 2000
+       
+        kwargs['tol']  = minimum tolerance of the residuals --> default 1e-9
+ 
+        kwargs['verbose'] = bool to displacy poisson stats or not --> default False
 
-    ites,residual = solve_poisson(grid, ivar, rvar, **kwargs)
+        """
 
-    return ites,residual
+        from flowx.poisson.solvers.serial.jacobi import solve_serial_jacobi
+        from flowx.poisson.solvers.serial.cg import solve_serial_cg
+
+        self.ivar = poisson_vars[0]
+        self.rvar = poisson_vars[1]
+
+        self._solver_type = 'serial_cg'
+        self._maxiter = 2000
+        self._tol = 1e-9
+        self._verbose = False
+
+        if 'solver_type' in kwargs: self._solver_type = kwargs['solver_type']
+        if 'maxiter' in kwargs: self._maxiter = kwargs['maxiter']
+        if 'tol' in kwargs: self._tol = kwargs['tol']
+        if 'verbose' in kwargs: self._verbose = kwargs['verbose']          
+
+
+        if self._solver_type is 'serial_cg':
+            self.solver = solve_serial_cg
+        elif self._solver_type is 'serial_jacobi':
+            self.solver = solve_serial_jacobi
+
+        return
+
+    def solve_poisson(self, grid):
+        """ Subroutine to solve poisson equation
+
+        Arguments
+        ---------
+
+        grid : object
+
+             Grid object where the poisson equation needs to be solved
+
+        """
+
+        ites, residual = self.solver(grid, self.ivar, self.rvar, self._maxiter, self._tol, self._verbose)
+
+        return ites, residual

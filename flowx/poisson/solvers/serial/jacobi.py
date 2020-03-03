@@ -3,7 +3,7 @@
 import numpy
 
 
-def solve_serial_jacobi(grid, ivar, rvar, **kwargs):
+def solve_serial_jacobi(grid, ivar, rvar, maxiter, tol, verbose):
     """Solve the Poisson system using a Jacobi method.
 
     Arguments
@@ -31,13 +31,6 @@ def solve_serial_jacobi(grid, ivar, rvar, **kwargs):
     residual: float
         Final residual.
     """
-    maxiter = 3000
-    tol = 1e-9
-    verbose = False
-
-    if 'maxiter' in kwargs: maxiter = kwargs.get('maxiter')
-    if 'tol' in kwargs: tol = kwargs.get('tol')
-    if 'verbose' in kwargs: verbose = kwargs.get('verbose') 
 
     phi = grid.get_values(ivar)
     b = grid.get_values(rvar)

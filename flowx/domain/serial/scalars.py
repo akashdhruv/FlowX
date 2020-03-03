@@ -15,9 +15,6 @@ class Scalars(object):
         stats - to store statistics to monitor simulation progress. 
         """
 
-        self.variable = dict()
-        self.stats = dict()
-
         self._set_default_values()
         self._set_user_values(**kwargs)
 
@@ -25,11 +22,12 @@ class Scalars(object):
         """
         Private subroutine to set default values
         """
-        self.variable['to'] = 0.0
-        self.variable['tmax'] = 0.0
-        self.variable['time'] = 0.0
-        self.variable['dt'] = 1.0
-        self.variable['nstep'] = 0
+
+        var_list = ['to', 'tmax', 'time', 'dt', 'nstep']
+        val_list = [0.0, 0.0, 0.0, 1.0, 0]
+
+        self.variable = dict(zip(var_list, val_list))
+        self.stats = dict()
 
     def _set_user_values(self,**kwargs):
         """

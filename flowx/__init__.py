@@ -1,5 +1,6 @@
 from flowx.version import __version__
-from flowx.domain import serial, parallel
-from flowx.poisson import solve_poisson
-from flowx.ins import ins_advance
+from flowx.domain import serial
+from flowx.poisson import poisson_main
+from flowx.ins import ins_main
+from flowx.imbound import imbound_main
 import flowx.io
