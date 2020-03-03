@@ -2,7 +2,7 @@
 
 import numpy
 
-from flowx.ins.operators import diffusion, convective_facex, convective_facey
+from flowx.ins.solvers.operators import diffusion, convective_facex, convective_facey
 
 def predictor(gridx, gridy, ivar, hvar, Re, ifac):
     """Velocity prediction step in x and y direction.

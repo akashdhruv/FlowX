@@ -274,6 +274,8 @@ class GridBase(object):
                     self.fill_guard_cells_dirichlet(name, loc, bc_val)
                 elif bc_type == 'outflow':
                     self.fill_guard_cells_dirichlet(name, loc, bc_val)
+                elif bc_type == 'periodic':
+                    self.fill_guard_cells_periodic(name, loc)
                 else:
                     raise ValueError('Boundary type "{}" not implemented'
                                      .format(bc_type))
@@ -312,18 +314,30 @@ class GridBase(object):
             Grid-cell width.
 
         """
+        raise NotImplementedError()
+
+    def fill_guard_cells_periodic(self, var_name, loc):
+        """Fill guard cells with periodic BC.
+
+        Parameters
+        ----------
+        var_name : string
+            Name of the variable to update.
+        loc : string
+            Boundary location;
+            choices: ['left', 'right', 'bottom', 'top'].
+        """
         var = self.get_values(var_name)
         if loc == 'left':
-            var[0, :] = bc_val * delta + var[1, :]
+            var[0, :] = var[-2, :]
         elif loc == 'right':
-            var[-1, :] = bc_val * delta + var[-2, :]
+            var[-1, :] = var[1, :]
         elif loc == 'bottom':
-            var[:, 0] = bc_val * delta + var[:, 1]
+            var[:, 0] = var[:, -2]
         elif loc == 'top':
-            var[:, -1] = bc_val * delta + var[:, -2]
+            var[:, -1] = var[:, 1]
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))
-
 
 class GridCellCentered(GridBase):
     """Class for a cell-centered grid."""
@@ -378,6 +392,33 @@ class GridCellCentered(GridBase):
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))
 
+    def fill_guard_cells_neumann(self, var_name, loc, bc_val, delta):
+        """Fill guard cells using a Neumann condition.
+
+        Parameters
+        ----------
+        var_name : string
+            Name of the variable to update.
+        loc : string
+            Boundary location;
+            choices: ['left', 'right', 'bottom', 'top'].
+        bc_val : float
+            Neumann boundary value.
+        delta : float
+            Grid-cell width.
+
+        """ 
+        var = self.get_values(var_name)
+        if loc == 'left':
+            var[0, :] = bc_val * delta + var[1, :]
+        elif loc == 'right':
+            var[-1, :] = bc_val * delta + var[-2, :]
+        elif loc == 'bottom':
+            var[:, 0] = bc_val * delta + var[:, 1]
+        elif loc == 'top':
+            var[:, -1] = bc_val * delta + var[:, -2]
+        else:
+            raise ValueError('Unknown boundary location "{}"'.format(loc))
 
 class GridFaceX(GridBase):
     """Class for a x-face centered grid."""
@@ -430,6 +471,33 @@ class GridFaceX(GridBase):
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))
 
+    def fill_guard_cells_neumann(self, var_name, loc, bc_val, delta):
+        """Fill guard cells using a Neumann condition.
+
+        Parameters
+        ----------
+        var_name : string
+            Name of the variable to update.
+        loc : string
+            Boundary location;
+            choices: ['left', 'right', 'bottom', 'top'].
+        bc_val : float
+            Neumann boundary value.
+        delta : float
+            Grid-cell width.
+
+        """ 
+        var = self.get_values(var_name)
+        if loc == 'left':
+            var[0, :] = bc_val
+        elif loc == 'right':
+            var[-1, :] = bc_val
+        elif loc == 'bottom':
+            var[:, 0] = bc_val * delta + var[:, 1]
+        elif loc == 'top':
+            var[:, -1] = bc_val * delta + var[:, -2]
+        else:
+            raise ValueError('Unknown boundary location "{}"'.format(loc))
 
 class GridFaceY(GridBase):
     """Class for a y-face centered grid."""
@@ -482,6 +550,33 @@ class GridFaceY(GridBase):
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))
 
+    def fill_guard_cells_neumann(self, var_name, loc, bc_val, delta):
+        """Fill guard cells using a Neumann condition.
+
+        Parameters
+        ----------
+        var_name : string
+            Name of the variable to update.
+        loc : string
+            Boundary location;
+            choices: ['left', 'right', 'bottom', 'top'].
+        bc_val : float
+            Neumann boundary value.
+        delta : float
+            Grid-cell width.
+
+        """ 
+        var = self.get_values(var_name)
+        if loc == 'left':
+            var[0, :] = bc_val * delta + var[1, :]
+        elif loc == 'right':
+            var[-1, :] = bc_val * delta + var[-2, :]
+        elif loc == 'bottom':
+            var[:, 0] = bc_val
+        elif loc == 'top':
+            var[:, -1] = bc_val
+        else:
+            raise ValueError('Unknown boundary location "{}"'.format(loc))
 
 def Grid(gridtype, *args, **kwargs):
     """Return an instance of the GridBase child class based on type.

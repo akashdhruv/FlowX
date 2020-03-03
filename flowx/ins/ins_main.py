@@ -1,9 +1,9 @@
 """Euler explicit time advancement routine"""
 
 from flowx.poisson.poisson_main import solve_poisson
-from flowx.ins.projection import predictor, predictor_AB2, predictor_RK3, corrector, divergence
-from flowx.ins.stats import stats
-from flowx.ins.mass_balance import get_qin, get_qout, rescale_velocity, get_convvel, update_outflow_bc
+from flowx.ins.solvers.projection import predictor, predictor_AB2, predictor_RK3, corrector, divergence
+from flowx.ins.solvers.stats import stats
+from flowx.ins.solvers.mass_balance import get_qin, get_qout, rescale_velocity, get_convvel, update_outflow_bc
 from flowx.imbound.imbound_main import solve_imbound
 
 def ins_advance(gridc, gridx, gridy, scalars, grid_var_list, **kwargs):
@@ -42,6 +42,13 @@ def ins_advance(gridc, gridx, gridy, scalars, grid_var_list, **kwargs):
     if 'time_stepping' in kwargs: _time_stepping = kwargs.get('time_stepping')
     if 'with_ib' in kwargs: _with_ib = kwargs.get('with_ib')
 
+    if _time_stepping is 'euler':
+        solve_predictor = predictor
+    elif _time_stepping is 'ab2':
+        solve_predictor = predictor_AB2
+    elif _time_stepping is 'rk3':
+        solve_predictor = predictor_RK3
+
     velc = grid_var_list[0]
     hvar = grid_var_list[1]
     divv = grid_var_list[2]
@@ -55,12 +62,8 @@ def ins_advance(gridc, gridx, gridy, scalars, grid_var_list, **kwargs):
     update_outflow_bc(gridy, velc, scalars.variable['dt'])
 
     # Calculate predicted velocity: u* = dt*H(u^n)       
-    if _time_stepping is 'euler':
-        predictor(gridx, gridy, velc, hvar, scalars.variable['Re'], scalars.variable['dt'])
+    solve_predictor(gridx, gridy, velc, hvar, scalars.variable['Re'], scalars.variable['dt'])
  
-    elif _time_stepping is 'ab2':
-        predictor_AB2(gridx, gridy, velc, hvar, scalars.variable['Re'], scalars.variable['dt'])
-
     # Immersed boundary forcing
     if _with_ib: solve_imbound()
 
