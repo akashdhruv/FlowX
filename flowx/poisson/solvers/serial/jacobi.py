@@ -3,7 +3,7 @@
 import numpy
 
 
-def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9, verbose=False):
+def solve_serial_jacobi(grid, ivar, rvar, **kwargs):
     """Solve the Poisson system using a Jacobi method.
 
     Arguments
@@ -20,6 +20,9 @@ def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9, verbose=False):
     tol : float, optional
         Exit-criterion tolerance;
         default: 1e-9
+    verbose : bool, optional
+        Set True to display convergence information;
+        default: False.
 
     Returns
     -------
@@ -27,11 +30,15 @@ def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9, verbose=False):
         Number of iterations computed.
     residual: float
         Final residual.
-    verbose : bool, optional
-        Set True to display convergence information;
-        default: False.
-
     """
+    maxiter = 3000
+    tol = 1e-9
+    verbose = False
+
+    if 'maxiter' in kwargs: maxiter = kwargs.get('maxiter')
+    if 'tol' in kwargs: tol = kwargs.get('tol')
+    if 'verbose' in kwargs: verbose = kwargs.get('verbose') 
+
     phi = grid.get_values(ivar)
     b = grid.get_values(rvar)
     dx, dy = grid.dx, grid.dy

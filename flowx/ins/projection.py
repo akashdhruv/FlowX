@@ -2,7 +2,7 @@
 
 import numpy
 
-from .operators import diffusion, convective_facex, convective_facey
+from flowx.ins.operators import diffusion, convective_facex, convective_facey
 
 def predictor(gridx, gridy, ivar, hvar, Re, ifac):
     """Velocity prediction step in x and y direction.
@@ -37,8 +37,78 @@ def predictor(gridx, gridy, ivar, hvar, Re, ifac):
     u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * hx[1:-1, 1:-1]
     v[1:-1, 1:-1] = v[1:-1, 1:-1] + ifac * hy[1:-1, 1:-1]
 
-    gridx.fill_guard_cells(ivar)
-    gridy.fill_guard_cells(ivar)
+    return
+
+def predictor_AB2(gridx, gridy, ivar, hvar, Re, ifac):
+    """Velocity prediction step in x and y direction.
+
+    Arguments
+    ---------
+    gridx : grid object (x-direction)
+        Grid containing data in x-direction.
+    gridy : grid object (y-direction)
+        Grid containing data in y-direction.
+    ivar : string
+        Name of the grid variable of the velocity solution.
+    hvar : string
+        Name of the grid variable to store convective + diffusion terms.
+    Re : float
+        Reynolds number.
+    ifac : float
+        Time-step size.
+
+    """
+    hx_old = gridx.get_values(hvar)
+    hy_old = gridy.get_values(hvar)
+
+    hx_new = (convective_facex(gridx, gridy, ivar) +
+                      diffusion(gridx, ivar, 1 / Re)) 
+    hy_new = (convective_facey(gridx, gridy, ivar) +
+                      diffusion(gridy, ivar, 1 / Re)) 
+
+    u = gridx.get_values(ivar)
+    v = gridy.get_values(ivar)
+
+    u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * (1.5 * hx_new - 0.5 * hx_old[1:-1, 1:-1])
+    v[1:-1, 1:-1] = v[1:-1, 1:-1] + ifac * (1.5 * hy_new - 0.5 * hy_old[1:-1, 1:-1])
+ 
+    hx_old[1:-1,1:-1] = hx_new
+    hy_old[1:-1,1:-1] = hy_new
+
+    return
+
+def predictor_RK3(gridx, gridy, ivar, hvar, Re, ifac, hconst):
+    """Velocity prediction step in x and y direction.
+
+    Arguments
+    ---------
+    gridx : grid object (x-direction)
+        Grid containing data in x-direction.
+    gridy : grid object (y-direction)
+        Grid containing data in y-direction.
+    ivar : string
+        Name of the grid variable of the velocity solution.
+    hvar : string
+        Name of the grid variable to store convective + diffusion terms.
+    Re : float
+        Reynolds number.
+    ifac : float
+        Time-step size.
+
+    """
+    hx = gridx.get_values(hvar)
+    hy = gridy.get_values(hvar)
+
+    hx[1:-1, 1:-1] = (convective_facex(gridx, gridy, ivar) +
+                      diffusion(gridx, ivar, 1 / Re)) + hconst * hx[1:-1,1:-1]
+    hy[1:-1, 1:-1] = (convective_facey(gridx, gridy, ivar) +
+                      diffusion(gridy, ivar, 1 / Re)) + hconst * hy[1:-1,1:-1]
+
+    u = gridx.get_values(ivar)
+    v = gridy.get_values(ivar)
+
+    u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * hx[1:-1, 1:-1]
+    v[1:-1, 1:-1] = v[1:-1, 1:-1] + ifac * hy[1:-1, 1:-1]
 
     return
 
@@ -71,8 +141,6 @@ def divergence(gridc, gridx, gridy, ivar, dvar, ifac=1.0):
     div[1:-1, 1:-1] = ((u[1:, 1:-1] - u[:-1, 1:-1]) / dx +
                        (v[1:-1, 1:] - v[1:-1, :-1]) / dy) / ifac
 
-    gridc.fill_guard_cells(dvar)
-
     return
 
 def corrector(gridc, gridx, gridy, ivar, pvar, ifac):
@@ -102,8 +170,5 @@ def corrector(gridc, gridx, gridy, ivar, pvar, ifac):
 
     u[1:-1, 1:-1] = u[1:-1, 1:-1] - ifac * (p[2:-1, 1:-1] - p[1:-2, 1:-1]) / dx
     v[1:-1, 1:-1] = v[1:-1, 1:-1] - ifac * (p[1:-1, 2:-1] - p[1:-1, 1:-2]) / dy
-
-    gridx.fill_guard_cells(ivar)
-    gridy.fill_guard_cells(ivar)
 
     return

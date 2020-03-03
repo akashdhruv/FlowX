@@ -1,5 +1,5 @@
-from .version import __version__
-from .grid import serial, parallel
-from .poisson import poisson
-from .ins import ins
+from flowx.version import __version__
+from flowx.environment import serial, parallel
+from flowx.poisson import solve_poisson
+from flowx.ins import ins_advance
 import flowx.io
