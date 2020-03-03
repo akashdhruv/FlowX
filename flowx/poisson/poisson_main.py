@@ -12,15 +12,17 @@ def solve_poisson(grid, ivar, rvar, **kwargs):
     if 'poisson_solver' in kwargs: _solver_type = kwargs.get('poisson_solver')
 
     if _solver_type is 'serial_jacobi':
-        ites,residual = solve_serial_jacobi(grid, ivar, rvar, **kwargs)
+        solve_poisson = solve_serial_jacobi
 
     elif _solver_type is 'serial_cg':
-        ites,residual = solve_serial_cg(grid, ivar, rvar, **kwargs) 
+        solve_poisson = solve_serial_cg 
 
     elif _solver_type is 'parallel_jacobi':
-        ites,residual = solve_parallel_jacobi(grid, ivar, rvar, **kwargs)
+        solve_poisson = solve_parallel_jacobi 
 
     elif _solver_type is 'parallel_cg':
-        ites,residual = solve_parallel_cg(grid, ivar, rvar, **kwargs) 
+        solve_poisson = solve_parallel_cg
+
+    ites,residual = solve_poisson(grid, ivar, rvar, **kwargs)
 
     return ites,residual

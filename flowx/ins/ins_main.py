@@ -46,8 +46,8 @@ def ins_advance(gridc, gridx, gridy, scalars, grid_var_list, **kwargs):
         solve_predictor = predictor
     elif _time_stepping is 'ab2':
         solve_predictor = predictor_AB2
-    elif _time_stepping is 'rk3':
-        solve_predictor = predictor_RK3
+    #elif _time_stepping is 'rk3':
+    #    solve_predictor = predictor_RK3
 
     velc = grid_var_list[0]
     hvar = grid_var_list[1]
