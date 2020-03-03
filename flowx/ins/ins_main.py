@@ -46,13 +46,13 @@ def ins_advance(gridc, gridx, gridy, scalars, grid_var_list, **kwargs):
         solve_predictor = predictor
     elif _time_stepping is 'ab2':
         solve_predictor = predictor_AB2
-    #elif _time_stepping is 'rk3':
-    #    solve_predictor = predictor_RK3
 
     velc = grid_var_list[0]
     hvar = grid_var_list[1]
     divv = grid_var_list[2]
     pres = grid_var_list[3]
+
+    poisson_vars = [pres, divv]
 
     # Compute mass in
     Qin =  get_qin(gridx, velc) + get_qin(gridy, velc)
@@ -86,7 +86,7 @@ def ins_advance(gridc, gridx, gridy, scalars, grid_var_list, **kwargs):
     update_outflow_bc(gridy, velc, scalars.variable['dt'], convvel=[0.0,0.0,0.0,0.0])
 
     # Solve pressure Poisson equation
-    scalars.stats['ites'], scalars.stats['res'] = solve_poisson(gridc, pres, divv, **kwargs)
+    scalars.stats['ites'], scalars.stats['res'] = solve_poisson(gridc, poisson_vars, **kwargs)
 
     # Calculate corrected velocity u^n+1 = u* - dt * grad(P) 
     corrector(gridc, gridx, gridy, velc, pres, scalars.variable['dt'])

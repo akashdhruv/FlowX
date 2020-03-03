@@ -5,7 +5,7 @@ from flowx.poisson.solvers.serial.cg import solve_serial_cg
 from flowx.poisson.solvers.parallel.jacobi import solve_parallel_jacobi
 from flowx.poisson.solvers.parallel.cg import solve_parallel_cg
 
-def solve_poisson(grid, ivar, rvar, **kwargs):
+def solve_poisson(grid, grid_var_list, **kwargs):
 
     _solver_type = 'serial_cg'
 
@@ -22,6 +22,9 @@ def solve_poisson(grid, ivar, rvar, **kwargs):
 
     elif _solver_type is 'parallel_cg':
         solve_poisson = solve_parallel_cg
+
+    ivar = grid_var_list[0]
+    rvar = grid_var_list[1]
 
     ites,residual = solve_poisson(grid, ivar, rvar, **kwargs)
 
