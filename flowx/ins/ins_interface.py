@@ -14,7 +14,7 @@ class ins_interface(metaclass=abc.ABCMeta):
 
 
     @abc.abstractmethod
-    def __init__(self, ins_vars, **kwargs):
+    def __init__(self, ins_vars=None, ins_info=None):
 
         """
         Constructor for the ins unit
@@ -31,18 +31,18 @@ class ins_interface(metaclass=abc.ABCMeta):
                 ins_vars[3] --> pressure
 
 
-        **kwargs : Dictionary of keyword arguments
+        ins_info : Dictionary of keyword arguments
 
         'time_stepping' keyword refers to the time advancement scheme to be used
 
-        kwargs['time_stepping'] = 'ab2' --> default
-                                = 'euler'
+        ins_info['time_stepping'] = 'ab2' --> default
+                                  = 'euler'
 
         """
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def advance(self, poisson, imbound, gridc, gridx, gridy, scalars, particles):
+    def advance(self, poisson, imbound, domain_data_struct):
 
         """
         Subroutine for the fractional step explicit time advancement of Navier Stokes equations
@@ -55,20 +55,9 @@ class ins_interface(metaclass=abc.ABCMeta):
         imbound : object
             Object for the immersed boundary unit
 
-        gridc : object
-          Grid object for cell centered variables
+        domain_data_struct : object list
+          [gridc, gridx, gridy, scalars, particles]
 
-        gridx : object
-          Grid object for x-face variables
-
-        gridy : object
-          Grid object for y-face variables
-
-        scalars: object
-           Scalars object to access time-step and Reynold number
-
-        particles: object
-           Object containing immersed boundary information
         """
 
         raise NotImplementedError()

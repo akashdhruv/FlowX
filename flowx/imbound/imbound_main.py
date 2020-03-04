@@ -4,7 +4,7 @@ from flowx.imbound.imbound_interface import imbound_interface
 
 class imbound_main(imbound_interface):
 
-    def __init__(self, imbound_vars=None, **kwargs):
+    def __init__(self, imbound_vars=None, imbound_info=None):
 
         """
         Constructor for the imbound unit
@@ -18,16 +18,16 @@ class imbound_main(imbound_interface):
                 imbound_vars[0] --> indicator variable for immersed boundary
                 imbound_vars[1] --> velocity variable
 
-        **kwargs : Dictionary of keyword arguments
+        imbound_info : Dictionary of keyword arguments
 
         'with_ib' - keyword to indicate if immersed boundary is present or not
                   - True if present
                   - False if not present
 
-        kwargs['with_ib'] = False --> default
-                          = True
+        imbound_info['with_ib'] = False --> default
+                                = True
 
-        Error generated if kwargs['with_ib'] is True and imbound_vars is None
+        Error generated if kwargs['with_ib'] is True and imbound_vars is empty
 
         """
 
@@ -36,67 +36,64 @@ class imbound_main(imbound_interface):
 
         self._ibmf = 'stub'
         self._velc = 'stub'
-
-        if imbound_vars is not None:
-            self._ibmf = imbound_vars[0]
-            self._velc = imbound_vars[1] 
-
-
+ 
         self._with_ib = False
-
-        if 'with_ib' in kwargs: self._with_ib = kwargs['with_ib']
-
+ 
         self._force_flow  = force_flow_stub
         self._map_to_grid = map_to_grid_stub
- 
+
+        if imbound_info:
+            if 'with_ib' in imbound_info: self._with_ib = imbound_info['with_ib']
+
         if self._with_ib:
             self._force_flow = force_flow_levelset
             self._map_to_grid = map_to_grid_levelset
 
-        if(self._with_ib and imbound_vars is None): raise ValueError('imbound_vars cannot be None when with_ib is True')
+            if imbound_vars:
+                self._ibmf = imbound_vars[0]
+                self._velc = imbound_vars[1] 
+            else:
+                raise ValueError('imbound_vars cannot be empty when body flag is true')
+
+        else:
+            print('Warning: Immersed Boundary unit is a stub, no forcing will be applied.')
 
         return
  
-    def map_to_grid(self, gridx, gridy, particles):
+    def map_to_grid(self, domain_stat_struct):
         """
         Subroutine to map immersed boundary on grid
  
         Arguments
         ---------
-        gridx : object
-          Grid object for x-face variables
+        domain_data_struct : object list
 
-        gridy : object
-          Grid object for y-face variables
-
-        particles: object
-           Object containing immersed boundary information
         """
 
-        self._map_to_grid(gridx, gridy, particles, self._ibmf, self._velc)
+        _gridx = domain_data_struct[1]
+        _gridy = domain_data_struct[2]
+        _particles = domain_data_struct[4]
+
+        self._map_to_grid(_gridx, _gridy, _particles, self._ibmf, self._velc)
 
         return
 
-    def force_flow(self, gridx, gridy, scalars, particles):
+    def force_flow(self, domain_data_struct):
 
         """
         Subroutine to compute immersed boundary forces
  
         Arguments
         ---------
-        gridx : object
-          Grid object for x-face variables
+        domain_data_struct : object list
 
-        gridy : object
-          Grid object for y-face variables
-
-        scalars: object
-           Scalars object to access time-step and Reynold number
-
-        particles: object
-           Object containing immersed boundary information
         """
 
-        self._force_flow(gridx, gridy, scalars, particles, self._ibmf, self._velc)
+        _gridx = domain_data_struct[1]
+        _gridy = domain_data_struct[2]
+        _scalars = domain_data_struct[3]
+        _particles = domain_data_struct[4]
+
+        self._force_flow(_gridx, _gridy, _scalars, _particles, self._ibmf, self._velc)
 
         return

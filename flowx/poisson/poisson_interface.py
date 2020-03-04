@@ -14,7 +14,7 @@ class poisson_interface(metaclass=abc.ABCMeta):
 
 
     @abc.abstractmethod
-    def __init__(self, poisson_vars, **kwargs):
+    def __init__(self, poisson_vars=None, poisson_info=None):
 
         """
         Constructor for the Poisson unit
@@ -28,18 +28,18 @@ class poisson_interface(metaclass=abc.ABCMeta):
                 poisson_vars[0] --> Phi (numerical solution)
                 poisson_vars[1] --> RHS
 
-        **kwargs : Dictionary of keyword arguments
+        poisson_info : Dictionary of keyword arguments
 
         'poisson_solver' keyword refers to the type of solver to be used
 
-        kwargs['poisson_solver'] = 'serial_cg' --> default
-                                 = 'serial_jacobi'
+        poisson_info['poisson_solver'] = 'serial_cg' --> default
+                                       = 'serial_jacobi'
 
-        kwargs['maxiter'] = maximum number of iterations --> default 2000
+        poisson_info['maxiter'] = maximum number of iterations --> default 2000
        
-        kwargs['tol']  = minimum tolerance of the residuals --> default 1e-9
+        poisson_info['tol']  = minimum tolerance of the residuals --> default 1e-9
  
-        kwargs['verbose'] = bool to displacy poisson stats or not --> default False
+        poisson_info['verbose'] = bool to displacy poisson stats or not --> default False
 
         """
         raise NotImplementedError()

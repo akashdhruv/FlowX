@@ -4,7 +4,7 @@ from flowx.ins.ins_interface import ins_interface
 
 class ins_main(ins_interface):
 
-    def __init__(self, ins_vars, **kwargs):
+    def __init__(self, ins_vars=None, ins_info=None):
 
         """
         Constructor for the ins unit
@@ -21,12 +21,12 @@ class ins_main(ins_interface):
                 ins_vars[3] --> pressure
 
 
-        **kwargs : Dictionary of keyword arguments
+        ins_info : Dictionary of keyword arguments
 
         'time_stepping' keyword refers to the time advancement scheme to be used
 
-        kwargs['time_stepping'] = 'ab2' --> default
-                                = 'euler'
+        ins_info['time_stepping'] = 'ab2' --> default
+                                  = 'euler'
 
         """
 
@@ -34,14 +34,15 @@ class ins_main(ins_interface):
         from flowx.ins.solvers.stats import stats
         from flowx.ins.solvers.mass_balance import get_qin, get_qout, rescale_velocity, get_convvel, update_outflow_bc
 
-        self._velc = ins_vars[0]
-        self._hvar = ins_vars[1]
-        self._divv = ins_vars[2]
-        self._pres = ins_vars[3]
+        self._velc = 'stub'
+        self._hvar = 'stub'
+        self._divv = 'stub'
+        self._pres = 'stub'
 
         self._time_stepping = 'ab2'
 
-        if 'time_stepping' in kwargs: self._time_stepping = kwargs['time_stepping']
+        if ins_info:
+            if 'time_stepping' in ins_info: self._time_stepping = ins_info['time_stepping']
 
         if self._time_stepping is 'euler':
             self._predictor = predictor
@@ -58,9 +59,18 @@ class ins_main(ins_interface):
         self._get_convvel = get_convvel
         self._update_outflow_bc = update_outflow_bc
 
+        if ins_vars:
+            self._velc = ins_vars[0]
+            self._hvar = ins_vars[1]
+            self._divv = ins_vars[2]
+            self._pres = ins_vars[3]
+
+        else:
+            print('Warning: Incomp NS unit is a stub, any call to its methods will result in an error.') 
+
         return
 
-    def advance(self, poisson, imbound, gridc, gridx, gridy, scalars, particles):
+    def advance(self, poisson, imbound, domain_data_struct):
 
         """
         Subroutine for the fractional step explicit time advancement of Navier Stokes equations
@@ -73,66 +83,59 @@ class ins_main(ins_interface):
         imbound : object
             Object for the immersed boundary unit
 
-        gridc : object
-          Grid object for cell centered variables
-
-        gridx : object
-          Grid object for x-face variables
-
-        gridy : object
-          Grid object for y-face variables
-
-        scalars: object
-           Scalars object to access time-step and Reynold number
-
-        particles: object
-           Object containing immersed boundary information
+        domain_data_struct : object list
+           [gridc, gridx, gridy, scalars, particles]
         """
 
+        _gridc = domain_data_struct[0]
+        _gridx = domain_data_struct[1]
+        _gridy = domain_data_struct[2]
+        _scalars = domain_data_struct[3]
+
         # Compute mass in
-        Qin =  self._get_qin(gridx, self._velc) + self._get_qin(gridy, self._velc)
+        _Qin =  self._get_qin(_gridx, self._velc) + self._get_qin(_gridy, self._velc)
 
         # Update BC for predictor step
-        self._update_outflow_bc(gridx, self._velc, scalars.variable['dt'])
-        self._update_outflow_bc(gridy, self._velc, scalars.variable['dt'])
+        self._update_outflow_bc(_gridx, self._velc, _scalars.variable['dt'])
+        self._update_outflow_bc(_gridy, self._velc, _scalars.variable['dt'])
 
         # Calculate predicted velocity: u* = dt*H(u^n)       
-        self._predictor(gridx, gridy, self._velc, self._hvar, scalars.variable['Re'], scalars.variable['dt'])
+        self._predictor(_gridx, _gridy, self._velc, self._hvar, _scalars.variable['Re'], _scalars.variable['dt'])
  
         # Immersed boundary forcing
-        imbound.force_flow(gridx, gridy, scalars, particles)
+        imbound.force_flow(domain_data_struct)
 
-        gridx.fill_guard_cells(self._velc)
-        gridy.fill_guard_cells(self._velc)
+        _gridx.fill_guard_cells(self._velc)
+        _gridy.fill_guard_cells(self._velc)
 
         # Calculate RHS for the pressure Poission solver div(u)/dt
-        self._divergence(gridc, gridx, gridy, self._velc, self._divv, ifac = scalars.variable['dt'])
-        gridc.fill_guard_cells(self._divv)
+        self._divergence(_gridc, _gridx, _gridy, self._velc, self._divv, ifac = _scalars.variable['dt'])
+        _gridc.fill_guard_cells(self._divv)
 
         # Compute mass out
-        Qout =  self._get_qout(gridx, self._velc) + self._get_qout(gridy, self._velc)
+        _Qout =  self._get_qout(_gridx, self._velc) + self._get_qout(_gridy, self._velc)
 
         # Rescale velocity to balance mass
-        self._rescale_velocity(gridx, self._velc, Qin, Qout)
-        self._rescale_velocity(gridy, self._velc, Qin, Qout)
+        self._rescale_velocity(_gridx, self._velc, _Qin, _Qout)
+        self._rescale_velocity(_gridy, self._velc, _Qin, _Qout)
 
         # Update BC for corrector step
-        self._update_outflow_bc(gridx, self._velc, scalars.variable['dt'], convvel=[0.0,0.0,0.0,0.0])
-        self._update_outflow_bc(gridy, self._velc, scalars.variable['dt'], convvel=[0.0,0.0,0.0,0.0])
+        self._update_outflow_bc(_gridx, self._velc, _scalars.variable['dt'], convvel=[0.0,0.0,0.0,0.0])
+        self._update_outflow_bc(_gridy, self._velc, _scalars.variable['dt'], convvel=[0.0,0.0,0.0,0.0])
 
         # Solve pressure Poisson equation
-        scalars.stats['ites'], scalars.stats['res'] = poisson.solve_poisson(gridc)
+        _scalars.stats['ites'], _scalars.stats['res'] = poisson.solve_poisson(_gridc)
 
         # Calculate corrected velocity u^n+1 = u* - dt * grad(P) 
-        self._corrector(gridc, gridx, gridy, self._velc, self._pres, scalars.variable['dt'])
-        gridx.fill_guard_cells(self._velc)
-        gridy.fill_guard_cells(self._velc)
+        self._corrector(_gridc, _gridx, _gridy, self._velc, self._pres, _scalars.variable['dt'])
+        _gridx.fill_guard_cells(self._velc)
+        _gridy.fill_guard_cells(self._velc)
    
         # Calculate divergence of the corrected velocity to display stats
-        self._divergence(gridc, gridx, gridy, self._velc, self._divv)
-        gridc.fill_guard_cells(self._divv)
+        self._divergence(_gridc, _gridx, _gridy, self._velc, self._divv)
+        _gridc.fill_guard_cells(self._divv)
 
         # Calculate stats
-        scalars.stats.update(self._stats(gridc, gridx, gridy, self._velc, self._pres, self._divv))
+        _scalars.stats.update(self._stats(_gridc, _gridx, _gridy, self._velc, self._pres, self._divv))
 
         return

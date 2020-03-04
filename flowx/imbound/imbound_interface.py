@@ -16,7 +16,7 @@ class imbound_interface(metaclass=abc.ABCMeta):
 
 
     @abc.abstractmethod
-    def __init__(self, imbound_vars=None, **kwargs):
+    def __init__(self, imbound_vars=None, imbound_info=None):
 
         """
         Constructor for the imbound unit
@@ -30,56 +30,43 @@ class imbound_interface(metaclass=abc.ABCMeta):
                 imbound_vars[0] --> indicator variable for immersed boundary
                 imbound_vars[1] --> velocity variable
 
-        **kwargs : Dictionary of keyword arguments
+        imbound_info : Dictionary of keyword arguments
 
         'with_ib' - keyword to indicate if immersed boundary is present or not
                   - True if present
                   - False if not present
 
-        kwargs['with_ib'] = False --> default
-                          = True
+        imbound_info['with_ib'] = False --> default
+                                = True
 
-        Error generated if kwargs['with_ib'] is True and imbound_vars is None
+        Error generated if kwargs['with_ib'] is True and imbound_vars is empty
 
         """
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def map_to_grid(self, gridx, gridy, particles):
+    def map_to_grid(self, domain_data_struct):
         """
         Subroutine to map immersed boundary on grid
  
         Arguments
         ---------
-        gridx : object
-          Grid object for x-face variables
+        domain_data_struct : object list
+        [gridc, gridx, gridy, scalars, particles]
 
-        gridy : object
-          Grid object for y-face variables
-
-        particles: object
-           Object containing immersed boundary information
         """
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def force_flow(self, gridx, gridy, scalars, particles):
+    def force_flow(self, domain_data_struct):
 
         """
         Subroutine to compute immersed boundary forces
  
         Arguments
         ---------
-        gridx : object
-          Grid object for x-face variables
+        domain_data_struct : object list
+        [gridc, gridx, gridy, scalars, particles]
 
-        gridy : object
-          Grid object for y-face variables
-
-        scalars: object
-           Scalars object to access time-step and Reynold number
-
-        particles: object
-           Object containing immersed boundary information
         """
         raise NotImplementedError()

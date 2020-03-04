@@ -4,7 +4,7 @@ class Scalars(object):
     time-step, Reynolds number, etc.
     """
 
-    def __init__(self,**kwargs):
+    def __init__(self,scalar_info):
         """
         This constuctor allows user to create scalar variables 
         specific to their simulation. Essential variables are defined 
@@ -16,7 +16,7 @@ class Scalars(object):
         """
 
         self._set_default_values()
-        self._set_user_values(**kwargs)
+        self._set_user_values(scalar_info)
 
     def _set_default_values(self):
         """
@@ -29,12 +29,12 @@ class Scalars(object):
         self.variable = dict(zip(var_list, val_list))
         self.stats = dict()
 
-    def _set_user_values(self,**kwargs):
+    def _set_user_values(self,scalar_info):
         """
         Private subroutine to set user defined values
         """
-        for key,value in kwargs.items():
-            self.variable[key] = value
+        for key in scalar_info:
+            self.variable[key] = scalar_info[key]
 
     def advance(self):
         """
