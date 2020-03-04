@@ -34,29 +34,29 @@ class ins_main(ins_interface):
         from flowx.ins.solvers.stats import stats
         from flowx.ins.solvers.mass_balance import get_qin, get_qout, rescale_velocity, get_convvel, update_outflow_bc
 
-        self.velc = ins_vars[0]
-        self.hvar = ins_vars[1]
-        self.divv = ins_vars[2]
-        self.pres = ins_vars[3]
+        self._velc = ins_vars[0]
+        self._hvar = ins_vars[1]
+        self._divv = ins_vars[2]
+        self._pres = ins_vars[3]
 
         self._time_stepping = 'ab2'
 
         if 'time_stepping' in kwargs: self._time_stepping = kwargs['time_stepping']
 
         if self._time_stepping is 'euler':
-            self.predictor = predictor
+            self._predictor = predictor
         elif self._time_stepping is 'ab2':
-            self.predictor = predictor_AB2
+            self._predictor = predictor_AB2
   
-        self.divergence = divergence
-        self.corrector = corrector
-        self.stats = stats
+        self._divergence = divergence
+        self._corrector = corrector
+        self._stats = stats
 
-        self.get_qin = get_qin
-        self.get_qout = get_qout
-        self.rescale_velocity = rescale_velocity
-        self.get_convvel = get_convvel
-        self.update_outflow_bc = update_outflow_bc
+        self._get_qin = get_qin
+        self._get_qout = get_qout
+        self._rescale_velocity = rescale_velocity
+        self._get_convvel = get_convvel
+        self._update_outflow_bc = update_outflow_bc
 
         return
 
@@ -90,49 +90,49 @@ class ins_main(ins_interface):
         """
 
         # Compute mass in
-        Qin =  self.get_qin(gridx, self.velc) + self.get_qin(gridy, self.velc)
+        Qin =  self._get_qin(gridx, self._velc) + self._get_qin(gridy, self._velc)
 
         # Update BC for predictor step
-        self.update_outflow_bc(gridx, self.velc, scalars.variable['dt'])
-        self.update_outflow_bc(gridy, self.velc, scalars.variable['dt'])
+        self._update_outflow_bc(gridx, self._velc, scalars.variable['dt'])
+        self._update_outflow_bc(gridy, self._velc, scalars.variable['dt'])
 
         # Calculate predicted velocity: u* = dt*H(u^n)       
-        self.predictor(gridx, gridy, self.velc, self.hvar, scalars.variable['Re'], scalars.variable['dt'])
+        self._predictor(gridx, gridy, self._velc, self._hvar, scalars.variable['Re'], scalars.variable['dt'])
  
         # Immersed boundary forcing
         imbound.force_flow(gridx, gridy, scalars, particles)
 
-        gridx.fill_guard_cells(self.velc)
-        gridy.fill_guard_cells(self.velc)
+        gridx.fill_guard_cells(self._velc)
+        gridy.fill_guard_cells(self._velc)
 
         # Calculate RHS for the pressure Poission solver div(u)/dt
-        self.divergence(gridc, gridx, gridy, self.velc, self.divv, ifac = scalars.variable['dt'])
-        gridc.fill_guard_cells(self.divv)
+        self._divergence(gridc, gridx, gridy, self._velc, self._divv, ifac = scalars.variable['dt'])
+        gridc.fill_guard_cells(self._divv)
 
         # Compute mass out
-        Qout =  self.get_qout(gridx, self.velc) + self.get_qout(gridy, self.velc)
+        Qout =  self._get_qout(gridx, self._velc) + self._get_qout(gridy, self._velc)
 
         # Rescale velocity to balance mass
-        self.rescale_velocity(gridx, self.velc, Qin, Qout)
-        self.rescale_velocity(gridy, self.velc, Qin, Qout)
+        self._rescale_velocity(gridx, self._velc, Qin, Qout)
+        self._rescale_velocity(gridy, self._velc, Qin, Qout)
 
         # Update BC for corrector step
-        self.update_outflow_bc(gridx, self.velc, scalars.variable['dt'], convvel=[0.0,0.0,0.0,0.0])
-        self.update_outflow_bc(gridy, self.velc, scalars.variable['dt'], convvel=[0.0,0.0,0.0,0.0])
+        self._update_outflow_bc(gridx, self._velc, scalars.variable['dt'], convvel=[0.0,0.0,0.0,0.0])
+        self._update_outflow_bc(gridy, self._velc, scalars.variable['dt'], convvel=[0.0,0.0,0.0,0.0])
 
         # Solve pressure Poisson equation
         scalars.stats['ites'], scalars.stats['res'] = poisson.solve_poisson(gridc)
 
         # Calculate corrected velocity u^n+1 = u* - dt * grad(P) 
-        self.corrector(gridc, gridx, gridy, self.velc, self.pres, scalars.variable['dt'])
-        gridx.fill_guard_cells(self.velc)
-        gridy.fill_guard_cells(self.velc)
+        self._corrector(gridc, gridx, gridy, self._velc, self._pres, scalars.variable['dt'])
+        gridx.fill_guard_cells(self._velc)
+        gridy.fill_guard_cells(self._velc)
    
         # Calculate divergence of the corrected velocity to display stats
-        self.divergence(gridc, gridx, gridy, self.velc, self.divv)
-        gridc.fill_guard_cells(self.divv)
+        self._divergence(gridc, gridx, gridy, self._velc, self._divv)
+        gridc.fill_guard_cells(self._divv)
 
         # Calculate stats
-        scalars.stats.update(self.stats(gridc, gridx, gridy, self.velc, self.pres, self.divv))
+        scalars.stats.update(self._stats(gridc, gridx, gridy, self._velc, self._pres, self._divv))
 
         return

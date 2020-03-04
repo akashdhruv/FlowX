@@ -31,29 +31,28 @@ class imbound_main(imbound_interface):
 
         """
 
-        from flowx.imbound.solvers.stub_force import stub_force
-        from flowx.imbound.solvers.stub_compute import stub_compute
-        from flowx.imbound.solvers.force_levelset import force_levelset
-        from flowx.imbound.solvers.compute_levelset import compute_levelset
+        from flowx.imbound.solvers.force_flow import force_flow_stub, force_flow_levelset
+        from flowx.imbound.solvers.map_to_grid import map_to_grid_stub, map_to_grid_levelset
+
+        self._ibmf = 'stub'
+        self._velc = 'stub'
+
+        if imbound_vars is not None:
+            self._ibmf = imbound_vars[0]
+            self._velc = imbound_vars[1] 
+
 
         self._with_ib = False
-        self.ibmf = 'stub'
-        self.velc = 'stub'
 
         if 'with_ib' in kwargs: self._with_ib = kwargs['with_ib']
 
-        if imbound_vars is not None:
-            self.ibmf = imbound_vars[0]
-            self.velc = imbound_vars[1] 
-
+        self._force_flow  = force_flow_stub
+        self._map_to_grid = map_to_grid_stub
+ 
         if self._with_ib:
-            self.force = force_levelset
-            self.compute = compute_levelset
+            self._force_flow = force_flow_levelset
+            self._map_to_grid = map_to_grid_levelset
 
-        else:
-            self.force = stub_force
-            self.compute = stub_compute
-      
         if(self._with_ib and imbound_vars is None): raise ValueError('imbound_vars cannot be None when with_ib is True')
 
         return
@@ -74,7 +73,7 @@ class imbound_main(imbound_interface):
            Object containing immersed boundary information
         """
 
-        self.compute(gridx, gridy, particles, self.ibmf, self.velc)
+        self._map_to_grid(gridx, gridy, particles, self._ibmf, self._velc)
 
         return
 
@@ -98,6 +97,6 @@ class imbound_main(imbound_interface):
            Object containing immersed boundary information
         """
 
-        self.force(gridx, gridy, scalars, particles, self.ibmf, self.velc)
+        self._force_flow(gridx, gridy, scalars, particles, self._ibmf, self._velc)
 
         return

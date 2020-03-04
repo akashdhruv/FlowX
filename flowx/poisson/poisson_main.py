@@ -35,8 +35,8 @@ class poisson_main(poisson_interface):
         from flowx.poisson.solvers.serial.jacobi import solve_serial_jacobi
         from flowx.poisson.solvers.serial.cg import solve_serial_cg
 
-        self.ivar = poisson_vars[0]
-        self.rvar = poisson_vars[1]
+        self._ivar = poisson_vars[0]
+        self._rvar = poisson_vars[1]
 
         self._solver_type = 'serial_cg'
         self._maxiter = 2000
@@ -50,9 +50,9 @@ class poisson_main(poisson_interface):
 
 
         if self._solver_type is 'serial_cg':
-            self.solver = solve_serial_cg
+            self._solve_poisson = solve_serial_cg
         elif self._solver_type is 'serial_jacobi':
-            self.solver = solve_serial_jacobi
+            self._solve_poisson = solve_serial_jacobi
 
         return
 
@@ -68,6 +68,6 @@ class poisson_main(poisson_interface):
 
         """
 
-        ites, residual = self.solver(grid, self.ivar, self.rvar, self._maxiter, self._tol, self._verbose)
+        ites, residual = self._solve_poisson(grid, self._ivar, self._rvar, self._maxiter, self._tol, self._verbose)
 
         return ites, residual
