@@ -7,7 +7,7 @@ class poisson_main(poisson_interface):
     def __init__(self, poisson_vars, **kwargs):
 
         """
-        Constructor for the ins unit
+        Constructor for the Poisson unit
 
         Arguments
         ---------
