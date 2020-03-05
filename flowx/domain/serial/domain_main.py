@@ -1,6 +1,6 @@
-from flowx.domain.serial.grid import Grid
-from flowx.domain.serial.scalars import Scalars
-from flowx.domain.serial.particles import Particles
+from flowx.domain.serial.grid.grid import Grid
+from flowx.domain.serial.scalars.scalars import Scalars
+from flowx.domain.serial.particles.particles import Particles
 
 def domain_main(nx, ny, xmin, xmax, ymin, ymax, \
                 center_vars=None, face_vars=None, scalar_info=None, particle_info=None, \
