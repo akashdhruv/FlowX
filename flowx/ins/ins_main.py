@@ -41,8 +41,7 @@ class ins_main(ins_interface):
 
         self._time_stepping = 'ab2'
 
-        if ins_info:
-            if 'time_stepping' in ins_info: self._time_stepping = ins_info['time_stepping']
+        if ins_info and 'time_stepping' in ins_info: self._time_stepping = ins_info['time_stepping']
 
         if self._time_stepping is 'euler':
             self._predictor = predictor

@@ -42,8 +42,7 @@ class imbound_main(imbound_interface):
         self._force_flow  = force_flow_stub
         self._map_to_grid = map_to_grid_stub
 
-        if imbound_info:
-            if 'with_ib' in imbound_info: self._with_ib = imbound_info['with_ib']
+        if imbound_info and 'with_ib' in imbound_info: self._with_ib = imbound_info['with_ib']
 
         if self._with_ib:
             self._force_flow = force_flow_levelset
@@ -60,7 +59,7 @@ class imbound_main(imbound_interface):
 
         return
  
-    def map_to_grid(self, domain_stat_struct):
+    def map_to_grid(self, domain_data_struct):
         """
         Subroutine to map immersed boundary on grid
  
@@ -74,7 +73,7 @@ class imbound_main(imbound_interface):
         _gridy = domain_data_struct[2]
         _particles = domain_data_struct[4]
 
-        self._map_to_grid(_gridx, _gridy, _particles, self._ibmf, self._velc)
+        self._map_to_grid(_gridx, _gridy, _particles, self._ibmf)
 
         return
 

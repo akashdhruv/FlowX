@@ -23,12 +23,12 @@ def domain_main(nx, ny, xmin, xmax, ymin, ymax, \
         gridy = Grid('y-face', face_vars, nx, ny, xmin, xmax, ymin, ymax, \
                       user_bc_type=bc_type_facey, user_bc_val=bc_val_facey)
 
-    if scalar_info:
+    if scalar_info: 
         scalars = Scalars(scalar_info)
 
     if particle_info:
-        particles = Particles(particle_info)
- 
-    domain_data_struct = [gridc, gridx, gridy, scalars, particles]
-   
+        particles = [Particles(info) for info in particle_info]
+
+    domain_data_struct = [gridc, gridx, gridy, scalars, particles] 
+  
     return domain_data_struct
