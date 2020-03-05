@@ -49,8 +49,8 @@ def map_to_grid_levelset(gridx, gridy, particles, ibmf):
     levelset_y = particles[0].radius - numpy.sqrt((Xfy-particles[0].x)**2 + (Yfy-particles[0].y)**2)
 
     for particle in particles[1:]:
-            levelset_x = numpy.maximum(levelset_x,particle.radius - numpy.sqrt((Xfx-particle.x)**2 + (Yfx-particle.y)**2))
-            levelset_y = numpy.maximum(levelset_y,particle.radius - numpy.sqrt((Xfy-particle.x)**2 + (Yfy-particle.y)**2))
+        levelset_x = numpy.maximum(levelset_x,particle.radius - numpy.sqrt((Xfx-particle.x)**2 + (Yfx-particle.y)**2))
+        levelset_y = numpy.maximum(levelset_y,particle.radius - numpy.sqrt((Xfy-particle.x)**2 + (Yfy-particle.y)**2))
 
     gridx.set_values(ibmf, levelset_x.transpose())
     gridy.set_values(ibmf, levelset_y.transpose()) 
