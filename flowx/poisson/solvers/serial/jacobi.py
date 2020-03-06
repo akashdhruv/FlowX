@@ -3,7 +3,7 @@
 import numpy
 
 
-def solve_serial_jacobi(grid, ivar, rvar, verbose, maxiter, tol):
+def solve_serial_jacobi(grid, ivar, rvar, options):
     """Solve the Poisson system using a Jacobi method.
 
     Arguments
@@ -14,15 +14,7 @@ def solve_serial_jacobi(grid, ivar, rvar, verbose, maxiter, tol):
         Name of the grid variable of the numerical solution.
     rvar : string
         Name of the grid variable of the right-hand side.
-    maxiter : integer, optional
-        Maximum number of iterations;
-        default: 3000
-    tol : float, optional
-        Exit-criterion tolerance;
-        default: 1e-9
-    verbose : bool, optional
-        Set True to display convergence information;
-        default: False.
+    options : dictionary
 
     Returns
     -------
@@ -31,6 +23,10 @@ def solve_serial_jacobi(grid, ivar, rvar, verbose, maxiter, tol):
     residual: float
         Final residual.
     """
+
+    maxiter = options['maxiter']
+    tol = options['tol']
+    verbose = options['verbose']
 
     phi = grid.get_values(ivar)
     b = grid.get_values(rvar)

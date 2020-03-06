@@ -14,13 +14,23 @@ class ins_interface(metaclass=abc.ABCMeta):
 
 
     @abc.abstractmethod
-    def __init__(self, ins_vars=None, ins_info=None):
+    def __init__(self, poisson=None, imbound=None, domain_data_struct=[None]*5, ins_vars=[None]*4, ins_info=None):
 
         """
         Constructor for the ins unit
 
         Arguments
         ---------
+
+        poisson : object
+            Object for the poisson solver
+
+        imbound : object
+            Object for the immersed boundary unit
+
+        domain_data_struct : object list
+          [gridc, gridx, gridy, scalars, particles]
+
 
         ins_vars : list
                 List of string for field variables required by ins unit
@@ -42,22 +52,11 @@ class ins_interface(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def advance(self, poisson, imbound, domain_data_struct):
+    def advance(self):
 
         """
         Subroutine for the fractional step explicit time advancement of Navier Stokes equations
  
-        Arguments
-        ---------
-        poisson : object
-            Object for the poisson solver
-
-        imbound : object
-            Object for the immersed boundary unit
-
-        domain_data_struct : object list
-          [gridc, gridx, gridy, scalars, particles]
-
         """
 
         raise NotImplementedError()

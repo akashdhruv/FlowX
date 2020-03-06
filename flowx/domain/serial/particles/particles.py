@@ -22,19 +22,19 @@ class Particles(object):
 
         self.x = self.xo
         self.y = self.yo
-      
-    def advance(self, scalars):
+     
+    def advance(self,time):
         """
         Subroutine to advance the particle data
         """
 
         if self.freq:
-            self.x = self.xo + numpy.sin(2.*numpy.pi*self.freq[0]*scalars.variable['time']) 
-            self.y = self.yo + numpy.sin(2.*numpy.pi*self.freq[1]*scalars.variable['time'])
+            self.x = self.xo + numpy.sin(2.*numpy.pi*self.freq[0]*time) 
+            self.y = self.yo + numpy.sin(2.*numpy.pi*self.freq[1]*time)
 
-            self.velx = 2.*numpy.pi*self.freq[0]*numpy.cos(2.*numpy.pi*self.freq[0]*scalars.variable['time'])
-            self.vely = 2.*numpy.pi*self.freq[1]*numpy.cos(2.*numpy.pi*self.freq[1]*scalars.variable['time'])
+            self.velx = 2.*numpy.pi*self.freq[0]*numpy.cos(2.*numpy.pi*self.freq[0]*time)
+            self.vely = 2.*numpy.pi*self.freq[1]*numpy.cos(2.*numpy.pi*self.freq[1]*time)
 
         else:
-            self.x = self.xo + scalars.variable['time']*self.velx
-            self.y = self.yo + scalars.variable['time']*self.vely        
+            self.x = self.xo + time*self.velx
+            self.y = self.yo + time*self.vely        

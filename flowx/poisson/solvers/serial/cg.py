@@ -3,7 +3,7 @@
 import numpy
 
 
-def solve_serial_cg(grid, ivar, rvar, verbose, maxiter, tol):
+def solve_serial_cg(grid, ivar, rvar, options):
     """Solve the Poisson system using a conjugate-gradient method.
 
     Arguments
@@ -14,17 +14,8 @@ def solve_serial_cg(grid, ivar, rvar, verbose, maxiter, tol):
         Name of the grid variable of the numerical solution.
     rvar : string
         Name of the grid variable of the right-hand side.
-    M : numpy.ndarray, optional
-        Preconditioner; default: None (no preconditioner).
-    maxiter : integer, optional
-        Maximum number of iterations;
-        default: 3000
-    tol : float, optional
-        Exit-criterion tolerance;
-        default: 1e-9
-    verbose : bool, optional
-        Set True to display convergence information;
-        default: False.
+
+    options: dictionary
 
     Returns
     -------
@@ -33,6 +24,11 @@ def solve_serial_cg(grid, ivar, rvar, verbose, maxiter, tol):
     residual: float
         Final residual.
     """
+
+    verbose = options['verbose']
+    maxiter = options['maxiter']
+    tol = options['tol']
+
     def A(p):
         return ((p[:-2, 1:-1] - 2 * p[1:-1, 1:-1] + p[2:, 1:-1]) / dx**2 +
                 (p[1:-1, :-2] - 2 * p[1:-1, 1:-1] + p[1:-1, 2:]) / dy**2)

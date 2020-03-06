@@ -4,13 +4,17 @@ from flowx.poisson.poisson_interface import poisson_interface
 
 class poisson_main(poisson_interface):
 
-    def __init__(self, poisson_vars=None, poisson_info=None):
+    def __init__(self, grid=None, poisson_vars=[None]*2, poisson_info=None):
 
         """
         Constructor for the Poisson unit
 
         Arguments
         ---------
+
+        grid : object
+
+             Grid object where the poisson equation needs to be solved
 
         poisson_vars : list
                 List of string for field variables required by poisson unit
@@ -35,51 +39,37 @@ class poisson_main(poisson_interface):
         from flowx.poisson.solvers.serial.jacobi import solve_serial_jacobi
         from flowx.poisson.solvers.serial.cg import solve_serial_cg
         from flowx.poisson.solvers.serial.direct import solve_serial_direct
+        from flowx.poisson.solvers.serial.sparse import build_serial_sparse
+        from flowx.poisson.solvers.serial.stub import solve_serial_stub
 
-        self._ivar = 'stub'
-        self._rvar = 'stub'
+        self._grid = grid
 
-        self._solver_type = 'serial_cg'
-        self._maxiter = 2000
-        self._tol = 1e-9
-        self._verbose = False
+        [self._ivar, self._rvar] = poisson_vars
 
-        if poisson_info:
-            if 'poisson_solver' in poisson_info: self._solver_type = poisson_info['poisson_solver']
-            if 'maxiter' in poisson_info: self._maxiter = poisson_info['maxiter']
-            if 'tol' in poisson_info: self._tol = poisson_info['tol']
-            if 'verbose' in poisson_info: self._verbose = poisson_info['verbose']
+        self._options = {'poisson_solver' : 'serial_cg', 'maxiter': 2000, 'tol' : 1e-9, 'verbose' : False}
 
-        if self._solver_type is 'serial_cg':
-            self._solve_poisson = solve_serial_cg
-        elif self._solver_type is 'serial_jacobi':
-            self._solve_poisson = solve_serial_jacobi
-        elif self._solver_type is 'serial_direct':
-            self._solve_poisson = solve_serial_direct
-            self._maxiter=None
-            self._tol=None
+        if poisson_info: 
+            for key in poisson_info: self._options[key] = poisson_info[key]
 
-        if poisson_vars:
-            self._ivar = poisson_vars[0]
-            self._rvar = poisson_vars[1]
+        self._iterative_solvers = {'serial_cg' : solve_serial_cg, 'serial_jacobi': solve_serial_jacobi}
+        self._direct_solvers = {'serial_direct' : solve_serial_direct}
 
-        else:
-            print('Warning: Poisson unit is a stub, any call to its methods will result in an error.') 
+        self._solve_poisson = {**self._iterative_solvers, **self._direct_solvers}[self._options['poisson_solver']]
 
+        if(self._options['poisson_solver'] in self._direct_solvers and not None in [self._grid, self._ivar]): 
+            self._options['mtx'] = build_serial_sparse(self._grid, self._ivar)
+
+        if not grid or None in poisson_vars:
+            self._solve_poisson = solve_serial_stub
+            print('Warning: Poisson unit is a stub') 
+ 
         return
 
-    def solve_poisson(self, grid):
+    def solve_poisson(self):
         """ Subroutine to solve poisson equation
-
-        Arguments
-        ---------
-
-        grid : object
-
-             Grid object where the poisson equation needs to be solved
 
         """
 
-        ites, residual = self._solve_poisson(grid, self._ivar, self._rvar, self._verbose, self._maxiter, self._tol)
+        ites, residual = self._solve_poisson(self._grid, self._ivar, self._rvar, self._options)
 
         return ites, residual

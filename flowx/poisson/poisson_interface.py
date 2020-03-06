@@ -14,13 +14,16 @@ class poisson_interface(metaclass=abc.ABCMeta):
 
 
     @abc.abstractmethod
-    def __init__(self, poisson_vars=None, poisson_info=None):
+    def __init__(self, grid=None, poisson_vars=[None]*2, poisson_info=None):
 
         """
         Constructor for the Poisson unit
 
         Arguments
         ---------
+        grid : object
+
+             Grid object where the poisson equation needs to be solved
 
         poisson_vars : list
                 List of string for field variables required by poisson unit
@@ -45,16 +48,8 @@ class poisson_interface(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def solve_poisson(self, grid):
+    def solve_poisson(self):
         """ Subroutine to solve poisson equation
 
-        Arguments
-        ---------
-
-        grid : object
-
-             Grid object where the poisson equation needs to be solved
-
         """
-
         raise NotImplementedError()

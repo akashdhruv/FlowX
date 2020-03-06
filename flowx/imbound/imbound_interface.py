@@ -16,13 +16,15 @@ class imbound_interface(metaclass=abc.ABCMeta):
 
 
     @abc.abstractmethod
-    def __init__(self, imbound_vars=None, imbound_info=None):
+    def __init__(self, domain_data_struct=[None]*5, imbound_vars=None, imbound_info=None):
 
         """
         Constructor for the imbound unit
 
         Arguments
         ---------
+        domain_data_struct : object list
+               [gridc, gridx, gridy, scalars, particles]
 
         imbound_vars : list
                 List of string for field variables required by ins unit
@@ -45,28 +47,18 @@ class imbound_interface(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def map_to_grid(self, domain_data_struct):
+    def map_to_grid(self):
         """
         Subroutine to map immersed boundary on grid
  
-        Arguments
-        ---------
-        domain_data_struct : object list
-        [gridc, gridx, gridy, scalars, particles]
-
         """
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def force_flow(self, domain_data_struct):
+    def force_flow(self):
 
         """
         Subroutine to compute immersed boundary forces
  
-        Arguments
-        ---------
-        domain_data_struct : object list
-        [gridc, gridx, gridy, scalars, particles]
-
         """
         raise NotImplementedError()
