@@ -73,15 +73,22 @@ class ins_main(ins_interface):
 
         if None in domain_data_struct or None in ins_vars:
             self._ins_advance = self._advance_stub
-            print('Warning: Incomp NS unit is a stub, any call to its methods will result in an error.') 
+            print('Warning: Incomp NS unit is a stub.') 
 
     def advance(self):
         """
         Subroutine for the fractional step explicit time advancement of Navier Stokes equations 
         """
+
         self._ins_advance()
+  
+        return
 
     def _advance_stub(self):
+        """
+        Stub subroutine for the fractional step explicit time advancement of Navier Stokes equations 
+        """
+
         return
 
     def _advance_(self):
