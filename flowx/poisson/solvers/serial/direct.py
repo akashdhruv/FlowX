@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.sparse as sps
 from scipy.sparse.linalg.dsolve import linsolve
+from scipy.sparse import spdiags, csr_matrix
 
 def solve_serial_direct(grid, ivar, rvar, verbose, *args):
 
