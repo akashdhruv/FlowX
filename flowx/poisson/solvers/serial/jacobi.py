@@ -3,7 +3,7 @@
 import numpy
 
 
-def solve_serial_jacobi(grid, ivar, rvar, maxiter, tol, verbose):
+def solve_serial_jacobi(grid, ivar, rvar, verbose, maxiter, tol):
     """Solve the Poisson system using a Jacobi method.
 
     Arguments
