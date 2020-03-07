@@ -92,10 +92,11 @@ class ins_main(ins_interface):
         return
 
     def _advance_(self):
-
         """
         Subroutine for the fractional step explicit time advancement of Navier Stokes equations 
         """
+
+        import time
 
         # Compute mass in
         _Qin =  self._get_qin(self._gridx, self._velc) + self._get_qin(self._gridy, self._velc)
@@ -129,7 +130,13 @@ class ins_main(ins_interface):
         self._update_outflow_bc(self._gridy, self._velc, self._scalars.dt, convvel=[0.0,0.0,0.0,0.0])
 
         # Solve pressure Poisson equation
+        time_poisson_begin = time.time()
+
         self._scalars.stats['ites'], self._scalars.stats['res'] = self._poisson.solve_poisson()
+
+        time_poisson_end = time.time()
+
+        self._scalars.stats['poisson_time'] = time_poisson_end - time_poisson_begin
 
         # Calculate corrected velocity u^n+1 = u* - dt * grad(P) 
         self._corrector(self._gridc, self._gridx, self._gridy, self._velc, self._pres, self._scalars.dt)

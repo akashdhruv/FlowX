@@ -14,6 +14,7 @@ def display_stats(scalars):
     print('------------ Time = {} ---------------'.format(scalars.time))
     print('Number of poisson iterations    : {}'.format(scalars.stats['ites']))
     print('Final poisson residual : {}'.format(scalars.stats['res']))
+    print('Total poisson time : {}'.format(scalars.stats['poisson_time']))
     print('Max, Min, U   : {}, {}'.format(scalars.stats['max_u'], scalars.stats['min_u']))
     print('Max, Min, V   : {}, {}'.format(scalars.stats['max_v'], scalars.stats['min_v']))
     print('Max, Min, P   : {}, {}'.format(scalars.stats['max_p'], scalars.stats['min_p']))
