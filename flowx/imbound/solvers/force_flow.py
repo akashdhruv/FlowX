@@ -67,13 +67,13 @@ def force_flow_levelset(gridx, gridy, scalars, particles, ibmf, velc):
 
     for particle in particles:
 
-        levelset_x = particle.radius - numpy.sqrt((Xfx-particle.x)**2 + (Yfx-particle.y)**2)
-        levelset_y = particle.radius - numpy.sqrt((Xfy-particle.x)**2 + (Yfy-particle.y)**2)
+        levelset_x = particle.radius - numpy.sqrt((Xfx-particle.x[0])**2 + (Yfx-particle.x[1])**2)
+        levelset_y = particle.radius - numpy.sqrt((Xfy-particle.x[0])**2 + (Yfy-particle.x[1])**2)
 
         indx = numpy.where(levelset_x >= 0.0)
         indy = numpy.where(levelset_y >= 0.0)
 
-        u[indx] = particle.velx
-        v[indy] = particle.vely
+        u[indx] = particle.vel[0]
+        v[indy] = particle.vel[1]
 
     return

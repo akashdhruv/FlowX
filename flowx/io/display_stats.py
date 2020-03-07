@@ -11,7 +11,7 @@ def display_stats(scalars):
     scalars : object
             Scalar class object containing neccesary information for head up display
     """
-    print('------------ Time = {} ---------------'.format(scalars.variable['time']))
+    print('------------ Time = {} ---------------'.format(scalars.time))
     print('Number of poisson iterations    : {}'.format(scalars.stats['ites']))
     print('Final poisson residual : {}'.format(scalars.stats['res']))
     print('Max, Min, U   : {}, {}'.format(scalars.stats['max_u'], scalars.stats['min_u']))

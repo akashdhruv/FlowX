@@ -101,12 +101,11 @@ class ins_main(ins_interface):
         _Qin =  self._get_qin(self._gridx, self._velc) + self._get_qin(self._gridy, self._velc)
 
         # Update BC for predictor step
-        self._update_outflow_bc(self._gridx, self._velc, self._scalars.variable['dt'])
-        self._update_outflow_bc(self._gridy, self._velc, self._scalars.variable['dt'])
+        self._update_outflow_bc(self._gridx, self._velc, self._scalars.dt)
+        self._update_outflow_bc(self._gridy, self._velc, self._scalars.dt)
 
         # Calculate predicted velocity: u* = dt*H(u^n)       
-        self._predictor(self._gridx, self._gridy, self._velc, self._hvar, \
-                        self._scalars.variable['Re'],self._scalars.variable['dt'])
+        self._predictor(self._gridx, self._gridy, self._velc, self._hvar, self._scalars.Re,self._scalars.dt)
  
         # Immersed boundary forcing
         self._imbound.force_flow()
@@ -115,7 +114,7 @@ class ins_main(ins_interface):
         self._gridy.fill_guard_cells(self._velc)
 
         # Calculate RHS for the pressure Poission solver div(u)/dt
-        self._divergence(self._gridc, self._gridx, self._gridy, self._velc, self._divv, ifac = self._scalars.variable['dt'])
+        self._divergence(self._gridc, self._gridx, self._gridy, self._velc, self._divv, ifac = self._scalars.dt)
         self._gridc.fill_guard_cells(self._divv)
 
         # Compute mass out
@@ -126,14 +125,14 @@ class ins_main(ins_interface):
         self._rescale_velocity(self._gridy, self._velc, _Qin, _Qout)
 
         # Update BC for corrector step
-        self._update_outflow_bc(self._gridx, self._velc, self._scalars.variable['dt'], convvel=[0.0,0.0,0.0,0.0])
-        self._update_outflow_bc(self._gridy, self._velc, self._scalars.variable['dt'], convvel=[0.0,0.0,0.0,0.0])
+        self._update_outflow_bc(self._gridx, self._velc, self._scalars.dt, convvel=[0.0,0.0,0.0,0.0])
+        self._update_outflow_bc(self._gridy, self._velc, self._scalars.dt, convvel=[0.0,0.0,0.0,0.0])
 
         # Solve pressure Poisson equation
         self._scalars.stats['ites'], self._scalars.stats['res'] = self._poisson.solve_poisson()
 
         # Calculate corrected velocity u^n+1 = u* - dt * grad(P) 
-        self._corrector(self._gridc, self._gridx, self._gridy, self._velc, self._pres, self._scalars.variable['dt'])
+        self._corrector(self._gridc, self._gridx, self._gridy, self._velc, self._pres, self._scalars.dt)
         self._gridx.fill_guard_cells(self._velc)
         self._gridy.fill_guard_cells(self._velc)
    

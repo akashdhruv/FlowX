@@ -11,30 +11,25 @@ class Particles(object):
         specific to their simulation.
         """
 
-        self.xo, self.yo, self.radius, self.velx, self.vely, self.freq = [0.0]*6
+        self.xo, self.radius, self.vel, self.freq = [0.0]*4
 
-        if 'xo' in particle_info: self.xo = particle_info['xo']
-        if 'yo' in particle_info: self.yo = particle_info['yo']
-        if 'radius' in particle_info: self.radius = particle_info['radius']
-        if 'velx' in particle_info: self.velx = particle_info['velx']
-        if 'vely' in particle_info: self.vely = particle_info['vely']
-        if 'freq' in particle_info: self.freq = particle_info['freq']
+        for key, value in particle_info.items(): setattr(self, key, numpy.array(value))
 
         self.x = self.xo
-        self.y = self.yo
-     
+
+        #members = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
+
+        #for member in members:
+        #    setattr(self, member, numpy.array(getattr(self, member))) 
+
     def advance(self,scalars):
         """
         Subroutine to advance the particle data
         """
 
         if self.freq:
-            self.x = self.xo + numpy.sin(2.*numpy.pi*self.freq[0]*scalars.variable['time']) 
-            self.y = self.yo + numpy.sin(2.*numpy.pi*self.freq[1]*scalars.variable['time'])
-
-            self.velx = 2.*numpy.pi*self.freq[0]*numpy.cos(2.*numpy.pi*self.freq[0]*scalars.variable['time'])
-            self.vely = 2.*numpy.pi*self.freq[1]*numpy.cos(2.*numpy.pi*self.freq[1]*scalars.variable['time'])
+            self.x = self.xo + numpy.sin(2.*numpy.pi*self.freq*scalars.time) 
+            self.vel = 2.*numpy.pi*self.freq*numpy.cos(2.*numpy.pi*self.freq*scalars.time)
 
         else:
-            self.x = self.xo + scalars.variable['time']*self.velx
-            self.y = self.yo + scalars.variable['time']*self.vely        
+            self.x = self.xo + scalars.time*self.vel

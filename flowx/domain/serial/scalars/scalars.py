@@ -23,22 +23,18 @@ class Scalars(object):
         Private subroutine to set default values
         """
 
-        var_list = ['to', 'tmax', 'time', 'dt', 'nstep']
-        val_list = [0.0, 0.0, 0.0, 1.0, 0]
-
-        self.variable = dict(zip(var_list, val_list))
+        self.to, self.tmax, self.time, self.dt, self.nstep = [0.0, 0.0, 0.0, 1.0, 0]
         self.stats = dict()
 
     def _set_user_values(self,scalar_info):
         """
         Private subroutine to set user defined values
         """
-        for key in scalar_info:
-            self.variable[key] = scalar_info[key]
+        for key, value in scalar_info.items(): setattr(self, key, value)
 
     def advance(self):
         """
         Subroutine to advance the simulation time and time-step
         """
-        self.variable['time'] += self.variable['dt']
-        self.variable['nstep'] += 1
+        self.time  += self.dt
+        self.nstep += 1
