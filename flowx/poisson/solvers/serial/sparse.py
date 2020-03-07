@@ -2,6 +2,7 @@ import numpy as np
 import scipy.sparse as sps
 from scipy.sparse.linalg.dsolve import linsolve
 from scipy.sparse import spdiags, csr_matrix
+from scipy.sparse import linalg as sla
 
 def build_serial_sparse(grid, ivar):
 
@@ -64,4 +65,6 @@ def build_serial_sparse(grid, ivar):
         
     mtx = mtx.tocsr()
 
-    return mtx
+    lu = sla.splu(mtx.tocsc())
+
+    return lu, mtx

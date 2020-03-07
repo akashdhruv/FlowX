@@ -40,6 +40,7 @@ class poisson_main(poisson_interface):
         from flowx.poisson.solvers.serial.cg import solve_serial_cg
         from flowx.poisson.solvers.serial.direct import solve_serial_direct
         from flowx.poisson.solvers.serial.sparse import build_serial_sparse
+        from flowx.poisson.solvers.serial.superlu import solve_serial_lu
         from flowx.poisson.solvers.serial.stub import solve_serial_stub
 
         self._grid = grid
@@ -52,12 +53,11 @@ class poisson_main(poisson_interface):
             for key in poisson_info: self._options[key] = poisson_info[key]
 
         self._iterative_solvers = {'serial_cg' : solve_serial_cg, 'serial_jacobi': solve_serial_jacobi}
-        self._direct_solvers = {'serial_direct' : solve_serial_direct}
+        self._direct_solvers = {'serial_direct' : solve_serial_direct, 'serial_lu' : solve_serial_lu}
 
         self._solve_poisson = {**self._iterative_solvers, **self._direct_solvers}[self._options['poisson_solver']]
 
-        if(self._options['poisson_solver'] in self._direct_solvers and not None in [self._grid, self._ivar]): 
-            self._options['mtx'] = build_serial_sparse(self._grid, self._ivar)
+        self._options['lu'], self._options['mtx'] = build_serial_sparse(self._grid, self._ivar)
 
         if not grid or None in poisson_vars:
             self._solve_poisson = solve_serial_stub
