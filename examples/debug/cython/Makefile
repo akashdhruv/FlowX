@@ -33,4 +33,4 @@ clean.sim:
 	rm *.c *.o $(EXE)
 
 clean.dist:
-	rm -r -f build dist simulation.spec
+	rm -r -f build dist *.spec
