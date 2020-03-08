@@ -57,7 +57,7 @@ class poisson_main(poisson_interface):
 
         self._solve_poisson = {**self._iterative_solvers, **self._direct_solvers}[self._options['poisson_solver']]
 
-        self._options['lu'], self._options['mtx'] = build_serial_sparse(self._grid, self._ivar)
+        if grid and poisson_vars: self._options['lu'], self._options['mtx'] = build_serial_sparse(self._grid, self._ivar)
 
         if not grid or None in poisson_vars:
             self._solve_poisson = solve_serial_stub
