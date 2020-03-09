@@ -52,7 +52,7 @@ def main():
                            tol = 1e-10,
                        with_ib = True)
 
-    particle_info = [dict(xo = [0.0, 4.0], radius = 0.5, vel = [0.0, -1.0])]
+    particle_info = [dict(file='sm_body.00001.h5', vel = [0.0, -1.0])]
 
     # Define boundary conditions for variable pressure and velocity [left, right, bottom, top]
     bc_type_center = dict(pres = ['neumann', 'neumann', 'neumann', 'neumann'])

@@ -98,6 +98,8 @@ class ins_main(ins_interface):
 
         import time
 
+        time_ins_start = time.time()
+
         # Compute mass in
         _Qin =  self._get_qin(self._gridx, self._velc) + self._get_qin(self._gridy, self._velc)
 
@@ -146,6 +148,10 @@ class ins_main(ins_interface):
         # Calculate divergence of the corrected velocity to display stats
         self._divergence(self._gridc, self._gridx, self._gridy, self._velc, self._divv)
         self._gridc.fill_guard_cells(self._divv)
+
+        # Calculate total INS time
+        time_ins_end = time.time()
+        self._scalars.stats['ins_time'] = time_ins_end - time_ins_start
 
         # Calculate stats
         self._scalars.stats.update(self._stats(self._gridc, self._gridx, self._gridy, self._velc, self._pres, self._divv))

@@ -1,11 +1,7 @@
 """Set up package."""
 
 import os
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
-
+from setuptools import setup, find_packages
 
 # Get version and release info.
 version_file = os.path.join('flowx', 'version.py')
@@ -25,7 +21,7 @@ options = dict(name=NAME,
                author_email=AUTHOR_EMAIL,
                platforms=PLATFORMS,
                version=VERSION,
-               packages=PACKAGES,
+               packages=find_packages(),
                package_data=PACKAGE_DATA,
                requires=REQUIRES)
 

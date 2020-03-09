@@ -1,4 +1,5 @@
 import numpy
+import h5py
 
 class Particles(object):
     """
@@ -11,25 +12,32 @@ class Particles(object):
         specific to their simulation.
         """
 
-        self.xo, self.radius, self.vel, self.freq = [0.0]*4
+        particle_file = h5py.File(particle_info['file'],'r')
+        mesh = particle_file['mesh']
 
-        for key, value in particle_info.items(): setattr(self, key, numpy.array(value))
+        self.nnp = numpy.array(mesh['nnp'])[0]
+ 
+        xp = numpy.array(mesh['x'])
+        xp = numpy.reshape(xp, (self.nnp, 1))
+
+        yp = numpy.array(mesh['y'])
+        yp = numpy.reshape(yp, (self.nnp, 1))
+
+        self.xo = numpy.concatenate((xp,yp), axis=1)      
 
         self.x = self.xo
+        self.vel = numpy.zeros_like(self.xo)
+        self.freq = numpy.zeros_like(self.xo)
 
+        self.vel[:,0] = particle_info['vel'][0]
+        self.vel[:,1] = particle_info['vel'][1]
+
+        # Procedure to find member variables
         #members = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
-
-        #for member in members:
-        #    setattr(self, member, numpy.array(getattr(self, member))) 
 
     def advance(self,scalars):
         """
         Subroutine to advance the particle data
         """
 
-        if self.freq:
-            self.x = self.xo + numpy.sin(2.*numpy.pi*self.freq*scalars.time) 
-            self.vel = 2.*numpy.pi*self.freq*numpy.cos(2.*numpy.pi*self.freq*scalars.time)
-
-        else:
-            self.x = self.xo + scalars.time*self.vel
+        self.x = self.xo + scalars.time*self.vel
