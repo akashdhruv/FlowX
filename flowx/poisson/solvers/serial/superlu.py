@@ -37,7 +37,7 @@ def solve_serial_lu(grid, ivar, rvar, options):
     grid.fill_guard_cells(ivar)
 
     if verbose:
-        print('Direct Solver:')
+        print('LU Decomposition:')
         print('- Final residual: {}'.format(residual))
 
     return None, residual
