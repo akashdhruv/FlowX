@@ -12,8 +12,8 @@ class Particles(object):
         specific to their simulation.
         """
 
-        particle_file = h5py.File(particle_info['file'],'r')
-        mesh = particle_file['mesh']
+        particle_dict = h5py.File(particle_info['file'],'r')
+        mesh = particle_dict['mesh']
 
         self.nnp = numpy.array(mesh['nnp'])[0]
  
