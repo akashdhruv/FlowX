@@ -17,11 +17,11 @@ class TestGrid(unittest.TestCase):
         self.nx, self.ny = 10, 20
         self.xmin, self.xmax = 0.0, 1.0
         self.ymin, self.ymax = -0.5, 0.5
-        self.grid = flowx.Grid('cell-centered',
-                                 self.var_names,
-                                 self.nx, self.ny,
+        self.domain = flowx.serial.domain_main(self.nx, self.ny,
                                  self.xmin, self.xmax,
-                                 self.ymin, self.ymax)
+                                 self.ymin, self.ymax, self.var_names)
+
+        self.grid = self.domain[0]
 
     def test_init(self):
         """Test initialization of attributes."""
