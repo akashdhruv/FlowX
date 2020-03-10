@@ -44,8 +44,8 @@ class ins_main(ins_interface):
         from flowx.ins.solvers.mass_balance import get_qin, get_qout, rescale_velocity, get_convvel, update_outflow_bc
 
 
-        [self._gridc, self._gridx, self._gridy, self._scalars, self._particles] = domain_data_struct
-        [self._velc, self._hvar, self._divv, self._pres] = ins_vars
+        self._gridc, self._gridx, self._gridy, self._scalars, self._particles = domain_data_struct
+        self._velc, self._hvar, self._divv, self._pres = ins_vars
 
         self._options = {'time_stepping' : 'ab2'}
 

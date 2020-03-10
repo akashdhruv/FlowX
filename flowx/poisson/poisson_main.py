@@ -45,7 +45,7 @@ class poisson_main(poisson_interface):
 
         self._grid = grid
 
-        [self._ivar, self._rvar] = poisson_vars
+        self._ivar, self._rvar = poisson_vars
 
         self._options = {'poisson_solver' : 'serial_cg', 'maxiter': 2000, 'tol' : 1e-9, 'verbose' : False}
 

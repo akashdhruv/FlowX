@@ -27,7 +27,7 @@ def domain_main(nx, ny, xmin, xmax, ymin, ymax, \
         scalars = Scalars(scalar_info)
 
     if particle_info:
-        particles = [Particles(info) for info in particle_info]
+        particles = [Particles(info, xmin, xmax, ymin, ymax, scalars) for info in particle_info]
 
     domain_data_struct = [gridc, gridx, gridy, scalars, particles] 
   

@@ -6,11 +6,16 @@ class Particles(object):
     Class to store and advance particle data related to the immersed boundary 
     """
 
-    def __init__(self,particle_info):
+    def __init__(self,particle_info, xmin, xmax, ymin, ymax, scalars):
         """
         This constuctor allows user to initialize immersed boundary particles
         specific to their simulation.
         """
+
+        self._scalars = scalars
+
+        self.xmin = numpy.array([xmin, ymin]) 
+        self.xmax = numpy.array([xmax, ymax])
 
         particle_dict = h5py.File(particle_info['file'],'r')
         mesh = particle_dict['mesh']
@@ -35,9 +40,9 @@ class Particles(object):
         # Procedure to find member variables
         #members = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
 
-    def advance(self,scalars):
+    def advance(self):
         """
         Subroutine to advance the particle data
         """
 
-        self.x = self.xo + scalars.time*self.vel
+        self.x = self.xo + self._scalars.time*self.vel

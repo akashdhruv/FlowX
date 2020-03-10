@@ -37,9 +37,9 @@ class imbound_main(imbound_interface):
         from flowx.imbound.solvers.force_flow import force_flow_stub, force_flow_levelset
         from flowx.imbound.solvers.map_to_grid import map_to_grid_stub, map_to_grid_levelset
 
-        [self._gridc, self._gridx, self._gridy, self._scalars, self._particles] = domain_data_struct
+        self._gridc, self._gridx, self._gridy, self._scalars, self._particles = domain_data_struct
 
-        [self._ibmf, self._velc] = imbound_vars
+        self._ibmf, self._velc = imbound_vars
 
         self._options = {'with_ib' : False}
  

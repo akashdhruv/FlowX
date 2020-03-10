@@ -85,7 +85,7 @@ def main():
 
         ins.advance()
 
-        for particle in particles: particle.advance(scalars)
+        for particle in particles: particle.advance()
 
         scalars.advance()
     
