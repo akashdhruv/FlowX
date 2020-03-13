@@ -65,9 +65,11 @@ def force_flow_levelset(gridx, gridy, scalars, particles, ibmf, velc):
     ibx = gridx.get_values(ibmf)
     iby = gridy.get_values(ibmf)
 
+    indx = numpy.where(ibx >= 0.0)
+    indy = numpy.where(iby >= 0.0)
+
     for particle in particles:
-        indx = numpy.where(ibx >= 0.0)
-        indy = numpy.where(iby >= 0.0)
         u[indx] = particle.vel[0,0]
         v[indy] = particle.vel[0,1]
+
     return

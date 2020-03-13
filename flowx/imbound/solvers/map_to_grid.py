@@ -1,4 +1,5 @@
 import numpy
+from numba import jit
 
 def map_to_grid_stub(gridx, gridy, particles, ibmf):
 
@@ -45,11 +46,36 @@ def map_to_grid_levelset(gridx, gridy, particles, ibmf):
     Xfx, Yfx = numpy.meshgrid(gridx.x, gridx.y)
     Xfy, Yfy = numpy.meshgrid(gridy.x, gridy.y)
 
+    nx, ny = gridx.nx, gridx.ny
+
+    Xfx = Xfx.transpose()
+    Yfx = Yfx.transpose()
+
+    Xfy = Xfy.transpose()
+    Yfy = Yfy.transpose()
+
+    IBx = gridx.get_values(ibmf)
+    IBy = gridy.get_values(ibmf)
+
     for particle in particles:
-        levelset_x = 0.5 - numpy.sqrt((Xfx-particle.x[0,0])**2 + (Yfx-particle.x[0,1])**2)
-        levelset_y = 0.5 - numpy.sqrt((Xfy-particle.x[0,0])**2 + (Yfy-particle.x[0,1])**2)
+        map_classical_search(nx+1, ny+2, Xfx, Yfx, IBx, particle.x[1:,:], particle.nnp-1)
+        map_classical_search(nx+2, ny+1, Xfy, Yfy, IBy, particle.x[1:,:], particle.nnp-1)
 
     gridx.set_values(ibmf, levelset_x.transpose())
     gridy.set_values(ibmf, levelset_y.transpose()) 
+
+    return
+
+@jit(nopython=True)
+def map_classical_search(nx, ny, x, y, phi, points, np):
+
+    for i in range(nx):
+        for j in range(ny):
+            for p in range(np):
+
+
+    return
+
+def map_grovers_search(nx, ny, x, y, phi, points, np):
 
     return
