@@ -1,13 +1,16 @@
 import numpy
-from numba import jit
+import time
 
-def map_to_grid_stub(gridx, gridy, particles, ibmf):
+def map_to_grid_stub(gridc, gridx, gridy, particles, ibmf, search_function, options):
 
     """
     Stub subroutine to compute IB mapping on grid
  
     Arguments
     ---------
+    gridc : object
+      Grid object for x-face variables
+
     gridx : object
       Grid object for x-face variables
 
@@ -19,17 +22,22 @@ def map_to_grid_stub(gridx, gridy, particles, ibmf):
 
     ibmf : string for forcing variable
 
+    search_function :
+           Search function
     """
 
-    return
+    return None
 
-def map_to_grid_levelset(gridx, gridy, particles, ibmf):
+def map_to_grid_levelset(gridc, gridx, gridy, particles, ibmf, search_function, options):
 
     """
     Subroutine to compute IB mapping on grid using the level set function
  
     Arguments
     ---------
+    gridc : object
+      Grid object for x-face variables
+
     gridx : object
       Grid object for x-face variables
 
@@ -41,41 +49,30 @@ def map_to_grid_levelset(gridx, gridy, particles, ibmf):
 
     ibmf : string for forcing variable
 
+    search_function : 
+         Search function
+
     """
 
-    Xfx, Yfx = numpy.meshgrid(gridx.x, gridx.y)
-    Xfy, Yfy = numpy.meshgrid(gridy.x, gridy.y)
+    X, Y = numpy.meshgrid(gridc.x, gridc.y)
 
-    nx, ny = gridx.nx, gridx.ny
+    nx, ny = gridc.nx, gridc.ny
+    dx, dy = gridc.dx, gridc.dy
 
-    Xfx = Xfx.transpose()
-    Yfx = Yfx.transpose()
-
-    Xfy = Xfy.transpose()
-    Yfy = Yfy.transpose()
+    X = X.transpose()
+    Y = Y.transpose()
 
     IBx = gridx.get_values(ibmf)
     IBy = gridy.get_values(ibmf)
+    IBc = gridc.get_values(ibmf)
 
     for particle in particles:
-        map_classical_search(nx+1, ny+2, Xfx, Yfx, IBx, particle.x[1:,:], particle.nnp-1)
-        map_classical_search(nx+2, ny+1, Xfy, Yfy, IBy, particle.x[1:,:], particle.nnp-1)
+        ites = search_function(X, Y, IBc, particle.x[1:,:], nx+2, ny+2, particle.nnp-1, particle.tracing_tol, options)
 
-    gridx.set_values(ibmf, levelset_x.transpose())
-    gridy.set_values(ibmf, levelset_y.transpose()) 
+    IBx[:,:] = (IBc[:-1,:]+IBc[1:,:])/2.0
+    IBy[:,:] = (IBc[:,:-1]+IBc[:,1:])/2.0
 
-    return
+    if (options['verbose']):
+        print("Mapping Iterations: ", ites)
 
-@jit(nopython=True)
-def map_classical_search(nx, ny, x, y, phi, points, np):
-
-    for i in range(nx):
-        for j in range(ny):
-            for p in range(np):
-
-
-    return
-
-def map_grovers_search(nx, ny, x, y, phi, points, np):
-
-    return
+    return ites

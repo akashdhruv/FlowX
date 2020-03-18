@@ -36,15 +36,20 @@ class imbound_main(imbound_interface):
 
         from flowx.imbound.solvers.force_flow import force_flow_stub, force_flow_levelset
         from flowx.imbound.solvers.map_to_grid import map_to_grid_stub, map_to_grid_levelset
+        from flowx.imbound.solvers.search_algorithms import classical_search, ann_search, grovers_search
 
         self._gridc, self._gridx, self._gridy, self._scalars, self._particles = domain_data_struct
 
         self._ibmf, self._velc = imbound_vars
 
-        self._options = {'with_ib' : False}
- 
+        self._options = {'with_ib' : False, 'mapping_type' : 'ann', 'verbose' : False, \
+                         'ntrees' : 20, 'nquery_trees' : 2, 'nquery_trace' : 30}
+
         self._force_flow  = force_flow_stub
         self._map_to_grid = map_to_grid_stub
+
+        self._mapping_time = 0.0
+        self._mapping_ites = 0
 
         if imbound_info:
             for key in imbound_info: self._options[key] = imbound_info[key]
@@ -52,6 +57,10 @@ class imbound_main(imbound_interface):
         if self._options['with_ib']:
             self._force_flow = force_flow_levelset
             self._map_to_grid = map_to_grid_levelset
+
+        self._mapping_type = {'classical': classical_search, 'ann': ann_search, 'grover': grovers_search}
+
+        self._search_function = self._mapping_type[self._options['mapping_type']]
 
         if self._options['with_ib'] and None in imbound_vars: 
             raise ValueError('imbound_vars cannot be empty when body flag is true')
@@ -66,8 +75,14 @@ class imbound_main(imbound_interface):
         Subroutine to map immersed boundary on grid
  
         """
+        import time
 
-        self._map_to_grid(self._gridx, self._gridy, self._particles, self._ibmf)
+        t1 = time.time()
+        self._mapping_ites = self._map_to_grid(self._gridc, self._gridx, self._gridy, self._particles, \
+                             self._ibmf, self._search_function, self._options)
+        t2 = time.time()
+
+        self._mapping_time = t2-t1
 
         return
 
