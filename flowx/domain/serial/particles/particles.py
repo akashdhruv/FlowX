@@ -17,27 +17,33 @@ class Particles(object):
         self.xmin = numpy.array([xmin, ymin]) 
         self.xmax = numpy.array([xmax, ymax])
 
-        particle_dict = h5py.File(particle_info['file'],'r')
-        mesh = particle_dict['mesh']
+        if particle_info['input'] is 'HDF5':
 
-        self.nnp = numpy.array(mesh['nnp'])[0]
+            particle_dict = h5py.File(particle_info['file'],'r')
+            mesh = particle_dict['mesh']
+
+            self.nnp = numpy.array(mesh['nnp'])[0]
  
-        xp = numpy.array(mesh['x'])
-        xp = numpy.reshape(xp, (self.nnp, 1))
+            xp = numpy.array(mesh['x'])
+            xp = numpy.reshape(xp, (self.nnp, 1))
 
-        yp = numpy.array(mesh['y'])
-        yp = numpy.reshape(yp, (self.nnp, 1))
+            yp = numpy.array(mesh['y'])
+            yp = numpy.reshape(yp, (self.nnp, 1))
 
-        self.xo = numpy.concatenate((xp,yp), axis=1)      
+            self.xo = numpy.concatenate((xp,yp), axis=1)      
+
+        elif particle_info['input'] is 'list':
+            self.xo = numpy.array(particle_info['x'])        
 
         self.x = self.xo
         self.vel = numpy.zeros_like(self.xo)
         self.freq = numpy.zeros_like(self.xo)
 
-        self.vel[:,0] = particle_info['vel'][0]
-        self.vel[:,1] = particle_info['vel'][1]
+        if 'vel' in particle_info:
+            self.vel[:,0] = particle_info['vel'][0]
+            self.vel[:,1] = particle_info['vel'][1]
 
-        self.tracing_tol = 0.5*numpy.max(numpy.sqrt((self.x[2:,0]-self.x[1:-1,0])**2 + (self.x[2:,1]-self.x[1:-1,1])**2))
+        self.max_panel_length = 0.5*numpy.max(numpy.sqrt((self.x[2:,0]-self.x[1:-1,0])**2 + (self.x[2:,1]-self.x[1:-1,1])**2))
 
         # Procedure to find member variables
         #members = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]

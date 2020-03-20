@@ -1,7 +1,7 @@
 import numpy
 from numba import jit
 
-def classical_search(x, y, phi, points, nx, ny, np, tracing_tol, options):
+def classical_search(x, y, phi, points, nx, ny, np, max_panel_length, options):
 
     iter_count = jit_classical_search(x, y, phi, points, nx, ny, np)
 

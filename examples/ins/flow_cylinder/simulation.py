@@ -33,12 +33,12 @@ def set_initial_velocity(gridc, gridx, gridy, ivar, pres):
 def main():
 
     # Define grid parameters
-    nx, ny = 200, 400
+    nx, ny = 40, 80
     xmin, xmax = -2.5, 2.5
     ymin, ymax = -5.0, 5.0
 
     # Define cell-centered variable names
-    center_vars   = ['pres', 'divv']
+    center_vars   = ['pres', 'divv', 'ibmf']
     face_vars     = ['velc', 'hvar', 'ibmf']
     ins_vars      = ['velc', 'hvar', 'divv', 'pres']
     poisson_vars  = ['pres', 'divv']
@@ -50,9 +50,10 @@ def main():
                            poisson_solver = 'serial_lu', 
                            maxiter = 2000,
                            tol = 1e-10,
-                       with_ib = True)
+                           with_ib = True,
+                           mapping_type = 'shapely')
 
-    particle_info = [dict(file='sm_body.00001.h5', vel = [0.0, -1.0])]
+    particle_info = [dict(input='HDF5', file='sm_body.00001.h5', vel = [0.0, -1.0])]
 
     # Define boundary conditions for variable pressure and velocity [left, right, bottom, top]
     bc_type_center = dict(pres = ['neumann', 'neumann', 'neumann', 'neumann'])

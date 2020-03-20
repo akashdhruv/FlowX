@@ -57,4 +57,4 @@ MICRO = _version_micro
 VERSION = __version__
 PACKAGES = ['flowx']
 PACKAGE_DATA = {'flowx': [os.path.join('styles', '*')]}
-REQUIRES = ['numpy', 'matplotlib', 'h5py', 'annoy', 'qiskit', 'numba']
+REQUIRES = ['numpy', 'matplotlib', 'h5py', 'annoy', 'qiskit', 'numba', 'shapely']

@@ -36,7 +36,7 @@ class imbound_main(imbound_interface):
 
         from flowx.imbound.solvers.force_flow import force_flow_stub, force_flow_levelset
         from flowx.imbound.solvers.map_to_grid import map_to_grid_stub, map_to_grid_levelset
-        from flowx.imbound.solvers.search_algorithms import classical_search, ann_search, grovers_search
+        from flowx.imbound.solvers.search_algorithms import classical_search, ann_search, shapely_search
 
         self._gridc, self._gridx, self._gridy, self._scalars, self._particles = domain_data_struct
 
@@ -58,7 +58,7 @@ class imbound_main(imbound_interface):
             self._force_flow = force_flow_levelset
             self._map_to_grid = map_to_grid_levelset
 
-        self._mapping_type = {'classical': classical_search, 'ann': ann_search, 'grover': grovers_search}
+        self._mapping_type = {'classical': classical_search, 'ann': ann_search, 'shapely' : shapely_search}
 
         self._search_function = self._mapping_type[self._options['mapping_type']]
 
@@ -78,8 +78,8 @@ class imbound_main(imbound_interface):
         import time
 
         t1 = time.time()
-        self._mapping_ites = self._map_to_grid(self._gridc, self._gridx, self._gridy, self._particles, \
-                             self._ibmf, self._search_function, self._options)
+        self._mapping_ites = self._map_to_grid(self._gridc, self._gridx, self._gridy, \
+                                               self._particles, self._ibmf, self._search_function, self._options)
         t2 = time.time()
 
         self._mapping_time = t2-t1

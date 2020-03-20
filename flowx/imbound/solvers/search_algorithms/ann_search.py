@@ -2,7 +2,7 @@ import numpy
 from numba import jit
 from annoy import AnnoyIndex
 
-def ann_search(x, y, phi, points, nx, ny, np, tracing_tol, options):
+def ann_search(x, y, phi, points, nx, ny, np, max_panel_length, options):
 
     iter_count = 0
 
@@ -37,7 +37,7 @@ def ann_search(x, y, phi, points, nx, ny, np, tracing_tol, options):
             trace_index, trace_distance = trace.get_nns_by_vector([y[i,j]], nquery_trace, include_distances=True) 
             countit = 0
 
-            niter_trace = numpy.size(numpy.where(numpy.array(trace_distance) < tracing_tol))
+            niter_trace = numpy.size(numpy.where(numpy.array(trace_distance) < max_panel_length))
 
             for p in range(nquery_trees):
 
