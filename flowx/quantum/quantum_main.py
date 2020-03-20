@@ -7,7 +7,7 @@ class quantum_main(quantum_interface):
     def __init__(self, domain_data_struct=[None]*5, quantum_vars=[None]*2, quantum_info=None):
 
         """
-        Constructor for the imbound unit
+        Constructor for the quantum unit
 
         Arguments
         ---------

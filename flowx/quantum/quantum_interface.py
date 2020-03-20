@@ -18,7 +18,7 @@ class quantum_interface(metaclass=abc.ABCMeta):
     def __init__(self, domain_data_struct=[None]*5, quantum_vars=None, quantum_info=None):
 
         """
-        Constructor for the imbound unit
+        Constructor for the quantum unit
 
         Arguments
         ---------
