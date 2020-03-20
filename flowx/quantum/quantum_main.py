@@ -23,23 +23,22 @@ class quantum_main(quantum_interface):
         """
 
         from flowx.quantum.solvers.initialize import initialize_quantum_system
-        from flowx.quantum.solvers.grover import controlled_Z_gate, oracle_gate, amplification_gate
+        from flowx.quantum.solvers.grover import oracle_gate, amplification_gate
         from flowx.quantum.solvers.run_circuit import run_circuit_QASM, run_circuit_IBMQ
 
-        self._options = {'simulator' : 'QASM', 'qubits': 4}
-
-        if quantum_info:
-            for key in quantum_info: self._options[key] = quantum_info[key]
-
+        self._options = {'simulator' : 'QASM', 'qubits': 4, 'repeat' : 1, 'circuit' : 'grover'}
         self._simulators = {'QASM' : run_circuit_QASM, 'IBMQ' : run_circuit_IBMQ}
 
         self._gridc, self._gridx, self._gridy, self._scalars, self._particles = domain_data_struct
+ 
+        if quantum_info:
+            for key in quantum_info: self._options[key] = quantum_info[key]
 
         self.qubits = self._options['qubits']
-
         self.circuit, self.quantum_register, self.classical_register = initialize_quantum_system(self.qubits)
 
-        self._gates = [oracle_gate, amplification_gate]
+        if self._options['circuit'] is 'grover':
+            self._gates = [oracle_gate, amplification_gate]*self._options['repeat']
 
         self._run_circuit = self._simulators[self._options['simulator']]
 

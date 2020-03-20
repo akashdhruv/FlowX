@@ -2,15 +2,18 @@ from qiskit import IBMQ, Aer, BasicAer, execute
 from qiskit.providers.ibmq import least_busy
 from qiskit.tools.monitor import job_monitor
 
+def run_circuit_statevector(circuit, quantum_register, classical_register):
+    backend_sim = Aer.get_backend('statevector_simulator')
+    job_sim = execute(grover_circuit, backend_sim)
+    statevec = job_sim.result().get_statevector()
+    print(statevec)
+
+    return None, None
+
 def run_circuit_QASM(circuit, quantum_register, classical_register):
 
-    ## State vector simulator
-    #backend_sim = Aer.get_backend('statevector_simulator')
-    #job_sim = execute(grover_circuit, backend_sim)
-    #statevec = job_sim.result().get_statevector()
-    #print(statevec)
-
     circuit.measure(quantum_register,classical_register)
+
     backend = BasicAer.get_backend('qasm_simulator')
     shots = 1024
     results = execute(circuit, backend=backend, shots=shots).result()
@@ -19,6 +22,8 @@ def run_circuit_QASM(circuit, quantum_register, classical_register):
     return results, answer
 
 def run_circuit_IBMQ(circuit, quantum_register, classical_register):
+
+    circuit.measure(quantum_register,classical_register)
 
     provider = IBMQ.load_account()
     device = least_busy(provider.backends(simulator=False))
