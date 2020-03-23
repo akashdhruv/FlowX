@@ -4,3 +4,8 @@ dependencies:
 - numpy
 - matplotlib
 - jupyter
+- h5py
+- numba
+- annoy
+- qiskit
+- shapely

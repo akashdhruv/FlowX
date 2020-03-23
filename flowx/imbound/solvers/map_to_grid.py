@@ -67,7 +67,7 @@ def map_to_grid_levelset(gridc, gridx, gridy, particles, ibmf, search_function, 
     IBc = gridc.get_values(ibmf)
 
     for particle in particles:
-        ites = search_function(X, Y, IBc, particle.x[1:,:], nx+2, ny+2, particle.nnp-1, particle.max_panel_length, options)
+        ites = search_function(X, Y, IBc, nx+2, ny+2, particle, options)
 
     IBx[:,:] = (IBc[:-1,:]+IBc[1:,:])/2.0
     IBy[:,:] = (IBc[:,:-1]+IBc[:,1:])/2.0

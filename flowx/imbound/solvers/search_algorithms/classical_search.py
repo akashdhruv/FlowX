@@ -1,7 +1,10 @@
 import numpy
 from numba import jit
 
-def classical_search(x, y, phi, points, nx, ny, np, max_panel_length, options):
+def classical_search(x, y, phi, nx, ny, particle, options):
+
+    points =  particle.x[1:,:]
+    np = particle.nnp-1
 
     iter_count = jit_classical_search(x, y, phi, points, nx, ny, np)
 
