@@ -1,6 +1,7 @@
 from qiskit import IBMQ, Aer, BasicAer, execute
 from qiskit.providers.ibmq import least_busy
 from qiskit.tools.monitor import job_monitor
+from qiskit.providers.aer.noise import NoiseModel
 
 def run_circuit_statevector(circuit, quantum_register, classical_register):
     backend_sim = Aer.get_backend('statevector_simulator')

@@ -30,6 +30,8 @@ class quantum_main(quantum_interface):
         self._simulators = {'QASM' : run_circuit_QASM, 'IBMQ' : run_circuit_IBMQ}
 
         self._gridc, self._gridx, self._gridy, self._scalars, self._particles = domain_data_struct
+
+        self._ibmf, self._velc = quantum_vars
  
         if quantum_info:
             for key in quantum_info: self._options[key] = quantum_info[key]
@@ -48,7 +50,7 @@ class quantum_main(quantum_interface):
         """
         """
        
-        for gate in self._gates: gate(self.circuit, self.quantum_register, self._particles)
+        for gate in self._gates: gate(self.circuit, self.quantum_register, self._particles, self._gridc)
 
         return
 

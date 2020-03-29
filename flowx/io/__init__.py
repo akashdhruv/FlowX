@@ -6,3 +6,4 @@ from flowx.io.write_hdf5_output import write_hdf5_output
 from flowx.io.write_hdf5_checkpoint import write_hdf5_checkpoint
 from flowx.io.plot_line import plot_line
 from flowx.io.plot_scatter import plot_scatter
+from flowx.io.plot_mesh_mapped import plot_mesh_mapped
