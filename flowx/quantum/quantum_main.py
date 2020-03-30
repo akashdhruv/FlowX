@@ -27,27 +27,24 @@ class quantum_main(quantum_interface):
         from flowx.quantum.solvers.run_circuit import run_circuit_QASM, run_circuit_IBMQ
         from flowx.quantum.solvers.calibrate_circuit import calibrate_circuit_QASM, calibrate_circuit_IBMQ
 
-        self._options = {'simulator' : 'QASM', 'qubits': 4, 'repeat' : 1, 'circuit' : 'grover', 'backend': 'ibmq_london'}
+        self._options = {'simulator' : 'QASM', 'qubits': 4, 'repeat' : 1, 'circuit' : 'grover', 'backend': 'ibmq_london', 'calibrate' : False}
         self._simulators = {'QASM' : run_circuit_QASM, 'IBMQ' : run_circuit_IBMQ}
         self._calibrators = {'QASM' : calibrate_circuit_QASM, 'IBMQ' : calibrate_circuit_IBMQ}
 
         self._gridc, self._gridx, self._gridy, self._scalars, self._particles = domain_data_struct
-
         self._ibmf, self._velc = quantum_vars
  
         if quantum_info:
             for key in quantum_info: self._options[key] = quantum_info[key]
 
-        self.qubits = self._options['qubits']
-        self.circuit, self.quantum_register, self.classical_register, self.calibration_register = initialize_quantum_system(self.qubits)
-
         if self._options['circuit'] is 'grover':
             self._gates = [oracle_gate, amplification_gate]*self._options['repeat']
 
-        self._run_circuit = self._simulators[self._options['simulator']]
+        self.qubits = self._options['qubits']
+        self.circuit, self.quantum_register, self.classical_register, self.calibration_register = initialize_quantum_system(self.qubits)
         self._calibrate_circuit = self._calibrators[self._options['simulator']]
-
-        self.fitter, self.device, self.noise = self._calibrate_circuit(self.calibration_register, self._options['backend'])
+        self._run_circuit = self._simulators[self._options['simulator']]
+        self.fitter, self.device, self.noise = self._calibrate_circuit(self.calibration_register, self._options['backend'], self._options['calibrate'])
 
         return
 
@@ -63,6 +60,6 @@ class quantum_main(quantum_interface):
         """
         """
 
-        results, answer = self._run_circuit(self.device, self.noise, self.circuit, self.quantum_register, self.classical_register)
+        results, answer = self._run_circuit(self.device, self.noise, self.fitter, self.circuit, self.quantum_register, self.classical_register)
 
         return results, answer

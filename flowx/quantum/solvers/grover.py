@@ -67,9 +67,9 @@ def oracle_gate(circuit, register, particles, grid):
                 for oracle_char, qubit in zip(oracle_list, register):
                     if(oracle_char is '0'): oracle_mask.append(qubit)
 
-                circuit.x(oracle_mask)
+                if(oracle_mask): circuit.x(oracle_mask)
                 controlled_Z_gate(circuit, register)
-                circuit.x(oracle_mask)
+                if(oracle_mask): circuit.x(oracle_mask)
 
 def amplification_gate(circuit, register, particles, grid):
     """
