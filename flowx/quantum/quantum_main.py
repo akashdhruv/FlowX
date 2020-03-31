@@ -41,10 +41,10 @@ class quantum_main(quantum_interface):
             self._gates = [oracle_gate, amplification_gate]*self._options['repeat']
 
         self.qubits = self._options['qubits']
-        self.circuit, self.quantum_register, self.classical_register, self.calibration_register = initialize_quantum_system(self.qubits)
+        self.circuit, self.quantum_register, self.classical_register = initialize_quantum_system(self.qubits)
         self._calibrate_circuit = self._calibrators[self._options['simulator']]
         self._run_circuit = self._simulators[self._options['simulator']]
-        self.fitter, self.device, self.noise = self._calibrate_circuit(self.calibration_register, self._options['backend'], self._options['calibrate'])
+        self.fitter, self.device, self.noise = self._calibrate_circuit(self.quantum_register, self._options['backend'], self._options['calibrate'])
 
         return
 

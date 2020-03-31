@@ -13,7 +13,7 @@ def run_circuit_QASM(device, noise, fitter, circuit, quantum_register, classical
     noisy_results = job.result()
     noisy_answer = noisy_results.get_counts()
 
-    mitigated_results, mitigated_answer = [None]*2
+    mitigated_results, mitigated_answer = [noisy_results, noisy_answer]
 
     if fitter:
         mitigated_results = fitter.filter.apply(noisy_results)
@@ -34,7 +34,7 @@ def run_circuit_IBMQ(device, noise, fitter, circuit, quantum_register, classical
     noisy_results = job.result()
     noisy_answer = noisy_results.get_counts()
 
-    mitigated_results, mitigated_answer = [None]*2
+    mitigated_results, mitigated_answer = [noisy_results, noisy_answer]
 
     if fitter:
         mitigated_results = fitter.filter.apply(noisy_results)

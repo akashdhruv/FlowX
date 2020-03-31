@@ -9,7 +9,7 @@ def calibrate_circuit_QASM(register, backend, calibrate):
     provider = IBMQ.load_account()
     device_backend = provider.get_backend(backend)
  
-    device = Aer.get_backend('qasm_simulator')
+    device = provider.get_backend('ibmq_qasm_simulator') # Aer.get_backend('qasm_simulator') #
     print("Running on device: ", device)
    
     meas_fitter, noise_model, basis_gates = [None]*3
@@ -17,13 +17,13 @@ def calibrate_circuit_QASM(register, backend, calibrate):
     if calibrate:
         noise_model = NoiseModel.from_backend(device_backend)
         basis_gates = noise_model.basis_gates
-        meas_calibs, state_lables = complete_meas_cal(qr=register, circlabel='mcal')
+        circuit, state_labels = complete_meas_cal(qubit_list=list(range(0, len(register))), qr=register, circlabel='mcal')
 
-        job = execute(meas_calibs, backend=device, shots=1024, noise_model=noise_model, basis_gates=basis_gates)
+        job = execute(circuit, backend=device, shots=1024, noise_model=noise_model, basis_gates=basis_gates)
         job_monitor(job, interval = 2)
         cal_results = job.result()
 
-        meas_fitter = CompleteMeasFitter(cal_results, state_lables, circlabel='mcal')
+        meas_fitter = CompleteMeasFitter(cal_results, state_labels, circlabel='mcal')
 
     return meas_fitter, device, [noise_model, basis_gates]
 
@@ -38,13 +38,13 @@ def calibrate_circuit_IBMQ(register, backend, calibrate):
     meas_fitter, noise_model, basis_gates = [None]*3
 
     if calibrate:
-        meas_calibs, state_lables = complete_meas_cal(qr=register, circlabel='mcal')
+        circuit, state_labels = complete_meas_cal(qubit_list=list(range(0, len(register))), qr=register, circlabel='mcal')
 
-        job = execute(meas_calibs, backend=device, shots=1024, max_credits=10)
+        job = execute(circuit, backend=device, shots=1024, max_credits=10)
         job_monitor(job, interval = 2)
 
         cal_results = job.result()
 
-        meas_fitter = CompleteMeasFitter(cal_results, state_lables, circlabel='mcal')
+        meas_fitter = CompleteMeasFitter(cal_results, state_labels, circlabel='mcal')
 
     return meas_fitter, device, [noise_model, basis_gates]

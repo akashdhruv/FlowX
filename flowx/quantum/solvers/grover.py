@@ -11,20 +11,25 @@ def controlled_Z_gate(circuit, register):
     circuit : Quantum Circuit
     register : Quantum register
     """
-    
-    circuit.cu1(numpy.pi/4, register[0], register[3])
-    circuit.cx(register[0], register[1])
-    circuit.cu1(-numpy.pi/4, register[1], register[3])
-    circuit.cx(register[0], register[1])
-    circuit.cu1(numpy.pi/4, register[1], register[3])
-    circuit.cx(register[1], register[2])
-    circuit.cu1(-numpy.pi/4, register[2], register[3])
-    circuit.cx(register[0], register[2])
-    circuit.cu1(numpy.pi/4, register[2], register[3])
-    circuit.cx(register[1], register[2])
-    circuit.cu1(-numpy.pi/4, register[2], register[3])
-    circuit.cx(register[0], register[2])
-    circuit.cu1(numpy.pi/4, register[2], register[3])
+    n_qubits = len(register)
+
+    circuit.cu1(numpy.pi/4, register[0], register[n_qubits-1])
+
+    for qubit in range(n_qubits-1):
+        
+        if qubit < n_qubits-2:
+            circuit.cx(register[qubit], register[qubit+1])
+            circuit.cu1(-numpy.pi/4, register[qubit+1], register[n_qubits-1])
+
+            circuit.cx(register[0], register[qubit+1])
+            circuit.cu1(numpy.pi/4, register[qubit+1], register[n_qubits-1])
+
+        else:
+            circuit.cx(register[qubit-1], register[qubit])
+            circuit.cu1(-numpy.pi/4, register[qubit], register[n_qubits-1])
+
+            circuit.cx(register[0], register[qubit])
+            circuit.cu1(numpy.pi/4, register[qubit], register[n_qubits-1])
 
 def oracle_gate(circuit, register, particles, grid):
     """

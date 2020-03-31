@@ -12,9 +12,8 @@ def initialize_quantum_system(qubits):
     
     quantum_register = QuantumRegister(qubits,'q')
     classical_register = ClassicalRegister(qubits,'c')
-    calibration_register = QuantumRegister(qubits, 'q')
-    
+   
     circuit = QuantumCircuit(quantum_register, classical_register)   
     circuit.h(quantum_register)
   
-    return circuit, quantum_register, classical_register, calibration_register
+    return circuit, quantum_register, classical_register
