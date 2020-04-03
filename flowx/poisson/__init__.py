@@ -1,3 +1,5 @@
 from .jacobi import solve_jacobi
-from .gauss_seidel import solve_gauss_seidel
-from .gsor import solve_gsor
+from .direct import solve_direct
+from .cg import solve_cg
+from .superlu import solve_lu
+from .sparse import build_sparse
