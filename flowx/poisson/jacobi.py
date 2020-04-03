@@ -3,7 +3,7 @@
 import numpy
 
 
-def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9, verbose=False):
+def solve_jacobi(grid, ivar, rvar, options, verbose=False):
     """Solve the Poisson system using a Jacobi method.
 
     Arguments
@@ -32,6 +32,10 @@ def solve_jacobi(grid, ivar, rvar, maxiter=3000, tol=1e-9, verbose=False):
         default: False.
 
     """
+
+    maxiter = options['maxiter']
+    tol = options['tol']
+
     phi = grid.get_values(ivar)
     b = grid.get_values(rvar)
     dx, dy = grid.dx, grid.dy
