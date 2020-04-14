@@ -42,6 +42,40 @@ def predictor(gridx, gridy, ivar, hvar, Re, ifac):
 
     return
 
+def predictor_ab2(gridx, gridy, ivar, hvar, Re, ifac):
+    """Velocity prediction step in x and y direction for Adams-Bashforth 2nd-order method.
+    
+    Arguments
+    ---------
+    gridx : grid object (x-direction)
+        Grid containing data in x-direction.
+    gridy : grid object (y-direction)
+        Grid containing data in y-direction.
+    ivar : string
+        Name of the grid variable of the velocity solution.
+    hvar : string
+        Name of the grid variable to store convective + diffusion terms.
+    Re : float
+        Reynolds number.
+    ifac : float
+        Time-step size.
+    """
+    
+    hx_minus = gridx.get_values( hvar )
+    hy_minus = gridy.get_values( hvar )
+    hx_plus = convective_facex( gridx, gridy, ivar ) + diffusion( gridx, ivar, 1 / Re )
+    hy_plus = convective_facey( gridx, gridy, ivar ) + diffusion( gridy, ivar, 1 / Re )
+
+    u = gridx.get_values( ivar )
+    v = gridy.get_values( ivar )
+    u[ 1:-1, 1:-1 ] = u[ 1:-1, 1:-1 ] + ifac * ( 1.5 * hx_plus - .5 * hx_minus[ 1:-1, 1:-1 ] )
+    v[ 1:-1, 1:-1 ] = v[ 1:-1, 1:-1 ] + ifac * ( 1.5 * hy_plus - .5 * hy_minus[ 1:-1, 1:-1 ] )
+ 
+    hx_minus[1:-1,1:-1] = hx_plus
+    hy_minus[1:-1,1:-1] = hy_plus
+
+    return 
+
 def divergence(gridc, gridx, gridy, ivar, dvar, ifac=1.0):
     """Compute the divergence of the variable tagged "ivar".
 
@@ -106,4 +140,5 @@ def corrector(gridc, gridx, gridy, ivar, pvar, ifac):
     gridx.fill_guard_cells(ivar)
     gridy.fill_guard_cells(ivar)
 
-    return
+    return 
+
