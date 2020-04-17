@@ -74,6 +74,9 @@ def predictor_ab2(gridx, gridy, ivar, hvar, Re, ifac):
     hx_minus[1:-1,1:-1] = hx_plus
     hy_minus[1:-1,1:-1] = hy_plus
 
+    gridx.fill_guard_cells( ivar )
+    gridy.fill_guard_cells( ivar )
+    
     return 
 
 def divergence(gridc, gridx, gridy, ivar, dvar, ifac=1.0):
