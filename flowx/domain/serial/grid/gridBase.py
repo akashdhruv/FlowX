@@ -275,6 +275,8 @@ class GridBase(object):
                     self.fill_guard_cells_dirichlet(name, loc, bc_val)
                 elif bc_type == 'periodic':
                     self.fill_guard_cells_periodic(name, loc)
+                elif bc_type == 'projection':
+                    self.fill_guard_cells_projection(name, loc)
                 else:
                     raise ValueError('Boundary type "{}" not implemented'
                                      .format(bc_type))
@@ -335,5 +337,28 @@ class GridBase(object):
             var[:, 0] = var[:, -2]
         elif loc == 'top':
             var[:, -1] = var[:, 1]
+        else:
+            raise ValueError('Unknown boundary location "{}"'.format(loc))
+
+    def fill_guard_cells_projection(self, var_name, loc):
+        """Fill guard cells with projection BC.
+
+        Parameters
+        ----------
+        var_name : string
+            Name of the variable to update.
+        loc : string
+            Boundary location;
+            choices: ['left', 'right', 'bottom', 'top'].
+        """
+        var = self.get_values(var_name)
+        if loc == 'left':
+            var[0, :] = 2*var[1, :] - var[2, :]
+        elif loc == 'right':
+            var[-1, :] = 2*var[-2, :] - var[-3, :]
+        elif loc == 'bottom':
+            var[:, 0] = 2*var[:, 1] - var[:, 2]
+        elif loc == 'top':
+            var[:, -1] = 2*var[:, -2] - var[:, -3]
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))

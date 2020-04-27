@@ -15,7 +15,7 @@ class quantum_interface(metaclass=abc.ABCMeta):
                 NotImplemented)
 
     @abc.abstractmethod
-    def __init__(self, domain_data_struct=[None]*5, quantum_vars=None, quantum_info=None):
+    def __init__(self, domain_data_struct=[None]*5, quantum_vars=[None]*2, quantum_info=None):
 
         """
         Constructor for the quantum unit

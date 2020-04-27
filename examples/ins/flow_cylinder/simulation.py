@@ -39,7 +39,7 @@ def main():
 
     # Define cell-centered variable names
     center_vars   = ['pres', 'divv', 'ibmf']
-    face_vars     = ['velc', 'hvar', 'ibmf']
+    face_vars     = ['velc', 'hvar']
     ins_vars      = ['velc', 'hvar', 'divv', 'pres']
     poisson_vars  = ['pres', 'divv']
     imbound_vars  = ['ibmf', 'velc']
@@ -51,7 +51,7 @@ def main():
                            maxiter = 2000,
                            tol = 1e-10,
                            with_ib = True,
-                           mapping_type = 'shapely')
+                           mapping_type = 'classical')
 
     particle_info = [dict(input='HDF5', file='sm_body.00001.h5', vel = [0.0, -1.0])]
 
@@ -74,11 +74,11 @@ def main():
 
     domain_data_struct = [gridc, gridx, gridy, scalars, particles]
 
-    poisson = flowx.poisson_main(gridc, poisson_vars, simulation_info)
+    poisson = flowx.poisson_main(gridc, poisson_vars, poisson_info=simulation_info)
 
-    imbound = flowx.imbound_main(domain_data_struct, imbound_vars, simulation_info)
+    imbound = flowx.imbound_main(domain_data_struct, imbound_vars, imbound_info=simulation_info)
 
-    ins = flowx.ins_main(poisson, imbound, domain_data_struct, ins_vars, simulation_info)
+    ins = flowx.ins_main(poisson, imbound, domain_data_struct, ins_vars, ins_info=simulation_info)
 
     while scalars.time <= scalars.tmax:
     

@@ -1,20 +1,19 @@
 import numpy
 from numba import jit
 
-def classical_search(x, y, phi, nx, ny, particle, options):
+def classical_search(x, y, points, nx, ny, np, options):
 
-    points =  particle.x[1:,:]
-    np = particle.nnp-1
+    phi = numpy.zeros((nx,ny), dtype=float)
 
     iter_count = jit_classical_search(x, y, phi, points, nx, ny, np)
 
-    return iter_count
+    return iter_count, phi
 
 @jit(nopython=True)
 def jit_classical_search(x, y, phi, points, nx, ny, np):
   
     iter_count = 0
-
+   
     for i in range(nx):
         for j in range(ny):
 

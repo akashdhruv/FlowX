@@ -2,13 +2,13 @@ import numpy
 from numba import jit
 from annoy import AnnoyIndex
 
-def ann_search(x, y, phi, nx, ny, particle, options):
+def ann_search(x, y, points, nx, ny, np, options):
 
     iter_count = 0
 
-    points =  particle.x[1:,:]
-    np = particle.nnp-1
-    max_panel_length = particle.max_panel_length
+    phi = numpy.zeros((nx,ny), dtype=float)
+
+    max_panel_length = options['max_panel_length']
 
     nodesA = points
     nodesB = numpy.vstack((points[1:],points[0]))
@@ -108,4 +108,4 @@ def ann_search(x, y, phi, nx, ny, particle, options):
 
             if(numpy.mod(countit,2) == 1): phi[i,j] = -phi[i,j]
 
-    return iter_count
+    return iter_count, phi

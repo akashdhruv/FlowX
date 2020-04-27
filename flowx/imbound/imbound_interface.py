@@ -11,12 +11,14 @@ class imbound_interface(metaclass=abc.ABCMeta):
                 hasattr(subclass, 'force_flow') and 
                 callable(subclass.force_flow) and
                 hasattr(subclass, 'map_to_grid') and
-                callable(subclass.map_to_grid) or
+                callable(subclass.map_to_grid) and
+                hasattr(subclass, 'advect') and
+                callable(subclass.advect) or
                 NotImplemented)
 
 
     @abc.abstractmethod
-    def __init__(self, domain_data_struct=[None]*5, imbound_vars=None, imbound_info=None):
+    def __init__(self, domain_data_struct=[None]*5, imbound_vars=[None]*4, imbound_info=None):
 
         """
         Constructor for the imbound unit
@@ -31,6 +33,8 @@ class imbound_interface(metaclass=abc.ABCMeta):
                
                 imbound_vars[0] --> indicator variable for immersed boundary
                 imbound_vars[1] --> velocity variable
+
+        imbound_aux_vars: list
 
         imbound_info : Dictionary of keyword arguments
 
@@ -59,6 +63,15 @@ class imbound_interface(metaclass=abc.ABCMeta):
 
         """
         Subroutine to compute immersed boundary forces
+ 
+        """
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def advect(self):
+
+        """
+        Subroutine to advect immersed boundary
  
         """
         raise NotImplementedError()
