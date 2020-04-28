@@ -35,7 +35,7 @@ def force_flow_visco(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, 
     dt = scalars.dt
     Re_s, mu_s = scalars.Re_s, scalars.mu_s
 
-    extp_iter = options['extrap_stress']
+    extrap_iter = options['extrap_solid']
 
     u = gridx.get_values(velc)
     v = gridy.get_values(velc)
@@ -62,7 +62,7 @@ def force_flow_visco(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, 
     normal_vector_solid(phi,adfx,adfy,dx,dy,nx+2,ny+2)
 
     #---------Extrapolation of stress terms----------    
-    for _iter in range(extp_iter):
+    for _iter in range(extrap_iter):
         constant_extrapolation(phi,lms1,adfx,adfy,dx,dy,nx+2,ny+2)
         constant_extrapolation(phi,lms2,adfx,adfy,dx,dy,nx+2,ny+2)
         constant_extrapolation(phi,lms3,adfx,adfy,dx,dy,nx+2,ny+2)

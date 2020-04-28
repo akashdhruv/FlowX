@@ -27,19 +27,6 @@ def force_flow_rigid(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, 
     velc : string for velocity variable
     """
 
-    Xfx, Yfx = numpy.meshgrid(gridx.x, gridx.y)
-    Xfy, Yfy = numpy.meshgrid(gridy.x, gridy.y)
-    Xfc, Yfc = numpy.meshgrid(gridc.x, gridc.y)
-
-    Xfx = Xfx.transpose()
-    Yfx = Yfx.transpose()
-    
-    Xfy = Xfy.transpose()
-    Yfy = Yfy.transpose()
-
-    Xfc = Xfc.transpose()
-    Yfc = Yfc.transpose()
-
     u = gridx.get_values(velc)
     v = gridy.get_values(velc)
     

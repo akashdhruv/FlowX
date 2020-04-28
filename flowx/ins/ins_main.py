@@ -28,7 +28,7 @@ class ins_main(ins_interface):
                 ins_vars[1] --> RHS from the previous time step
                 ins_vars[2] --> divergence
                 ins_vars[3] --> pressure
-
+                ins_vars[4] --> delta pressure
 
         ins_info : Dictionary of keyword arguments
 
@@ -44,36 +44,46 @@ class ins_main(ins_interface):
         from flowx.ins.solvers.mass_balance import get_qin, get_qout, rescale_velocity, get_convvel, update_outflow_bc, \
                                                    rescale_velocity_stub
 
-
+        
+        #----------Create images for other unit objects and variables----------------------------
         self._gridc, self._gridx, self._gridy, self._scalars, self._particles = domain_data_struct
         self._velc, self._hvar, self._divv, self._pres, self._delp = ins_vars
-
-        self._options = {'time_stepping' : 'ab2', 'pressure_correct' : True}
-
-        if ins_info:
-            for key in ins_info: self._options[key] = ins_info[key]
-
-        self._ipres = self._options['pressure_correct']
-
-        self._predictor_type = {'euler' : predictor, 'ab2': predictor_AB2}
-        self._predictor = self._predictor_type[self._options['time_stepping']]
-
-        self._divergence = divergence
-        self._corrector = corrector
-        self._stats = stats
-
-        self._get_qin = get_qin
-        self._get_qout = get_qout
-        self._rescale_velocity = rescale_velocity
-        self._get_convvel = get_convvel
-        self._update_outflow_bc = update_outflow_bc
 
         self._imbound = imbound
         self._poisson = poisson
 
-        self._ins_advance = self._advance_
 
-        if(self._velc is not None and self._pres is not None):
+        #----------Setup default parameters for the current unit---------------------------------
+        self._options = {'time_stepping' : 'ab2', \
+                         'pressure_correct' : True}
+
+        self._predictor_type = {'euler' : predictor, \
+                                'ab2': predictor_AB2}
+
+        #----------------------Read user parameters----------------------------------------------
+        if ins_info:
+            for key in ins_info: self._options[key] = ins_info[key]
+
+        #---------------------Setup unit based ono user/default parameters----------------------
+        if None in domain_data_struct or None in ins_vars or imbound is None or poisson is None:
+            self._ins_advance = self._advance_stub
+            print('Warning: Incomp NS unit is a stub because one or more parameters were not supplied.') 
+
+        else:
+            self._ipres = self._options['pressure_correct']
+            self._predictor = self._predictor_type[self._options['time_stepping']]
+
+            self._divergence = divergence
+            self._corrector = corrector
+            self._stats = stats
+
+            self._get_qin = get_qin
+            self._get_qout = get_qout
+            self._rescale_velocity = rescale_velocity
+            self._get_convvel = get_convvel
+            self._update_outflow_bc = update_outflow_bc
+
+            self._ins_advance = self._advance_
 
             self._ustar_bc = self._gridx.bc_type[self._velc].copy()
             self._vstar_bc = self._gridy.bc_type[self._velc].copy()
@@ -87,9 +97,7 @@ class ins_main(ins_interface):
             
             if 'dirichlet' in self._pres_bc : self._rescale_velocity = rescale_velocity_stub
 
-        if None in domain_data_struct or None in ins_vars:
-            self._ins_advance = self._advance_stub
-            print('Warning: Incomp NS unit is a stub.') 
+        return
 
     def advance(self):
         """

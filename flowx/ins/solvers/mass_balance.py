@@ -79,6 +79,17 @@ def get_qout(grid, ivar):
 def rescale_velocity_stub(grid, ivar, Qin, Qout):
     """Rescale velcoity stub
 
+    Arguments
+    ---------
+    grid : flowx.Grid object
+        Grid containing data.
+    ivar : string
+        Name of the velocity variable on the grid.
+    Qin : float
+        Mass in.
+    Qout : float
+        Mass out.
+
     """
     return
 
@@ -91,8 +102,6 @@ def rescale_velocity(grid, ivar, Qin, Qout):
         Grid containing data.
     ivar : string
         Name of the velocity variable on the grid.
-    bctype : dictionary
-        Type of boundary conditions for the variable `ivar`.
     Qin : float
         Mass in.
     Qout : float

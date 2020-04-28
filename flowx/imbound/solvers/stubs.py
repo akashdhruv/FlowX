@@ -46,3 +46,11 @@ def map_to_grid_stub(gridc, particles, ibmf, ibmx, ibmy, search_function, option
     """
 
     return None
+
+def advect_stub(gridc, gridx, gridy, scalars, ibmf, ibmx, ibmy, velc, options):
+
+    """
+    Stub subroutine for level set advection
+    """
+
+    return

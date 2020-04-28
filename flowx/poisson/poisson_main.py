@@ -43,26 +43,37 @@ class poisson_main(poisson_interface):
         from flowx.poisson.solvers.serial.superlu import solve_serial_lu
         from flowx.poisson.solvers.serial.stub import solve_serial_stub
 
+        #---------------------Create images of other units and objects----------------
         self._grid = grid
-
         self._ivar, self._rvar = poisson_vars
 
-        self._options = {'poisson_solver' : 'serial_cg', 'maxiter': 2000, 'tol' : 1e-9, 'verbose' : False}
+        #--------------------Set default parameters---------------------------------
 
+        self._options = {'poisson_solver' : 'serial_lu', \
+                         'maxiter': 2000, \
+                         'tol' : 1e-9, \
+                         'verbose' : False}
+
+        self._iterative_solvers = {'serial_cg' : solve_serial_cg, \
+                                   'serial_jacobi': solve_serial_jacobi}
+
+        self._direct_solvers = {'serial_direct' : solve_serial_direct, \
+                                'serial_lu' : solve_serial_lu}
+
+        #----------------------Read user parameters------------------------------------
         if poisson_info: 
             for key in poisson_info: self._options[key] = poisson_info[key]
 
-        self._iterative_solvers = {'serial_cg' : solve_serial_cg, 'serial_jacobi': solve_serial_jacobi}
-        self._direct_solvers = {'serial_direct' : solve_serial_direct, 'serial_lu' : solve_serial_lu}
-
-        self._solve_poisson = {**self._iterative_solvers, **self._direct_solvers}[self._options['poisson_solver']]
-
-        if grid and poisson_vars: self._options['lu'], self._options['mtx'] = build_serial_sparse(self._grid, self._ivar)
+        #----------------------Setup current unit with default/user parameters-----------
 
         if not grid or None in poisson_vars:
             self._solve_poisson = solve_serial_stub
             print('Warning: Poisson unit is a stub') 
- 
+
+        else:
+            self._solve_poisson = {**self._iterative_solvers, **self._direct_solvers}[self._options['poisson_solver']]
+            self._options['lu'], self._options['mtx'] = build_serial_sparse(self._grid, self._ivar)
+
         return
 
     def solve_poisson(self):

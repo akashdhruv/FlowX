@@ -21,15 +21,15 @@ def map_to_grid_rigid(gridc, particles, ibmf, ibmx, ibmy, search_function, optio
 
     """
 
-    X, Y = numpy.meshgrid(gridc.x, gridc.y)
+    x, y = numpy.meshgrid(gridc.x, gridc.y)
 
     nx, ny = gridc.nx, gridc.ny
     dx, dy = gridc.dx, gridc.dy
 
-    X = X.transpose()
-    Y = Y.transpose()
+    x = x.transpose()
+    y = y.transpose()
 
-    IBc = gridc.get_values(ibmf)
+    ibc = gridc.get_values(ibmf)
 
     for particle in particles:
 
@@ -37,7 +37,7 @@ def map_to_grid_rigid(gridc, particles, ibmf, ibmx, ibmy, search_function, optio
         np = particle.nnp-1
         options['max_panel_length'] = particle.max_panel_length
 
-        ites, IBc[:,:] = search_function(X, Y, points, nx+2, ny+2, np, options)
+        ites, ibc[:,:] = search_function(x, y, points, nx+2, ny+2, np, options)
 
     if (options['verbose']):
         print("Mapping Iterations: ", ites)

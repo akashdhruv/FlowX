@@ -33,8 +33,8 @@ class imbound_interface(metaclass=abc.ABCMeta):
                
                 imbound_vars[0] --> indicator variable for immersed boundary
                 imbound_vars[1] --> velocity variable
-
-        imbound_aux_vars: list
+                imbound_vars[2] --> dynamic x grid variable
+                imbound_vars[3] --> dynamic y grid variable
 
         imbound_info : Dictionary of keyword arguments
 

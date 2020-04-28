@@ -9,7 +9,7 @@ def advect_dynamic_grid(lmda,s,u,v,dt,dx,dy,nx,ny):
 
     pfl = lmda>=0.0
     advectWENO3(s,u,v,dt,dx,dy,nx,ny)
-    s = pfl*s
+    #s = pfl*s
 
     return
 

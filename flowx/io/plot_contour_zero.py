@@ -29,5 +29,5 @@ def plot_contour_zero(grid, scalars, ivar, xvar, yvar):
     pyplot.axis('scaled', adjustable='box')
     pyplot.xlim(X.min(), X.max())
     pyplot.ylim(Y.min(), Y.max())
-    pyplot.savefig('./images/grid%d.png' % int(scalars.nstep/100))
+    #pyplot.savefig('./images/grid%d.png' % int(scalars.nstep/100))
     #pyplot.show()

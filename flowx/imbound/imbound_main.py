@@ -20,9 +20,9 @@ class imbound_main(imbound_interface):
                
                 imbound_vars[0] --> indicator variable for immersed boundary
                 imbound_vars[1] --> velocity variable
-
-        imbound_aux_vars : list
-              
+                imbound_vars[2] --> dynamic x grid variable
+                imbound_vars[3] --> dynamic y grid variable
+             
         imbound_info : Dictionary of keyword arguments
 
         'with_ib' - keyword to indicate if immersed boundary is present or not
@@ -36,54 +36,62 @@ class imbound_main(imbound_interface):
 
         """
 
-        from flowx.imbound.solvers.stubs import force_flow_stub, map_to_grid_stub
-        from flowx.imbound.solvers.rigid import force_flow_rigid, map_to_grid_rigid, advect_rigid
+        from flowx.imbound.solvers.stubs import force_flow_stub, map_to_grid_stub, advect_stub
+        from flowx.imbound.solvers.rigid import force_flow_rigid, map_to_grid_rigid
         from flowx.imbound.solvers.visco_elastic import force_flow_visco, map_to_grid_visco, advect_visco
         from flowx.imbound.solvers.search_algorithms import classical_search, ann_search, shapely_search
 
+        #----------Create images for other unit objects and variables----------------------------
         self._gridc, self._gridx, self._gridy, self._scalars, self._particles = domain_data_struct
 
         imbound_vars.extend([None]*(4-len(imbound_vars)))
 
         self._ibmf, self._velc, self._ibmx, self._ibmy = imbound_vars
 
-        self._options = {'with_ib' : False, 'mapping_type' : 'ann', 'verbose' : False, \
-                         'ntrees' : 20, 'nquery_trees' : 2, 'nquery_trace' : 30, \
-                         'ib_type' : 'rigid', 'lset_iter' : 3, 'extrap_grid' : 100, \
-                         'extrap_stress' : 50}
+        #--------------Set default parameters for the current unit--------------------------------
+        self._options = {'with_ib' : False, \
+                         'mapping_type' : 'ann', \
+                         'verbose' : False, \
+                         'ntrees' : 20, \
+                         'nquery_trees' : 2, 
+                         'nquery_trace' : 30, \
+                         'ib_type' : 'rigid', \
+                         'lset_redistance' : 3, \
+                         'extrap_solid' : 20}
 
-        self._force_flow  = force_flow_stub
-        self._map_to_grid = map_to_grid_stub
+        self._mapping_type = {'classical': classical_search, \
+                              'ann': ann_search, \
+                              'shapely' : shapely_search}
+
 
         self._mapping_time = 0.0
         self._mapping_ites = 0
         self._advection_time = 0.0
 
+        #---------------------------Read user parameters---------------------------------------
         if imbound_info:
             for key in imbound_info: self._options[key] = imbound_info[key]
 
-        if self._options['with_ib']:
-
+        #--------------------------Setup unit based on user/default parameters---------------
+        if not self._options['with_ib'] or all(var is None for var in imbound_vars) or None in domain_data_struct:
+            self._force_flow  = force_flow_stub
+            self._map_to_grid = map_to_grid_stub
+            self._advect = advect_stub
+            print('Warning: Immersed Boundary unit is a stub, no forcing will be applied.')
+ 
+        else:
             if self._options['ib_type'] is 'rigid':
                 self._force_flow = force_flow_rigid
                 self._map_to_grid = map_to_grid_rigid
-                self._advect = advect_rigid
+                self._advect = advect_stub
 
             elif self._options['ib_type'] is 'visco':
                 self._force_flow = force_flow_visco
                 self._map_to_grid = map_to_grid_visco
                 self._advect = advect_visco
 
-        self._mapping_type = {'classical': classical_search, 'ann': ann_search, 'shapely' : shapely_search}
+            self._search_function = self._mapping_type[self._options['mapping_type']]
 
-        self._search_function = self._mapping_type[self._options['mapping_type']]
-
-        if self._options['with_ib'] and all(var is None for var in imbound_vars): 
-            raise ValueError('imbound_vars cannot be empty when body flag is true')
-
-        if not self._options['with_ib']:
-             print('Warning: Immersed Boundary unit is a stub, no forcing will be applied.')
- 
         return
  
     def map_to_grid(self):

@@ -27,24 +27,42 @@ class quantum_main(quantum_interface):
         from flowx.quantum.solvers.run_circuit import run_circuit_QASM, run_circuit_IBMQ
         from flowx.quantum.solvers.calibrate_circuit import calibrate_circuit_QASM, calibrate_circuit_IBMQ
 
-        self._options = {'simulator' : 'QASM', 'qubits': 4, 'repeat' : 1, 'circuit' : 'grover', 'backend': 'ibmq_london', 'calibrate' : False}
-        self._simulators = {'QASM' : run_circuit_QASM, 'IBMQ' : run_circuit_IBMQ}
-        self._calibrators = {'QASM' : calibrate_circuit_QASM, 'IBMQ' : calibrate_circuit_IBMQ}
-
+        #----------------Create images of other units and variables--------------------------------
         self._gridc, self._gridx, self._gridy, self._scalars, self._particles = domain_data_struct
         self._ibmf, self._velc = quantum_vars
  
+        #----------------Setup default parameters-------------------------------------------------
+        self._options = {'simulator' : 'QASM', \
+                         'qubits': 4, \
+                         'repeat' : 1, \
+                         'circuit' : 'grover', \
+                         'backend': 'ibmq_london', \
+                         'calibrate' : False}
+
+        self._simulators = {'QASM' : run_circuit_QASM, \
+                            'IBMQ' : run_circuit_IBMQ}
+
+        self._calibrators = {'QASM' : calibrate_circuit_QASM, \
+                             'IBMQ' : calibrate_circuit_IBMQ}
+
+        #----------------Read user parameters--------------------------------------------
         if quantum_info:
             for key in quantum_info: self._options[key] = quantum_info[key]
 
-        if self._options['circuit'] is 'grover':
-            self._gates = [oracle_gate, amplification_gate]*self._options['repeat']
+        #----------------Setup current unit-----------------------------------------------
 
-        self.qubits = self._options['qubits']
-        self.circuit, self.quantum_register, self.classical_register = initialize_quantum_system(self.qubits)
-        self._calibrate_circuit = self._calibrators[self._options['simulator']]
-        self._run_circuit = self._simulators[self._options['simulator']]
-        self.fitter, self.device, self.noise = self._calibrate_circuit(self.quantum_register, self._options['backend'], self._options['calibrate'])
+        if None in domain_data_struct: #or None in quantum_vars:
+            raise ValueError('Quantum unit cannot be setup. One or more parameter is missing')
+
+        else:
+            self.qubits = self._options['qubits']
+            self.circuit, self.quantum_register, self.classical_register = initialize_quantum_system(self.qubits)
+            self._calibrate_circuit = self._calibrators[self._options['simulator']]
+            self._run_circuit = self._simulators[self._options['simulator']]
+            self.fitter, self.device, self.noise = self._calibrate_circuit(self.quantum_register, self._options['backend'], self._options['calibrate'])
+
+            if self._options['circuit'] is 'grover':
+                self._gates = [oracle_gate, amplification_gate]*self._options['repeat']
 
         return
 

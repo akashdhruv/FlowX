@@ -15,8 +15,8 @@ def advect_visco(gridc, gridx, gridy, scalars, ibmf, ibmx, ibmy, velc, options):
     nx, ny = gridc.nx, gridc.ny
     dx, dy = gridc.dx, gridc.dy
     dt = scalars.dt
-    lset_iter = options['lset_iter']
-    extp_iter = options['extrap_grid']
+    lset_iter = options['lset_redistance']
+    extrap_iter = options['extrap_solid']
 
     phi = gridc.get_values(ibmf)
     lmx = gridc.get_values(ibmx)
@@ -39,20 +39,20 @@ def advect_visco(gridc, gridx, gridy, scalars, ibmf, ibmx, ibmy, velc, options):
     #---------Extrapolate X grid----------------------
     directional_derivative(phi,lmx,ddsn,adfx,adfy,dx,dy,nx+2,ny+2)
     
-    for _iter in range(extp_iter): 
+    for _iter in range(extrap_iter): 
         constant_extrapolation(phi,ddsn,adfx,adfy,dx,dy,nx+2,ny+2)
 
-    for _iter in range(extp_iter):
+    for _iter in range(extrap_iter):
         linear_extrapolation(phi,lmx,ddsn,adfx,adfy,dx,dy,nx+2,ny+2)    
         gridc.fill_guard_cells(ibmx)
 
     #---------Extrapolate Y grid----------------------
     directional_derivative(phi,lmy,ddsn,adfx,adfy,dx,dy,nx+2,ny+2)
 
-    for _iter in range(extp_iter): 
+    for _iter in range(extrap_iter): 
         constant_extrapolation(phi,ddsn,adfx,adfy,dx,dy,nx+2,ny+2)
 
-    for _iter in range(extp_iter):
+    for _iter in range(extrap_iter):
         linear_extrapolation(phi,lmy,ddsn,adfx,adfy,dx,dy,nx+2,ny+2)    
         gridc.fill_guard_cells(ibmy)
 
