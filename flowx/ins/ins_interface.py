@@ -14,7 +14,7 @@ class ins_interface(metaclass=abc.ABCMeta):
 
 
     @abc.abstractmethod
-    def __init__(self, poisson=None, imbound=None, domain_data_struct=[None]*5, ins_vars=[None]*4, ins_info=None):
+    def __init__(self, poisson=None, imbound=None, domain_data_struct=[None]*5, ins_vars=[None]*5, ins_info=None):
 
         """
         Constructor for the ins unit

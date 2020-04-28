@@ -1,5 +1,4 @@
-def force_flow_stub(gridc, gridx, gridy, scalars, particles, ibmf, velc):
-
+def force_flow_stub(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc, options):
     """
     Stub subroutine to compute forces
  
@@ -27,7 +26,7 @@ def force_flow_stub(gridc, gridx, gridy, scalars, particles, ibmf, velc):
 
     return
 
-def map_to_grid_stub(gridc, particles, ibmf, search_function, options):
+def map_to_grid_stub(gridc, particles, ibmf, ibmx, ibmy, search_function, options):
 
     """
     Stub subroutine to compute IB mapping on grid

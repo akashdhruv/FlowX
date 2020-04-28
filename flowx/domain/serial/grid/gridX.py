@@ -53,31 +53,3 @@ class GridFaceX(GridBase):
             var[:, -1] = 2 * bc_val - var[:, -2]
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))
-
-    def fill_guard_cells_neumann(self, var_name, loc, bc_val, delta):
-        """Fill guard cells using a Neumann condition.
-
-        Parameters
-        ----------
-        var_name : string
-            Name of the variable to update.
-        loc : string
-            Boundary location;
-            choices: ['left', 'right', 'bottom', 'top'].
-        bc_val : float
-            Neumann boundary value.
-        delta : float
-            Grid-cell width.
-
-        """ 
-        var = self.get_values(var_name)
-        if loc == 'left':
-            var[0, :] = bc_val
-        elif loc == 'right':
-            var[-1, :] = bc_val
-        elif loc == 'bottom':
-            var[:, 0] = bc_val * delta + var[:, 1]
-        elif loc == 'top':
-            var[:, -1] = bc_val * delta + var[:, -2]
-        else:
-            raise ValueError('Unknown boundary location "{}"'.format(loc))

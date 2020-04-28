@@ -76,6 +76,12 @@ def get_qout(grid, ivar):
 
     return Qout
 
+def rescale_velocity_stub(grid, ivar, Qin, Qout):
+    """Rescale velcoity stub
+
+    """
+    return
+
 def rescale_velocity(grid, ivar, Qin, Qout):
     """Rescale velocity.
 
@@ -151,7 +157,7 @@ def get_convvel(grid, ivar):
 
     return convvel
 
-def update_outflow_bc(grid, ivar, dt, convvel=None):
+def update_outflow_bc(grid, ivar, dt):
     """Update the value of the velocity at the right boundary.
 
     The function uses a linear convective equation in the x-direction
@@ -179,21 +185,20 @@ def update_outflow_bc(grid, ivar, dt, convvel=None):
 
     grid_type = grid.type_
 
-    if convvel is None:
-        convvel = get_convvel(grid, ivar)
+    convvel = get_convvel(grid, ivar)
 
     if grid.type_ == 'x-face':
-        if bc_type[0] is 'outflow' or bc_type[0] is 'neumann':
+        if bc_type[0] is 'outflow':
             bc_val[0] = vel[0, :] - convvel[0] * dt * (vel[1, :] - vel[0, :]) / dx
 
-        if bc_type[1] is 'outflow' or bc_type[1] is 'neumann':
+        if bc_type[1] is 'outflow':
             bc_val[1] = vel[-1, :] - convvel[1] * dt * (vel[-1, :] - vel[-2, :]) / dx
 
     if grid.type_ == 'y-face':
-        if bc_type[2] is 'outflow' or bc_type[2] is 'neumann':
+        if bc_type[2] is 'outflow':
             bc_val[2] = vel[:, 0] - convvel[2] * dt * (vel[:, 1] - vel[:, 0]) / dy
 
-        if bc_type[3] is 'outflow' or bc_type[3] is 'neumann':
+        if bc_type[3] is 'outflow':
             bc_val[3] = vel[:, -1] - convvel[3] * dt * (vel[:, -1] - vel[:, -2]) / dy
 
     grid.update_bc_val({ivar: bc_val})

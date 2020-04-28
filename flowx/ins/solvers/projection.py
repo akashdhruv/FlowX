@@ -4,7 +4,7 @@ import numpy
 
 from flowx.ins.solvers.operators import diffusion, convective_facex, convective_facey
 
-def predictor(gridx, gridy, ivar, hvar, Re, ifac):
+def predictor(gridc, gridx, gridy, ivar, hvar, pres, Re, ifac, ipres):
     """Velocity prediction step in x and y direction.
 
     Arguments
@@ -26,6 +26,10 @@ def predictor(gridx, gridy, ivar, hvar, Re, ifac):
     hx = gridx.get_values(hvar)
     hy = gridy.get_values(hvar)
 
+    dx, dy = gridx.dx, gridy.dy
+
+    p = gridc.get_values(pres)
+
     hx[1:-1, 1:-1] = (convective_facex(gridx, gridy, ivar) +
                       diffusion(gridx, ivar, 1 / Re))
     hy[1:-1, 1:-1] = (convective_facey(gridx, gridy, ivar) +
@@ -34,12 +38,12 @@ def predictor(gridx, gridy, ivar, hvar, Re, ifac):
     u = gridx.get_values(ivar)
     v = gridy.get_values(ivar)
 
-    u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * hx[1:-1, 1:-1]
-    v[1:-1, 1:-1] = v[1:-1, 1:-1] + ifac * hy[1:-1, 1:-1]
+    u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * hx[1:-1, 1:-1] - ifac * ipres * (p[2:-1, 1:-1] - p[1:-2, 1:-1]) / dx
+    v[1:-1, 1:-1] = v[1:-1, 1:-1] + ifac * hy[1:-1, 1:-1] - ifac * ipres * (p[1:-1, 2:-1] - p[1:-1, 1:-2]) / dy
 
     return
 
-def predictor_AB2(gridx, gridy, ivar, hvar, Re, ifac):
+def predictor_AB2(gridc, gridx, gridy, ivar, hvar, pres, Re, ifac, ipres):
     """Velocity prediction step in x and y direction.
 
     Arguments
@@ -61,6 +65,10 @@ def predictor_AB2(gridx, gridy, ivar, hvar, Re, ifac):
     hx_old = gridx.get_values(hvar)
     hy_old = gridy.get_values(hvar)
 
+    dx, dy = gridx.dx, gridy.dy
+
+    p = gridc.get_values(pres)
+
     hx_new = (convective_facex(gridx, gridy, ivar) +
                       diffusion(gridx, ivar, 1 / Re)) 
     hy_new = (convective_facey(gridx, gridy, ivar) +
@@ -69,15 +77,18 @@ def predictor_AB2(gridx, gridy, ivar, hvar, Re, ifac):
     u = gridx.get_values(ivar)
     v = gridy.get_values(ivar)
 
-    u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * (1.5 * hx_new - 0.5 * hx_old[1:-1, 1:-1])
-    v[1:-1, 1:-1] = v[1:-1, 1:-1] + ifac * (1.5 * hy_new - 0.5 * hy_old[1:-1, 1:-1])
+    u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * (1.5 * hx_new - 0.5 * hx_old[1:-1, 1:-1]) \
+                                  - ifac * ipres * (p[2:-1, 1:-1] - p[1:-2, 1:-1]) / dx
+
+    v[1:-1, 1:-1] = v[1:-1, 1:-1] + ifac * (1.5 * hy_new - 0.5 * hy_old[1:-1, 1:-1]) \
+                                  - ifac * ipres * (p[1:-1, 2:-1] - p[1:-1, 1:-2]) / dy
  
     hx_old[1:-1,1:-1] = hx_new
     hy_old[1:-1,1:-1] = hy_new
 
     return
 
-def predictor_RK3(gridx, gridy, ivar, hvar, Re, ifac, hconst):
+def predictor_RK3(gridc, gridx, gridy, ivar, hvar, pres, Re, ifac, ipres, hconst):
     """Velocity prediction step in x and y direction.
 
     Arguments
@@ -98,6 +109,10 @@ def predictor_RK3(gridx, gridy, ivar, hvar, Re, ifac, hconst):
     """
     hx = gridx.get_values(hvar)
     hy = gridy.get_values(hvar)
+
+    dx, dy = gridx.dx, gridy.dy
+
+    p = gridc.get_values(pres)
 
     hx[1:-1, 1:-1] = (convective_facex(gridx, gridy, ivar) +
                       diffusion(gridx, ivar, 1 / Re)) + hconst * hx[1:-1,1:-1]
@@ -143,7 +158,7 @@ def divergence(gridc, gridx, gridy, ivar, dvar, ifac=1.0):
 
     return
 
-def corrector(gridc, gridx, gridy, ivar, pvar, ifac):
+def corrector(gridc, gridx, gridy, ivar, pvar, delp, ifac, ipres):
     """Velocity correction in x and y direction.
 
     Arguments
@@ -165,10 +180,13 @@ def corrector(gridc, gridx, gridy, ivar, pvar, ifac):
     u = gridx.get_values(ivar)
     v = gridy.get_values(ivar)
     p = gridc.get_values(pvar)
+    dp = gridc.get_values(delp)
 
-    dx, dy = gridc.dx, gridc.dy
+    dx, dy = gridx.dx, gridy.dy
 
-    u[1:-1, 1:-1] = u[1:-1, 1:-1] - ifac * (p[2:-1, 1:-1] - p[1:-2, 1:-1]) / dx
-    v[1:-1, 1:-1] = v[1:-1, 1:-1] - ifac * (p[1:-1, 2:-1] - p[1:-1, 1:-2]) / dy
+    u[:,:] = u[:, :] - ifac * (dp[1:, :] - dp[:-1, :]) / dx
+    v[: :] = v[:, :] - ifac * (dp[:, 1:] - dp[:, :-1]) / dy
+
+    p[:,:] = ipres*p[:,:] + dp[:,:]
 
     return

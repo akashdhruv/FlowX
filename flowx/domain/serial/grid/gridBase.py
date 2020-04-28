@@ -115,6 +115,10 @@ class GridBase(object):
 
         """
         self.bc_val = {**self.bc_val, **user_bc_val}
+ 
+    def update_bc_type(self, user_bc_type):
+
+        self.bc_type = {**self.bc_type, **user_bc_type}
 
     def get_variable_indices(self, *var_names):
         """Get the grid index of given variable names.
@@ -277,6 +281,8 @@ class GridBase(object):
                     self.fill_guard_cells_periodic(name, loc)
                 elif bc_type == 'projection':
                     self.fill_guard_cells_projection(name, loc)
+                elif bc_type == None:
+                    None
                 else:
                     raise ValueError('Boundary type "{}" not implemented'
                                      .format(bc_type))
@@ -314,8 +320,18 @@ class GridBase(object):
         delta : float
             Grid-cell width.
 
-        """
-        raise NotImplementedError()
+        """ 
+        var = self.get_values(var_name)
+        if loc == 'left':
+            var[0, :] = bc_val * delta + var[1, :]
+        elif loc == 'right':
+            var[-1, :] = bc_val * delta + var[-2, :]
+        elif loc == 'bottom':
+            var[:, 0] = bc_val * delta + var[:, 1]
+        elif loc == 'top':
+            var[:, -1] = bc_val * delta + var[:, -2]
+        else:
+            raise ValueError('Unknown boundary location "{}"'.format(loc))
 
     def fill_guard_cells_periodic(self, var_name, loc):
         """Fill guard cells with periodic BC.

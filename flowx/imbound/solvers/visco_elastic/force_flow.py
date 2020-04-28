@@ -1,8 +1,9 @@
 import numpy
 
-from flowx.imbound.solvers.visco_elastic.subroutines import solid_props, solid_stress, solid_ustar
+from flowx.imbound.solvers.visco_elastic.subroutines import solid_props, solid_stress, solid_ustar, \
+                                                            normal_vector_solid, constant_extrapolation
 
-def force_flow_visco(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc):
+def force_flow_visco(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc, options):
 
     """
     Subroutine to compute forces on the fluid due to the presence of the immersed boundary
@@ -34,6 +35,8 @@ def force_flow_visco(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, 
     dt = scalars.dt
     Re_s, mu_s = scalars.Re_s, scalars.mu_s
 
+    extp_iter = options['extrap_stress']
+
     u = gridx.get_values(velc)
     v = gridy.get_values(velc)
     
@@ -46,11 +49,26 @@ def force_flow_visco(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, 
     lms2 = numpy.zeros_like(phi)
     lms3 = numpy.zeros_like(phi)
     lms4 = numpy.zeros_like(phi)
+    adfx = numpy.zeros_like(phi)
+    adfy = numpy.zeros_like(phi)
 
+    #----------Assign solid properties---------------
     solid_props(phi,xmus,mu_s,dx,dy,nx+2,ny+2)
 
+    #----------Calculate solid stress terms----------
     solid_stress(phi,lmx,lmy,lms1,lms2,lms3,lms4,dx,dy,nx+2,ny+2)
 
+    #---------Find normal vectors---------------------
+    normal_vector_solid(phi,adfx,adfy,dx,dy,nx+2,ny+2)
+
+    #---------Extrapolation of stress terms----------    
+    for _iter in range(extp_iter):
+        constant_extrapolation(phi,lms1,adfx,adfy,dx,dy,nx+2,ny+2)
+        constant_extrapolation(phi,lms2,adfx,adfy,dx,dy,nx+2,ny+2)
+        constant_extrapolation(phi,lms3,adfx,adfy,dx,dy,nx+2,ny+2)
+        constant_extrapolation(phi,lms4,adfx,adfy,dx,dy,nx+2,ny+2)
+ 
+    #---------------Update velocity------------------
     solid_ustar(u,v,xmus,lms1,lms2,lms3,lms4,Re_s,dt,dx,dy,nx+2,ny+2)
 
     return

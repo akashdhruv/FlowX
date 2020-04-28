@@ -4,7 +4,7 @@ import numpy
 from matplotlib import pyplot
 
 
-def plot_contour_zero(grid, var):
+def plot_contour_zero(grid, scalars, ivar, xvar, yvar):
     """Plot the filled contour of a variable on a meshgrid.
 
     Arguments
@@ -22,9 +22,12 @@ def plot_contour_zero(grid, var):
     pyplot.xlabel('x')
     pyplot.ylabel('y')
 
-    pyplot.contour(X, Y, grid.get_values(var).transpose(), levels=[0])
+    pyplot.contour(X, Y, grid.get_values(xvar).transpose(), colors='black', linestyles='solid', linewidths=1.0)
+    pyplot.contour(X, Y, grid.get_values(yvar).transpose(), colors='black', linestyles='solid', linewidths=1.0)
+    pyplot.contour(X, Y, grid.get_values(ivar).transpose(), levels=[0], colors='red', linestyles='solid', linewidths=1.5)
    
     pyplot.axis('scaled', adjustable='box')
     pyplot.xlim(X.min(), X.max())
     pyplot.ylim(Y.min(), Y.max())
+    pyplot.savefig('./images/grid%d.png' % int(scalars.nstep/100))
     #pyplot.show()

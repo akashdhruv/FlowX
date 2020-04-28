@@ -4,7 +4,7 @@ from flowx.ins.ins_interface import ins_interface
 
 class ins_main(ins_interface):
 
-    def __init__(self, poisson=None, imbound=None, domain_data_struct=[None]*5, ins_vars=[None]*4, ins_info=None):
+    def __init__(self, poisson=None, imbound=None, domain_data_struct=[None]*5, ins_vars=[None]*5, ins_info=None):
 
         """
         Constructor for the ins unit
@@ -41,17 +41,19 @@ class ins_main(ins_interface):
 
         from flowx.ins.solvers.projection import predictor, predictor_AB2, predictor_RK3, corrector, divergence
         from flowx.ins.solvers.stats import stats
-        from flowx.ins.solvers.mass_balance import get_qin, get_qout, rescale_velocity, get_convvel, update_outflow_bc
+        from flowx.ins.solvers.mass_balance import get_qin, get_qout, rescale_velocity, get_convvel, update_outflow_bc, \
+                                                   rescale_velocity_stub
 
 
         self._gridc, self._gridx, self._gridy, self._scalars, self._particles = domain_data_struct
-        self._velc, self._hvar, self._divv, self._pres = ins_vars
+        self._velc, self._hvar, self._divv, self._pres, self._delp = ins_vars
 
-        self._options = {'time_stepping' : 'ab2'}
+        self._options = {'time_stepping' : 'ab2', 'pressure_correct' : True}
 
         if ins_info:
             for key in ins_info: self._options[key] = ins_info[key]
 
+        self._ipres = self._options['pressure_correct']
 
         self._predictor_type = {'euler' : predictor, 'ab2': predictor_AB2}
         self._predictor = self._predictor_type[self._options['time_stepping']]
@@ -70,6 +72,20 @@ class ins_main(ins_interface):
         self._poisson = poisson
 
         self._ins_advance = self._advance_
+
+        if(self._velc is not None and self._pres is not None):
+
+            self._ustar_bc = self._gridx.bc_type[self._velc].copy()
+            self._vstar_bc = self._gridy.bc_type[self._velc].copy()
+        
+            self._ucorr_bc = self._ustar_bc.copy()
+            self._vcorr_bc = self._vstar_bc.copy()
+
+            self._pres_bc = self._gridc.bc_type[self._pres].copy() 
+
+            self._ucorr_bc[0], self._ucorr_bc[1], self._vcorr_bc[2], self._vcorr_bc[3] = [None]*4
+            
+            if 'dirichlet' in self._pres_bc : self._rescale_velocity = rescale_velocity_stub
 
         if None in domain_data_struct or None in ins_vars:
             self._ins_advance = self._advance_stub
@@ -100,48 +116,53 @@ class ins_main(ins_interface):
 
         time_ins_start = time.time()
 
+        # Update BC for predictor step
+        self._gridx.update_bc_type({self._velc: self._ustar_bc})
+        self._gridy.update_bc_type({self._velc: self._vstar_bc})
+
         # Compute mass in
         _Qin =  self._get_qin(self._gridx, self._velc) + self._get_qin(self._gridy, self._velc)
+        self._scalars.stats['qin'] = _Qin
 
-        # Update BC for predictor step
+        # Calculate outflow BC
         self._update_outflow_bc(self._gridx, self._velc, self._scalars.dt)
         self._update_outflow_bc(self._gridy, self._velc, self._scalars.dt)
 
         # Calculate predicted velocity: u* = dt*H(u^n)       
-        self._predictor(self._gridx, self._gridy, self._velc, self._hvar, self._scalars.Re,self._scalars.dt)
- 
+        self._predictor(self._gridc, self._gridx, self._gridy, self._velc, self._hvar, self._pres, \
+                        self._scalars.Re, self._scalars.dt, self._ipres) 
+
         # Immersed boundary forcing
         self._imbound.force_flow()
 
         self._gridx.fill_guard_cells(self._velc)
         self._gridy.fill_guard_cells(self._velc)
 
-        # Calculate RHS for the pressure Poission solver div(u)/dt
-        self._divergence(self._gridc, self._gridx, self._gridy, self._velc, self._divv, ifac = self._scalars.dt)
-        self._gridc.fill_guard_cells(self._divv)
-
         # Compute mass out
         _Qout =  self._get_qout(self._gridx, self._velc) + self._get_qout(self._gridy, self._velc)
+        self._scalars.stats['qout'] = _Qout
 
         # Rescale velocity to balance mass
         self._rescale_velocity(self._gridx, self._velc, _Qin, _Qout)
         self._rescale_velocity(self._gridy, self._velc, _Qin, _Qout)
 
-        # Update BC for corrector step
-        self._update_outflow_bc(self._gridx, self._velc, self._scalars.dt, convvel=[0.0,0.0,0.0,0.0])
-        self._update_outflow_bc(self._gridy, self._velc, self._scalars.dt, convvel=[0.0,0.0,0.0,0.0])
+        # Calculate RHS for the pressure Poission solver div(u)/dt
+        self._divergence(self._gridc, self._gridx, self._gridy, self._velc, self._divv, ifac = self._scalars.dt)
+        self._gridc.fill_guard_cells(self._divv)
 
         # Solve pressure Poisson equation
         time_poisson_begin = time.time()
-
         self._scalars.stats['ites'], self._scalars.stats['res'] = self._poisson.solve_poisson()
-
         time_poisson_end = time.time()
-
         self._scalars.stats['poisson_time'] = time_poisson_end - time_poisson_begin
 
+        # Update BC for corrector step
+        self._gridx.update_bc_type({self._velc: self._ucorr_bc})
+        self._gridy.update_bc_type({self._velc: self._vcorr_bc})
+
         # Calculate corrected velocity u^n+1 = u* - dt * grad(P) 
-        self._corrector(self._gridc, self._gridx, self._gridy, self._velc, self._pres, self._scalars.dt)
+        self._corrector(self._gridc, self._gridx, self._gridy, self._velc, self._pres, self._delp, \
+                        self._scalars.dt, self._ipres)
         self._gridx.fill_guard_cells(self._velc)
         self._gridy.fill_guard_cells(self._velc)
    

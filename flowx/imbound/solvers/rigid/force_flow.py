@@ -1,6 +1,6 @@
 import numpy
 
-def force_flow_rigid(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc):
+def force_flow_rigid(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc, options):
 
     """
     Subroutine to compute forces on the fluid due to the presence of the immersed boundary

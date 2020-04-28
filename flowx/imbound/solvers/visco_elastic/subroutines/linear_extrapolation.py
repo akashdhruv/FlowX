@@ -1,5 +1,5 @@
 import numpy
-from numba import jit
+from numba import jit, vectorize, float64
 
 def linear_extrapolation(lmda,s,sn,u,v,dx,dy,nx,ny):
 

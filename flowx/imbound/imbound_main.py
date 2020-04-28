@@ -49,7 +49,8 @@ class imbound_main(imbound_interface):
 
         self._options = {'with_ib' : False, 'mapping_type' : 'ann', 'verbose' : False, \
                          'ntrees' : 20, 'nquery_trees' : 2, 'nquery_trace' : 30, \
-                         'ib_type' : 'rigid', 'lset_iter' : 3, 'extp_iter' : 100}
+                         'ib_type' : 'rigid', 'lset_iter' : 3, 'extrap_grid' : 100, \
+                         'extrap_stress' : 50}
 
         self._force_flow  = force_flow_stub
         self._map_to_grid = map_to_grid_stub
@@ -109,7 +110,7 @@ class imbound_main(imbound_interface):
         """
 
         self._force_flow(self._gridc, self._gridx, self._gridy, self._scalars, self._particles, \
-                         self._ibmf, self._ibmx, self._ibmy, self._velc)
+                         self._ibmf, self._ibmx, self._ibmy, self._velc, self._options)
 
         return
 

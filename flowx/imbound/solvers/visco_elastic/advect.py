@@ -16,7 +16,7 @@ def advect_visco(gridc, gridx, gridy, scalars, ibmf, ibmx, ibmy, velc, options):
     dx, dy = gridc.dx, gridc.dy
     dt = scalars.dt
     lset_iter = options['lset_iter']
-    extp_iter = options['extp_iter']
+    extp_iter = options['extrap_grid']
 
     phi = gridc.get_values(ibmf)
     lmx = gridc.get_values(ibmx)
