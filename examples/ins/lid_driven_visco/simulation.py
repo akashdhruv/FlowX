@@ -36,7 +36,7 @@ def main():
     bc_val_facey  = dict(velc = [0.0, 0.0, 0.0, 0.0])
 
     # Create the grid and data
-    gridc, gridx, gridy, scalars, particles = flowx.serial.domain_main(nx, ny, xmin, xmax, ymin, ymax, 
+    gridc, gridx, gridy, scalars, particles = flowx.domain_main(nx, ny, xmin, xmax, ymin, ymax, 
                                               center_vars, face_vars, scalar_info, particle_info, 
                                               bc_type_center=bc_type_center, bc_val_center=bc_val_center, 
                                               bc_type_facex=bc_type_facex, bc_val_facex=bc_val_facex, 

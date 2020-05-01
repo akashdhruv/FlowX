@@ -1,3 +1,3 @@
-from .classical_search import classical_search
-from .ann_search import ann_search
-from .shapely_search import shapely_search
+from flowx.imbound.solvers.search_algorithms.classical_search import classical_search
+from flowx.imbound.solvers.search_algorithms.ann_search import ann_search
+from flowx.imbound.solvers.search_algorithms.shapely_search import shapely_search
