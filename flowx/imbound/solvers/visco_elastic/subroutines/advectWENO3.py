@@ -8,8 +8,7 @@ def advect_dynamic_grid(lmda,s,u,v,dt,dx,dy,nx,ny):
     """
 
     pfl = lmda>=0.0
-    advectWENO3(s,u,v,dt,dx,dy,nx,ny)
-    #s = pfl*s
+    advectWENO3(s,pfl,u,v,dt,dx,dy,nx,ny)
 
     return
 
@@ -18,11 +17,13 @@ def advect_solid(s,u,v,dt,dx,dy,nx,ny):
     Subroutine to advect solid interface
 
     """
-    advectWENO3(s,u,v,dt,dx,dy,nx,ny)
+    
+    pfl = numpy.ones_like(s, dtype=int)
+    advectWENO3(s,pfl,u,v,dt,dx,dy,nx,ny)
 
     return
 
-def advectWENO3(s,u,v,dt,dx,dy,nx,ny):
+def advectWENO3(s,pfl,u,v,dt,dx,dy,nx,ny):
     """
     Subroutine to add additional guard cells for WENO3 stencil
 
@@ -30,13 +31,15 @@ def advectWENO3(s,u,v,dt,dx,dy,nx,ny):
 
     nguard_add = 2
 
-    s_weno = numpy.zeros((nx+2*nguard_add,ny+2*nguard_add), dtype=float)
-    u_weno = numpy.zeros((nx+2*nguard_add-1,ny+2*nguard_add), dtype=float)
-    v_weno = numpy.zeros((nx+2*nguard_add,ny+2*nguard_add-1), dtype=float)
+    s_weno   = numpy.zeros((nx+2*nguard_add,ny+2*nguard_add),   dtype=float)
+    u_weno   = numpy.zeros((nx+2*nguard_add-1,ny+2*nguard_add), dtype=float)
+    v_weno   = numpy.zeros((nx+2*nguard_add,ny+2*nguard_add-1), dtype=float)
+    pfl_weno = numpy.zeros((nx+2*nguard_add,ny+2*nguard_add),   dtype=int)
 
-    s_weno[2:-2,2:-2] = s
-    u_weno[2:-2,2:-2] = u
-    v_weno[2:-2,2:-2] = v
+    s_weno[2:-2,2:-2]   = s
+    u_weno[2:-2,2:-2]   = u
+    v_weno[2:-2,2:-2]   = v
+    pfl_weno[2:-2,2:-2] = pfl
 
     # x low
     s_weno[1,:] = 2*s_weno[2,:] - s_weno[3,:]
@@ -54,14 +57,14 @@ def advectWENO3(s,u,v,dt,dx,dy,nx,ny):
     s_weno[:,-2] = 2*s_weno[:,-3] - s_weno[:,-4]
     s_weno[:,-1] = 2*s_weno[:,-2] - s_weno[:,-3]
 
-    jit_advectWENO3(s_weno,u_weno,v_weno,dt,dx,dy,nx+2*nguard_add,ny+2*nguard_add)
+    jit_advectWENO3(s_weno,pfl_weno,u_weno,v_weno,dt,dx,dy,nx+2*nguard_add,ny+2*nguard_add)
 
     s[:,:] = s_weno[2:-2,2:-2]
 
     return
 
 @jit(nopython=True)
-def jit_advectWENO3(s,u,v,dt,dx,dy,nx,ny):
+def jit_advectWENO3(s,pfl,u,v,dt,dx,dy,nx,ny):
 
     so = numpy.copy(s)
     eps = 1E-15
@@ -305,6 +308,6 @@ def jit_advectWENO3(s,u,v,dt,dx,dy,nx,ny):
             fry = a1r*fT1r + a2r*fT2r + a3r*fT3r
             fly = a1l*fT1l + a2l*fT2l + a3l*fT3l
                 
-            s[i,j] = so[i,j] - dt*(frx*ur - flx*ul)/dx - dt*(fry*vr - fly*vl)/dy
+            s[i,j] = so[i,j] - dt*pfl[i,j]*(frx*ur - flx*ul)/dx - dt*pfl[i,j]*(fry*vr - fly*vl)/dy
 
     return
