@@ -48,4 +48,3 @@ python setup.py develop
 ```bash
 python tests/all.py
 ```
-
