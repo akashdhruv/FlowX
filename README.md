@@ -1,8 +1,4 @@
 # Incompressible Navier-Stokes Solver
-
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/Balaras-Group/flowX/raw/master/LICENSE)
-[![Travis](https://img.shields.io/travis/com/Balaras-Group/flowX/develop.svg?style=flat-square&logo=travis)](https://travis-ci.com/Balaras-Group/flowX)
-
 `flowx` is a Python package that contains all necessary objects to build a solver for the two-dimensional incompressible Navier-Stokes equations.
 
 `flowx` is the result of a collaborative project between the students of the CFD class (MAE-6225) taught at the George Washington University.
@@ -38,8 +34,8 @@ conda activate py36-flowx
 To install the Python package `flowx`:
 
 ```bash
-git clone https://github.com/Balaras-Group/flowX.git
-cd flowX
+git clone https://github.com/akashdhruv/FlowX.git
+cd FlowX
 python setup.py develop
 ```
 
