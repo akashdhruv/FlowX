@@ -28,7 +28,7 @@ def plot_mesh_mapped(grid, particle):
     pyplot.scatter(Xc, Yc)
     pyplot.plot(nodesC[:,0], nodesC[:,1])
     pyplot.plot(nodesC[:,0], nodesC[:,1], marker='.', markevery=5) 
-    pyplot.axis('scaled', adjustable='box')
+    pyplot.axis('scaled')#, adjustable='box')
     pyplot.xlim(X.min(), X.max())
     pyplot.ylim(Y.min(), Y.max())
     pyplot.show()
