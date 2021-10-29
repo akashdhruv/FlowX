@@ -1,6 +1,6 @@
 # Maplefile
 
-maple_container="bubblebox_container"
-maple_image="akashdhruv/bubblebox:latest"
-maple_target="/home/mount/bubblebox"
+maple_container="flowx_container"
+maple_image="akashdhruv/flowx:latest"
+maple_target="/home/mount/flowx"
 maple_source="$PWD/.."
