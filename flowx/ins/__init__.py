@@ -1,1 +1,2 @@
-from flowx.ins.ins_main import ins_main
+from ._interface import *
+from ._ins import IncompNS

@@ -1,1 +1,2 @@
-from flowx.quantum.quantum_main import quantum_main
+from ._interface import *
+from ._quantum import Quantum

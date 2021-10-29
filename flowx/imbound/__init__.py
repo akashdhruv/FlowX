@@ -1,1 +1,2 @@
-from flowx.imbound.imbound_main import imbound_main
+from ._interface import *
+from ._imbound import ImBound

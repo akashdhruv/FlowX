@@ -4,9 +4,9 @@ import os
 
 
 _version_major = 0
-_version_minor = 1
-_version_micro = ''
-_version_extra = 'dev'
+_version_minor = 0
+_version_micro = 1
+_version_extra = ''
 
 # construct full version string
 _ver = [_version_major, _version_minor]
@@ -45,7 +45,7 @@ MAINTAINER = ''
 MAINTAINER_EMAIL = ''
 DESCRIPTION = description
 LONG_DESCRIPTION = long_description
-URL = 'https://github.com/Balaras-Group/MAE-6225'
+URL = 'https://github.com/akashdhruv/flowX'
 DOWNLOAD_URL = ''
 LICENSE = 'BSD 3-Clause'
 AUTHOR = ''

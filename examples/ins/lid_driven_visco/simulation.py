@@ -36,19 +36,17 @@ def main():
     bc_val_facey  = dict(velc = [0.0, 0.0, 0.0, 0.0])
 
     # Create the grid and data
-    gridc, gridx, gridy, scalars, particles = flowx.domain_main(nx, ny, xmin, xmax, ymin, ymax, 
-                                              center_vars, face_vars, scalar_info, particle_info, 
-                                              bc_type_center=bc_type_center, bc_val_center=bc_val_center, 
-                                              bc_type_facex=bc_type_facex, bc_val_facex=bc_val_facex, 
-                                              bc_type_facey=bc_type_facey, bc_val_facey=bc_val_facey)
+    gridc, gridx, gridy, scalars, particles = flowx.domain.Domain(nx, ny, xmin, xmax, ymin, ymax, 
+                                              center_vars, face_vars, scalar_info, particle_info,
+                                          bc_type_center=bc_type_center, bc_val_center=bc_val_center,
+                                          bc_type_facex=bc_type_facex, bc_val_facex=bc_val_facex, 
+                                          bc_type_facey=bc_type_facey, bc_val_facey=bc_val_facey)
 
     domain_data_struct = [gridc, gridx, gridy, scalars, particles]
 
-    poisson = flowx.poisson_main(gridc, poisson_vars, poisson_info=simulation_info)
-
-    imbound = flowx.imbound_main(domain_data_struct, imbound_vars, imbound_info=simulation_info)
-
-    ins = flowx.ins_main(poisson, imbound, domain_data_struct, ins_vars, ins_info=simulation_info)
+    poisson = flowx.poisson.Poisson(gridc, poisson_vars, poisson_info=simulation_info)
+    imbound = flowx.imbound.ImBound(domain_data_struct, imbound_vars, imbound_info=simulation_info)
+    ins = flowx.ins.IncompNS(poisson, imbound, domain_data_struct, ins_vars, ins_info=simulation_info)
 
     imbound.map_to_grid()
 

@@ -1,1 +1,2 @@
-from flowx.poisson.poisson_main import poisson_main
+from ._interface import *
+from ._poisson import Poisson

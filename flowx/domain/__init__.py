@@ -1,4 +1,4 @@
-from flowx import __environment__
-
-if __environment__ is 'serial': from flowx.domain.serial import domain_main
-if __environment__ is 'parallel': from flowx.domain.parallel import domain_main  
+from ._grid import Grid
+from ._particles import Particles
+from ._scalars import Scalars
+from ._domain import Domain
