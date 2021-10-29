@@ -21,6 +21,6 @@ def plot_scatter(particles):
     pyplot.plot(nodesA[:,0], nodesA[:,1])
     pyplot.plot(nodesA[:,0], nodesA[:,1], marker='.', markevery=5)
     pyplot.scatter(nodesB[:,0], nodesB[:,1])
-    pyplot.axis('scaled', adjustable='box')
+    pyplot.axis('scaled')#, adjustable='box')
     pyplot.axis('equal')
     pyplot.show()

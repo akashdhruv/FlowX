@@ -70,7 +70,7 @@ def oracle_gate(circuit, register, particles, grid):
             if(grid_point.within(polygon)):
 
                 for oracle_char, qubit in zip(oracle_list, register):
-                    if(oracle_char is '0'): oracle_mask.append(qubit)
+                    if(oracle_char == '0'): oracle_mask.append(qubit)
 
                 if(oracle_mask): circuit.x(oracle_mask)
                 controlled_Z_gate(circuit, register)

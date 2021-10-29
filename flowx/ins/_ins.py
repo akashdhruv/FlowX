@@ -1,29 +1,28 @@
 """Module for incompressible Navier Stokes equations"""
 
+import time
+
 from . import _interface
 
 class IncompNS(object):
 
     def __init__(self, poisson=None, imbound=None, domain_data_struct=[None]*5, ins_vars=[None]*5, ins_info=None):
-
         """
         Constructor for the ins unit
 
         Arguments
         ---------
-
         poisson : object
-            Object for the poisson solver
+                  Object for the poisson solver
 
         imbound : object
-            Object for the immersed boundary unit
+                  Object for the immersed boundary unit
 
         domain_data_struct : object list
-           [gridc, gridx, gridy, scalars, particles]
+                            [gridc, gridx, gridy, scalars, particles]
 
         ins_vars : list
-                List of string for field variables required by ins unit
-               
+                List of string for field variables required by ins unit               
                 ins_vars[0] --> velocity
                 ins_vars[1] --> RHS from the previous time step
                 ins_vars[2] --> divergence
@@ -36,7 +35,6 @@ class IncompNS(object):
 
         ins_info['time_stepping'] = 'ab2' --> default
                                   = 'euler'
-
         """       
         #----------Create images for other unit objects and variables----------------------------
         self._gridc, self._gridx, self._gridy, self._scalars, self._particles = domain_data_struct
@@ -57,7 +55,7 @@ class IncompNS(object):
         if ins_info:
             for key in ins_info: self._options[key] = ins_info[key]
 
-        #---------------------Setup unit based ono user/default parameters----------------------
+        #---------------------Setup unit based on user/default parameters----------------------
         if None in domain_data_struct or None in ins_vars or imbound is None or poisson is None:
             self._ins_advance = self._advance_stub
             print('Warning: Incomp NS unit is a stub because one or more parameters were not supplied.') 
@@ -108,9 +106,6 @@ class IncompNS(object):
         """
         Subroutine for the fractional step explicit time advancement of Navier Stokes equations 
         """
-
-        import time
-
         time_ins_start = time.time()
 
         # Update BC for predictor step
@@ -173,5 +168,3 @@ class IncompNS(object):
 
         # Calculate stats
         self._scalars.stats.update(self._stats(self._gridc, self._gridx, self._gridy, self._velc, self._pres, self._divv))
-
-        return

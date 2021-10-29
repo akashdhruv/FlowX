@@ -20,7 +20,7 @@ def plot_line(particle):
     pyplot.ylabel('y')
     pyplot.plot(nodesC[:,0], nodesC[:,1])
     pyplot.plot(nodesC[:,0], nodesC[:,1], marker='.', markevery=5)
-    pyplot.axis('scaled', adjustable='box')
+    pyplot.axis('scaled')#, adjustable='box')
     pyplot.xlim(nodesC[:,0].min(), nodesC[:,0].max())
     pyplot.ylim(nodesC[:,1].min(), nodesC[:,1].max())
     pyplot.show()

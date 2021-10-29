@@ -1,27 +1,26 @@
 """Implementation of the immersed boundary module"""
 
+import time
+
 from . import _interface
 
 class ImBound(object):
 
     def __init__(self, domain_data_struct=[None]*5, imbound_vars=[None]*4, imbound_info=None):
-
         """
         Constructor for the imbound unit
 
         Arguments
         ---------
-
         domain_data_struct : object list
-              [gridc, gridx, gridy, scalars, particles]
+                             [gridc, gridx, gridy, scalars, particles]
 
-        imbound_vars : list
-                List of string for field variables required by ins unit
-               
-                imbound_vars[0] --> indicator variable for immersed boundary
-                imbound_vars[1] --> velocity variable
-                imbound_vars[2] --> dynamic x grid variable
-                imbound_vars[3] --> dynamic y grid variable
+        imbound_vars       : list
+                             List of string for field variables required by ins unit               
+                             imbound_vars[0] --> indicator variable for immersed boundary
+                             imbound_vars[1] --> velocity variable
+                             imbound_vars[2] --> dynamic x grid variable
+                             imbound_vars[3] --> dynamic y grid variable
              
         imbound_info : Dictionary of keyword arguments
 
@@ -80,9 +79,9 @@ class ImBound(object):
                 self._advect = _interface.stub.advect
 
             elif self._options['ib_type'] == 'visco':
-                self._force_flow = _interface.stub.force_flow
-                self._map_to_grid = _interface.stub.map_to_grid
-                self._advect = _interface.stub.advect
+                self._force_flow = _interface.visco.force_flow
+                self._map_to_grid = _interface.visco.map_to_grid
+                self._advect = _interface.visco.advect
 
             self._search_function = self._mapping_type[self._options['mapping_type']]
 
@@ -91,10 +90,7 @@ class ImBound(object):
     def map_to_grid(self):
         """
         Subroutine to map immersed boundary on grid
- 
         """
-        import time
-
         t1 = time.time()
         self._mapping_ites = self._map_to_grid(self._gridc, self._particles, self._ibmf, \
                                                self._ibmx, self._ibmy, self._search_function, self._options)
@@ -105,25 +101,18 @@ class ImBound(object):
         return
 
     def force_flow(self):
-
         """
         Subroutine to compute immersed boundary forces
-
         """
-
         self._force_flow(self._gridc, self._gridx, self._gridy, self._scalars, self._particles, \
                          self._ibmf, self._ibmx, self._ibmy, self._velc, self._options)
 
         return
 
     def advect(self):
-
         """
         Subroutine to compute immersed boundary forces
-
         """
-        import time
-
         t1 = time.time()
         self._advect(self._gridc, self._gridx, self._gridy, self._scalars, \
                      self._ibmf, self._ibmx, self._ibmy, self._velc, self._options)

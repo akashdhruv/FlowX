@@ -17,7 +17,7 @@ class Particles(object):
         self.xmin = numpy.array([xmin, ymin]) 
         self.xmax = numpy.array([xmax, ymax])
 
-        if particle_info['input'] is 'HDF5':
+        if particle_info['input'] == 'HDF5':
 
             particle_dict = h5py.File(particle_info['file'],'r')
             mesh = particle_dict['mesh']
@@ -32,7 +32,7 @@ class Particles(object):
 
             self.xo = numpy.concatenate((xp,yp), axis=1)      
 
-        elif particle_info['input'] is 'list':
+        elif particle_info['input'] == 'list':
             self.xo = numpy.array(particle_info['x'])        
 
         self.x = self.xo

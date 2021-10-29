@@ -26,7 +26,7 @@ def plot_contour_zero(grid, scalars, ivar, xvar, yvar):
     pyplot.contour(X, Y, grid.get_values(yvar).transpose(), colors='black', linestyles='solid', linewidths=1.0)
     pyplot.contour(X, Y, grid.get_values(ivar).transpose(), levels=[0], colors='red', linestyles='solid', linewidths=1.5)
    
-    pyplot.axis('scaled', adjustable='box')
+    pyplot.axis('scaled') #adjustable='box')
     pyplot.xlim(X.min(), X.max())
     pyplot.ylim(Y.min(), Y.max())
     #pyplot.savefig('./images/grid%d.png' % int(scalars.nstep/100))

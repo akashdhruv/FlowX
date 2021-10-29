@@ -52,7 +52,7 @@ class Quantum(object):
             self.qubits = self._options['qubits']
 
             self.circuit, self.quantum_register, self.classical_register = \
-            _interface.initialize_quantum_system(self.qubits)
+            _interface.initialize_system(self.qubits)
 
             self._calibrate_circuit = self._calibrators[self._options['simulator']]
             self._run_circuit = self._simulators[self._options['simulator']]

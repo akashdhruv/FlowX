@@ -5,22 +5,18 @@ from . import _interface
 class Poisson(object):
 
     def __init__(self, grid=None, poisson_vars=[None]*2, poisson_info=None):
-
         """
         Constructor for the Poisson unit
 
         Arguments
         ---------
-
-        grid : object
-
-             Grid object where the poisson equation needs to be solved
+        grid         : object
+                       Grid object where the poisson equation needs to be solved
 
         poisson_vars : list
-                List of string for field variables required by poisson unit
-               
-                poisson_vars[0] --> Phi (numerical solution)
-                poisson_vars[1] --> RHS
+                       List of string for field variables required by poisson unit               
+                       poisson_vars[0] --> Phi (numerical solution)
+                       poisson_vars[1] --> RHS
 
         poisson_info : Dictionary of keyword arguments
 
@@ -29,9 +25,7 @@ class Poisson(object):
                                        = 'serial_jacobi'
 
         poisson_info['maxiter'] = maximum number of iterations --> default 2000
-       
-        poisson_info['tol']  = minimum tolerance of the residuals --> default 1e-9
- 
+        poisson_info['tol']     = minimum tolerance of the residuals --> default 1e-9
         poisson_info['verbose'] = bool to displacy poisson stats or not --> default False
 
         """
@@ -58,7 +52,7 @@ class Poisson(object):
         #----------------------Setup current unit with default/user parameters-----------
 
         if not grid or None in poisson_vars:
-            self._solve = _interface.solveStub
+            self._solve = _interface.solve_stub
             print('Warning: Poisson unit is a stub') 
 
         else:

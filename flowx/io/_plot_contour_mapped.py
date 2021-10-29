@@ -33,7 +33,7 @@ def plot_contour_mapped(grid, var, particle, levels=None):
     pyplot.plot(nodesC[:,0], nodesC[:,1], marker='.', markevery=5)
    
     pyplot.colorbar(label=var)
-    pyplot.axis('scaled', adjustable='box')
+    pyplot.axis('scaled')#, adjustable='box')
     pyplot.xlim(X.min(), X.max())
     pyplot.ylim(Y.min(), Y.max())
     pyplot.show()

@@ -6,6 +6,29 @@ from scipy.sparse.linalg.dsolve import linsolve
 from scipy.sparse import spdiags, csr_matrix
 from scipy.sparse import linalg as sla
 
+def solve_stub(grid, ivar, rvar, options):
+    """Stub for poisson solver.
+
+    Arguments
+    ---------
+    grid : Grid object
+        Grid containing data.
+    ivar : string
+        Name of the grid variable of the numerical solution.
+    rvar : string
+        Name of the grid variable of the right-hand side.
+    options : dictionary
+
+    Returns
+    -------
+    ites: None
+        Number of iterations computed.
+    residual: None
+        Final residual.
+    """
+
+    return None, None
+
 def solve_cg(grid, ivar, rvar, options):
     """Solve the Poisson system using a conjugate-gradient method.
 
@@ -176,29 +199,6 @@ def solve_jacobi(grid, ivar, rvar, options):
         print('- Final residual: {}'.format(residual))
 
     return ites, residual
-
-def solve_stub(grid, ivar, rvar, options):
-    """Stub for poisson solver.
-
-    Arguments
-    ---------
-    grid : Grid object
-        Grid containing data.
-    ivar : string
-        Name of the grid variable of the numerical solution.
-    rvar : string
-        Name of the grid variable of the right-hand side.
-    options : dictionary
-
-    Returns
-    -------
-    ites: None
-        Number of iterations computed.
-    residual: None
-        Final residual.
-    """
-
-    return None, None
 
 def solve_superlu(grid, ivar, rvar, options):
     """Solve the Poisson system using a direct solver from the scipy library.

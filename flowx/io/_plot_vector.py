@@ -30,7 +30,7 @@ def plot_vector(gridx, gridy, var):
     pyplot.xlabel('x')
     pyplot.ylabel('y')
     pyplot.quiver(X, Y, U.transpose(), V.transpose())
-    pyplot.axis('scaled', adjustable='box')
+    pyplot.axis('scaled')#, adjustable='box')
     pyplot.xlim(X.min(), X.max())
     pyplot.ylim(Y.min(), Y.max())
     pyplot.show()
