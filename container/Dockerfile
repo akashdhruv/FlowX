@@ -8,4 +8,6 @@ MAINTAINER adhruv
 ARG maple_target
 WORKDIR ${maple_target}
 
-CMD ["sh", "-c", "./setup develop && ./setup clean && python3 tests/container"]
+CMD ["sh", "-c", "./setup develop && ./setup clean \
+                  python3 tests/grid && python3 tests/poisson && \
+                  cd examples/ins/fall_cylinder && python3 simulation.py"]

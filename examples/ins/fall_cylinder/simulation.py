@@ -44,7 +44,7 @@ def main():
     poisson_vars  = ['delp', 'divv']
     imbound_vars  = ['ibmf', 'velc']
 
-    scalar_info   = dict(tmax = 8, dt = 0.000625, Re = 100.0)
+    scalar_info   = dict(tmax = 0.1, dt = 0.000625, Re = 100.0)
 
     simulation_info = dict(time_stepping = 'ab2', 
                            poisson_solver = 'superlu', 
