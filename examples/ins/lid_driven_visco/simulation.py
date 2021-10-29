@@ -1,7 +1,7 @@
 import numpy
 import flowx
 
-def main():
+def test():
 
     # Define grid parameters
     nx, ny = 40, 40
@@ -15,7 +15,7 @@ def main():
     poisson_vars  = ['delp', 'divv']
     imbound_vars  = ['ibmf', 'velc', 'ibmx', 'ibmy']
 
-    scalar_info   = dict(tmax = 20, dt = 0.001, Re = 100.0, Re_s = 10.0, mu_s = 1.0)
+    scalar_info   = dict(tmax = 5, dt = 0.001, Re = 100.0, Re_s = 10.0, mu_s = 1.0)
 
     simulation_info = dict(with_ib = True, ib_type = 'visco', extrap_solid = 10)
 
@@ -61,11 +61,14 @@ def main():
             print("Level Set Advection Time: ",imbound._advection_time)
             flowx.io.display_stats(scalars) 
         
-        #if scalars.nstep % 100 == 0:
-        #    flowx.io.plot_contour_zero(gridc, scalars, 'ibmf', 'ibmx', 'ibmy')
-
-
         scalars.advance()
 
+    maxdivv,mindivv = numpy.max(gridc.get_values('divv')),numpy.min(gridc.get_values('divv'))
+
+    if (abs(maxdivv) <= 1e-11 and abs(mindivv) <= 1e-11 and maxdivv*mindivv < 0.):
+        print('Divergence is within tolerance')
+    else:
+        raise ValueError('Divergence is not within tolerance')
+
 if __name__ == "__main__":
-    main()
+    test()

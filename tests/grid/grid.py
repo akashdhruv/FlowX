@@ -1,11 +1,10 @@
-"""Tests for `flowx/grid/grid.py`."""
+"""Tests for `flowx/container/grid.py`."""
 
 import numpy
 import random
 import unittest
 
 import flowx
-
 
 class TestGrid(unittest.TestCase):
     """Unit-tests for the Grid class."""

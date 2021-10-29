@@ -1,4 +1,4 @@
 #!/bin/bash
 
-python3 grid
-python3 poisson
+python3 ./grid
+python3 ./poisson

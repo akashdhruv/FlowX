@@ -30,7 +30,7 @@ def set_initial_velocity(gridc, gridx, gridy, ivar, pres):
 
     return
 
-def main():
+def test():
 
     # Define grid parameters
     nx, ny = 40, 80
@@ -83,15 +83,19 @@ def main():
     while scalars.time <= scalars.tmax:
     
         imbound.map_to_grid()
-
         ins.advance()
-
         for particle in particles: particle.advance()
-
         scalars.advance()
-    
+
         # Display stats
         if scalars.nstep % 1 == 0: flowx.io.display_stats(scalars)  
-        
+
+    maxdivv,mindivv = numpy.max(gridc.get_values('divv')),numpy.min(gridc.get_values('divv'))
+
+    if (abs(maxdivv) <= 1e-11 and abs(mindivv) <= 1e-11 and maxdivv*mindivv < 0.):
+        print('Divergence is within tolerance')
+    else:
+        raise ValueError('Divergence is not within tolerance')
+
 if __name__ == "__main__":
-    main()
+    test()
