@@ -34,8 +34,8 @@ conda activate py36-flowx
 To install the Python package `flowx`:
 
 ```bash
-git clone https://github.com/GWU-CFD/FlowX.git
-cd FlowX
+git clone https://github.com/GWU-CFD/flowX.git
+cd flowX
 python setup.py develop
 ```
 
