@@ -1,7 +1,7 @@
 import numpy
 import flowx
 
-def test():
+def example():
 
     # Define grid parameters
     nx, ny = 40, 40
@@ -71,4 +71,4 @@ def test():
         raise ValueError('Divergence is not within tolerance')
 
 if __name__ == "__main__":
-    test()
+    example()

@@ -4,7 +4,7 @@ import sys
 import unittest
 
 def main():
-    tests = ['grid']
+    tests = ['grid','jacobi','superlu','cg','direct']
 
     suite = unittest.TestSuite()
 

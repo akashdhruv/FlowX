@@ -1,4 +1,4 @@
-name: maple-container
+name: flowx-container
 
 on:
   pull_request:
@@ -20,8 +20,8 @@ on:
 jobs:
   #Job 1
   #
-  bubblebox-latest:
-    name: "flowx-latest"
+  latest:
+    name: "latest"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2      
@@ -47,7 +47,7 @@ jobs:
     - name: Run FlowX tests
       run: |
           cd container
-          maple run && maple rinse
+          maple run
     - name: Clean FlowX env
       run: |
           cd container
