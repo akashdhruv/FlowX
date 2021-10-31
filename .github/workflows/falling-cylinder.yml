@@ -39,7 +39,7 @@ jobs:
           git submodule update --init tools/maple
           git submodule update --init tools/bubblebox
           cd tools/bubblebox/tools
-          git sumbodule update --init tools/indicators
+          git submodule update --init tools/indicators
           cd ../../maple
           ./setup develop
           ./setup clean
