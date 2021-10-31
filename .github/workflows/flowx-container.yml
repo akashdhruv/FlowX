@@ -38,9 +38,9 @@ jobs:
           auth_header="$(git config --local --get http.https://github.com/.extraheader)"
           git submodule update --init tools/maple
           git submodule update --init tools/bubblebox
-          cd tools/bubblebox/tools
+          cd tools/bubblebox
           git submodule update --init tools/indicators
-          cd ../../maple
+          cd ../maple
           ./setup develop
           ./setup clean
     - name: Setup FlowX env
