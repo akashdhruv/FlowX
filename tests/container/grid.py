@@ -28,7 +28,7 @@ class TestGrid(unittest.TestCase):
         for name in names:
             self.assertEqual(getattr(self.grid, name), getattr(self, name))
         size = self.num * (self.nx + 2) * (self. ny + 2)
-        self.assertEqual(self.grid.data.size, size)
+        self.assertEqual(self.grid.num * (self.grid.nx + 2) * (self.grid.ny + 2), size)
 
     def test_set_get_values(self):
         """Test set/get values of a cell-centered variables."""

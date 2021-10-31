@@ -36,10 +36,14 @@ jobs:
           # please uncomment the following line
           git config --global url."https://github.com/".insteadOf "git@github.com:"
           auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-          git submodule update --init tools/maple
-          cd tools/maple
+          git submodule update --init tools/Maple
+          git submodule update --init tools/BubbleBox
+          cd tools/Maple
           ./setup develop
           ./setup clean
+          cd ../BubbleBox
+          ./setup develop
+          .setup clean
     - name: Setup FlowX env
       run: |
           cd container

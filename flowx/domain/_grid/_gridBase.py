@@ -1,6 +1,7 @@
 """Module with implementation of the Grid classes."""
 
 import numpy
+import bubblebox.library.create as boxcreate
 
 class GridBase(object):
     """Base class for the Grid."""
@@ -44,7 +45,7 @@ class GridBase(object):
         # Initialize the data
         self.num = len(var_names)
         self.vars = dict(zip(var_names, range(self.num)))
-        self.data = None
+        self.data = boxcreate.Data()
         self.initialize_data()
 
         # Boundary condition information
@@ -63,6 +64,10 @@ class GridBase(object):
                                                           self.ymin,
                                                           self.ymax) +
                 " - number of variables: {}\n".format(self.num))
+
+    def __del__(self):
+        """Destructor"""
+        self.data.purge()
 
     def set_gridline_coordinates(self):
         """Set the gridline coordinates.
@@ -148,8 +153,7 @@ class GridBase(object):
             2D array with the values to set.
 
         """
-        idx = self.vars[var_name]
-        self.data[:, :, idx] = values
+        self.data[var_name][0,:,:,0] = values
 
     def get_values(self, var_name):
         """Get the data of a variable (as a copy).
@@ -165,8 +169,7 @@ class GridBase(object):
             Variable's data as a 2D array of floats.
 
         """
-        idx = self.vars[var_name]
-        data = self.data[:, :, idx]
+        data = self.data[var_name][0,:,:,0]
         return data
 
     def set_value(self, var_name, i, j, value):
@@ -184,8 +187,7 @@ class GridBase(object):
             Value to set.
 
         """
-        idx = self.vars[var_name]
-        self.data[i, j, idx] = value
+        self.data[var_name][0,i,j,0] = value
 
     def get_value(self, var_name, i, j):
         """Get a value using (i, j) indexation.
@@ -205,8 +207,7 @@ class GridBase(object):
             Value of the variable at index (i, j).
 
         """
-        idx = self.vars[var_name]
-        value = self.data[i, j, idx]
+        value = self.data[var_name][0,i,j,0]
         return value
 
     def get_error(self, eror, ivar, asol):
@@ -224,9 +225,8 @@ class GridBase(object):
             Name of the grid variable of the analytical solution.
 
         """
-        i_eror, i_ivar, i_asol = self.get_variable_indices(eror, ivar, asol)
-        self.data[:, :, i_eror] = numpy.abs(self.data[:, :, i_ivar] -
-                                            self.data[:, :, i_asol])
+        self.data[eror][0,:,:,0] = numpy.abs(self.data[ivar][0,:,:,0] -
+                                             self.data[asol][0,:,:,0])
 
     def get_l2_norm(self, eror):
         """Compute the L2 norm for a given variable.
@@ -242,9 +242,7 @@ class GridBase(object):
             The L2-norm.
 
         """
-        i_eror = self.get_variable_indices(eror)
-
-        l2_norm = (numpy.sqrt(numpy.sum(self.data[:, :, i_eror]**2)) /
+        l2_norm = (numpy.sqrt(numpy.sum(self.data[eror][0,:,:,0]**2)) /
                    ((self.nx + 2) * (self.ny + 2)))
 
         return l2_norm

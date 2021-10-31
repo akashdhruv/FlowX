@@ -1,3 +1,9 @@
 [submodule "tools/maple"]
 	path = tools/maple
 	url = git@github.com:akashdhruv/maple.git
+[submodule "tools/BubbleBox"]
+	path = tools/BubbleBox
+	url = git@github.com:akashdhruv/BubbleBox.git
+[submodule "tools/Maple"]
+	path = tools/Maple
+	url = git@github.com:akashdhruv/Maple.git

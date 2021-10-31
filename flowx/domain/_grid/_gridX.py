@@ -26,7 +26,9 @@ class GridFaceX(GridBase):
 
     def initialize_data(self):
         """Initialize the data with zeros."""
-        self.data = numpy.zeros((self.nx + 1, self.ny + 2, self.num))
+        self.data.nxb = self.nx+1
+        self.data.nyb = self.ny+2
+        [self.data.addvar(var) for var in self.vars]
 
     def fill_guard_cells_dirichlet(self, var_name, loc, bc_val):
         """Fill guard cells using a Dirichlet condition.
