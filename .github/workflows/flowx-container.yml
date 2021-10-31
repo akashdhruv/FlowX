@@ -25,27 +25,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2      
-    - name: Dependencies1
+    - name: Install local bin
       run: |
           mkdir -p $HOME/.local/bin
           export PATH="PATH:$HOME/.local/bin" 
     - uses: actions/checkout@v2 # checkout root
-    - name: Checkout submodules # checkout rest
+    - name: Install submodules # checkout rest
       run: |
           # If your submodules are configured to use SSH instead of HTTPS
           # please uncomment the following line
           git config --global url."https://github.com/".insteadOf "git@github.com:"
           auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-          git submodule update --init tools/maple
-          git submodule update --init tools/bubblebox
-          cd tools/bubblebox
-          git submodule update --init tools/indicators
-          cd ../maple
+          git submodule update --init --recursive
+          cd tools/maple
           ./setup develop
           ./setup clean
     - name: Setup FlowX env
       run: |
           cd container
+          python3 dependencies.py
           maple build
     - name: Run FlowX tests
       run: |
