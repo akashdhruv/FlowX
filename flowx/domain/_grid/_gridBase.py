@@ -43,8 +43,7 @@ class GridBase(object):
         self.set_gridline_coordinates()
 
         # Initialize the data
-        self.num = len(var_names)
-        self.vars = dict(zip(var_names, range(self.num)))
+        self.var_names = var_names
         self.data = boxcreate.Data()
         self.initialize_data()
 
@@ -87,12 +86,11 @@ class GridBase(object):
 
     def set_default_bc(self):
         """Set default boundary conditions (homogeneous Neumann)."""
-        var_names = list(self.vars.keys())
-        num = len(var_names)
+        num = len(self.var_names)
         default_bc_type = 4 * ['neumann']
-        self.bc_type = dict(zip(var_names, num * [default_bc_type]))
+        self.bc_type = dict(zip(self.var_names, num * [default_bc_type]))
         default_bc_val = 4 * [0.0]
-        self.bc_val = dict(zip(var_names, num * [default_bc_val]))
+        self.bc_val = dict(zip(self.var_names, num * [default_bc_val]))
 
     def set_user_bc(self, user_bc_type, user_bc_val):
         """Overwrite default boundary conditions with user-provided ones.
@@ -124,23 +122,6 @@ class GridBase(object):
     def update_bc_type(self, user_bc_type):
 
         self.bc_type = {**self.bc_type, **user_bc_type}
-
-    def get_variable_indices(self, *var_names):
-        """Get the grid index of given variable names.
-
-        Parameters
-        ----------
-        var_names : tuple of strings
-            The name of the variable(s).
-
-        Returns
-        -------
-        indices : integer or list of integers
-            Index of the grid variables.
-
-        """
-        indices = [self.vars[name] for name in var_names]
-        return indices[0] if len(indices) == 1 else indices
 
     def set_values(self, var_name, values):
         """Set the values of a variable.

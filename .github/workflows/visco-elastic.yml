@@ -1,0 +1,60 @@
+name: falling-cylinder
+
+on:
+  pull_request:
+    branches: 
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - 'CITATION'
+
+  push:
+    branches: 
+      - development
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - 'CITATION'
+
+jobs:
+  #Job 1
+  #
+  flowx-latest:
+    name: "flowx-latest"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install local bin
+      run: |
+          mkdir -p $HOME/.local/bin
+          export PATH="PATH:$HOME/.local/bin"
+    - uses: actions/checkout@v2 # checkout root
+    - name: Install submodules # checkout rest
+      run: |
+          # If your submodules are configured to use SSH instead of HTTPS
+          # please uncomment the following line
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+          auth_header="$(git config --local --get http.https://github.com/.extraheader)"
+          git submodule update --init --recursive
+          cd tools/maple
+          ./setup develop
+          ./setup clean
+    - name: Setup FlowX env
+      run: |
+          cd container
+          python3 dependencies.py
+          maple build
+    - name: Run FlowX tests
+      run: |
+          cd container
+          maple pour
+          maple execute --command='"./setup develop && ./setup clean && \
+                                    cd examples/ins/lid_driven_visco && \
+                                    python3 example.py"'
+          maple rinse
+    - name: Clean FlowX env
+      run: |
+          cd container
+          maple clean
+          maple remove

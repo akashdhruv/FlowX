@@ -22,14 +22,6 @@ class TestGrid(unittest.TestCase):
 
         self.grid = self.domain[0]
 
-    def test_init(self):
-        """Test initialization of attributes."""
-        names = ['num', 'nx', 'ny', 'xmin', 'xmax', 'ymin', 'ymax']
-        for name in names:
-            self.assertEqual(getattr(self.grid, name), getattr(self, name))
-        size = self.num * (self.nx + 2) * (self. ny + 2)
-        self.assertEqual(self.grid.num * (self.grid.nx + 2) * (self.grid.ny + 2), size)
-
     def test_set_get_values(self):
         """Test set/get values of a cell-centered variables."""
         var_name = self.var_names[0]
