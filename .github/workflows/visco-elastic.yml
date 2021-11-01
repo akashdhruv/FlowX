@@ -1,4 +1,4 @@
-name: falling-cylinder
+name: visco-elastic
 
 on:
   pull_request:
