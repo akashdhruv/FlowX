@@ -8,7 +8,7 @@ class GridBase(object):
 
     type_ = 'base'
 
-    def __init__(self, var_names, nx, ny, xmin, xmax, ymin, ymax,
+    def __init__(self, var_names, nx, ny, xmin, xmax, ymin, ymax, nblocks,
                  user_bc_type=None, user_bc_val=None):
         """Initialize the Grid object and allocate the data.
 
@@ -47,6 +47,10 @@ class GridBase(object):
         self.data = boxcreate.Data()
         self.initialize_data()
 
+        # Initialize the blocks
+        self.blocklist = [boxcreate.Block(data=self.data,tag=block_id)
+                          for block_id in range(nblocks[0]*nblocks[1])]
+
         # Boundary condition information
         self.set_default_bc()
         if user_bc_type is not None and user_bc_val is not None:
@@ -62,7 +66,7 @@ class GridBase(object):
                                                           self.xmax,
                                                           self.ymin,
                                                           self.ymax) +
-                " - number of variables: {}\n".format(self.num))
+                " - number of variables: {}\n".format(len(self.var_names)))
 
     def __del__(self):
         """Destructor"""
