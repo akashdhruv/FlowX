@@ -15,8 +15,8 @@ with open('flowx/__meta__.py', mode='r') as source:
                             '__license__', '__description__']}
 
 # core dependancies
-DEPENDENCIES = ['numba', 'matplotlib', 'h5py', 'annoy', 
-                'qiskit', 'numpy', 'shapely', 'scipy']
+DEPENDENCIES = ['numba', 'qiskit', 'matplotlib', 'h5py', 
+                'annoy', 'numpy',  'shapely',    'scipy']
 
 setup(
     name                 = metadata['__pkgname__'],
