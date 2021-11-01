@@ -2,7 +2,7 @@ from . import Grid
 from . import Scalars
 from . import Particles
 
-def Domain(nx, ny, xmin, xmax, ymin, ymax, nblocks=[1,1], \
+def Domain(nx, ny, xmin, xmax, ymin, ymax, \
            center_vars=None, face_vars=None, scalar_info=None, particle_info=None, \
            bc_type_center=None, bc_val_center=None, \
            bc_type_facex=None, bc_val_facex=None, \
@@ -11,6 +11,8 @@ def Domain(nx, ny, xmin, xmax, ymin, ymax, nblocks=[1,1], \
 
     gridc, gridx, gridy, scalars, particles = [object] * 5   
     
+    nblocks = [1,1]
+
     if center_vars: 
         gridc = Grid('cell-centered', center_vars, nx, ny, xmin, xmax, ymin, ymax, nblocks, \
                       user_bc_type=bc_type_center, user_bc_val=bc_val_center)
