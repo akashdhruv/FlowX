@@ -11,17 +11,15 @@ def Domain(nx, ny, xmin, xmax, ymin, ymax, \
 
     gridc, gridx, gridy, scalars, particles = [object] * 5   
     
-    nblocks = [1,1]
-
     if center_vars: 
-        gridc = Grid('cell-centered', center_vars, nx, ny, xmin, xmax, ymin, ymax, nblocks, \
+        gridc = Grid('cell-centered', center_vars, nx, ny, xmin, xmax, ymin, ymax, \
                       user_bc_type=bc_type_center, user_bc_val=bc_val_center)
 
     if face_vars:
-        gridx = Grid('x-face', face_vars, nx, ny, xmin, xmax, ymin, ymax, nblocks, \
+        gridx = Grid('x-face', face_vars, nx, ny, xmin, xmax, ymin, ymax, \
                       user_bc_type=bc_type_facex, user_bc_val=bc_val_facex)
 
-        gridy = Grid('y-face', face_vars, nx, ny, xmin, xmax, ymin, ymax, nblocks, \
+        gridy = Grid('y-face', face_vars, nx, ny, xmin, xmax, ymin, ymax, \
                       user_bc_type=bc_type_facey, user_bc_val=bc_val_facey)
 
     if scalar_info: 
