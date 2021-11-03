@@ -134,7 +134,7 @@ class GridBase(object):
             2D array with the values to set.
 
         """
-        self.data[var_name][0,:,:,0] = values
+        self.data[var_name][0,0,:,:] = values.transpose()
 
     def get_values(self, var_name):
         """Get the data of a variable (as a copy).
@@ -150,7 +150,7 @@ class GridBase(object):
             Variable's data as a 2D array of floats.
 
         """
-        data = self.data[var_name][0,:,:,0]
+        data = self.data[var_name][0,0,:,:].transpose()
         return data
 
     def set_value(self, var_name, i, j, value):
@@ -168,7 +168,7 @@ class GridBase(object):
             Value to set.
 
         """
-        self.data[var_name][0,i,j,0] = value
+        self.data[var_name][0,0,j,i] = value
 
     def get_value(self, var_name, i, j):
         """Get a value using (i, j) indexation.
@@ -188,7 +188,7 @@ class GridBase(object):
             Value of the variable at index (i, j).
 
         """
-        value = self.data[var_name][0,i,j,0]
+        value = self.data[var_name][0,0,j,i]
         return value
 
     def get_error(self, eror, ivar, asol):
@@ -206,8 +206,8 @@ class GridBase(object):
             Name of the grid variable of the analytical solution.
 
         """
-        self.data[eror][0,:,:,0] = numpy.abs(self.data[ivar][0,:,:,0] -
-                                             self.data[asol][0,:,:,0])
+        self.data[eror][0,0,:,:] = numpy.abs(self.data[ivar][0,0,:,:] -
+                                             self.data[asol][0,0,:,:])
 
     def get_l2_norm(self, eror):
         """Compute the L2 norm for a given variable.
@@ -223,7 +223,7 @@ class GridBase(object):
             The L2-norm.
 
         """
-        l2_norm = (numpy.sqrt(numpy.sum(self.data[eror][0,:,:,0]**2)) /
+        l2_norm = (numpy.sqrt(numpy.sum(self.data[eror][0,0,:,:]**2)) /
                    ((self.nx + 2) * (self.ny + 2)))
 
         return l2_norm
