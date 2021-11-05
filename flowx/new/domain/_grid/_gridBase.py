@@ -2,6 +2,7 @@
 
 import bubblebox.library as library
 import pymorton
+import collections
 
 class GridBase(library.create.Dataset):
     """Base class for the Grid."""
@@ -50,7 +51,7 @@ class GridBase(library.create.Dataset):
         nxb,nyb = [int(nx/xblocks),int(ny/yblocks)]
         dx,dy   = abs(xmax-xmin)/nx,abs(ymax-ymin)/ny
 
-        # Initialize attributes
+        # Initialize data and block attributes
         block_attributes = self._initialize_block_attributes(xblocks,yblocks,dx,dy,xmin,xmax,ymin,ymax)
         data_attributes = self._initialize_data_attributes(xblocks,yblocks,nxb,nyb,varlist)
 
@@ -58,7 +59,21 @@ class GridBase(library.create.Dataset):
         data = library.create.Data(**data_attributes)
         blocklist = [library.create.Block(data,**attributes) for attributes in block_attributes]
 
+        # Call base class constructor
         super().__init__(blocklist,data)
+
+        # Set gridline coordinates
+        self.set_gridline_coordinates()
+
+        # Boundary condition information
+        self.bc_types = dict(zip(varlist,[{'xlow':{},'xhigh':{},'ylow':{},'yhigh':{}}]*len(varlist)))
+        self.bc_vals = dict(zip(varlist,[{'xlow':{},'xhigh':{},'ylow':{},'yhigh':{}}]*len(varlist)))
+
+        self.set_default_bc(varlist)
+        if user_bc_type is not None and user_bc_val is not None:
+            self.set_user_bc(user_bc_type, user_bc_val)
+
+        self.fill_guard_cells(varlist)
 
     def __del__(self):
         """Destructor"""
@@ -87,13 +102,31 @@ class GridBase(library.create.Dataset):
         """Private method for initialization"""
         raise NotImplementedError
 
-    def set_default_bc(self):
+    def addvar(self,varkey):
+        super().addvar(varkey)
+        self.set_default_bc(varkey)
+
+    def set_gridline_coordinates(self):
+        """Set the gridline coordinates."""
+        raise NotImplementedError
+
+    def set_default_bc(self,varlist):
         """Set default boundary conditions (homogeneous Neumann)."""
-        num = len(self.varlist)
-        default_bc_type = 4 * ['neumann']
-        self.bc_type = dict(zip(self.varlist, num * [default_bc_type]))
-        default_bc_val = 4 * [0.0]
-        self.bc_val = dict(zip(self.varlist, num * [default_bc_val]))
+        # Convert single string to a list
+        if type(varlist) is str:
+            varlist = [varlist]
+
+        self.bc_types = {**self.bc_types,
+                         **dict(zip(varlist,[{'xlow':{},'xhigh':{},'ylow':{},'yhigh':{}}]*len(varlist)))} 
+        self.bc_vals = {**self.bc_vals,
+                         **dict(zip(varlist,[{'xlow':{},'xhigh':{},'ylow':{},'yhigh':{}}]*len(varlist)))}
+      
+        for varkey in varlist:
+            for block in self.blocklist:
+                for location,neighbor in block.neighdict.items():
+                    if neighbor is None:
+                        self.bc_types[varkey][location][block.tag] = 'neumann'
+                        self.bc_vals[varkey][location][block.tag] = 0.
 
     def set_user_bc(self, user_bc_type, user_bc_val):
         """Overwrite default boundary conditions with user-provided ones.
@@ -106,27 +139,32 @@ class GridBase(library.create.Dataset):
             User-defined boundary values.
 
         """
-        # Overwrite default boundary types
-        self.bc_type = {**self.bc_type, **user_bc_type}
-        # Overwrite default boundary values
-        self.bc_val = {**self.bc_val, **user_bc_val}
+        for varkey in user_bc_type:
+            for block in self.blocklist:
+                for location,neighbor in block.neighdict.items():
+                    if neighbor is None and location in list(user_bc_type[varkey].keys()):
+                        self.bc_types[varkey][location][block.tag] = user_bc_type[varkey][location]
+                        self.bc_vals[varkey][location][block.tag] = user_bc_val[varkey][location]
 
-    def update_bc_val(self, user_bc_val):
+    def update_bc(self, user_bc_type, user_bc_val):
         """Overwrite boundary condition values with user-provided ones.
 
         Parameters
         ----------
+        user_bc_type : dictionary of (string, list) items
+            User-defined boundary types.
         user_bc_val : dictionary of (string, list) items
             User-defined boundary values.
 
         """
-        self.bc_val = {**self.bc_val, **user_bc_val}
- 
-    def update_bc_type(self, user_bc_type):
+        for varkey in user_bc_type:
+            for block in self.blocklist:
+                for location,neighbor in block.neighdict.items():
+                    if neighbor is None and location in list(user_bc_type[varkey].keys()):
+                        self.bc_types[varkey][location][block.tag] = user_bc_type[varkey][location][block.tag]
+                        self.bc_vals[varkey][location][block.tag] = user_bc_val[varkey][location][block.tag]
 
-        self.bc_type = {**self.bc_type, **user_bc_type}
-
-    def get_error(self, eror, ivar, asol):
+    def compute_error(self, eror, ivar, asol):
         """Compute the error between the numerical and analytical solutions.
 
         Error is defined as the absolute difference between the two solutions.
@@ -142,8 +180,7 @@ class GridBase(library.create.Dataset):
 
         """
         for block in self.blocklist:
-            block[eror][0,:,:] = numpy.abs(block[ivar][0,:,:] -
-                                           block[asol][0,:,:])
+            block[eror] = numpy.abs(block[ivar] - block[asol])
 
     def get_l2_norm(self, eror):
         """Compute the L2 norm for a given variable.
@@ -161,7 +198,7 @@ class GridBase(library.create.Dataset):
         """
         # TODO add treatment for multiple blocks
         for block in self.blocklist:
-            l2_norm = (numpy.sqrt(numpy.sum(block[eror][0,:,:]**2)) /
+            l2_norm = (numpy.sqrt(numpy.sum(block[eror]**2)) /
                       ((self.nx + 2) * (self.ny + 2)))
 
         return l2_norm
@@ -178,48 +215,46 @@ class GridBase(library.create.Dataset):
         # Convert single string to a list
         if type(varlist) is str:
             varlist = [varlist]
-        # Set locations and delta value (either dx or dy)
-        locs = ['left', 'right', 'bottom', 'top']
 
         # TODO add a call to exchange data between blocks
         # TODO figure out how to tag blocks at boundary etc.
-        for block in self.blocklist:
-            deltas = [block.dx, block.dx, block.dy, block.dy]
-            # Fill guard cells for each variable
-            for ivar in varlist:
-                bc_types = self.bc_type[ivar]
-                bc_vals = self.bc_val[ivar]
-                # Fill guard cells for each boundary
-                for loc, delta, bc_type, bc_val in zip(locs, deltas,
-                                                       bc_types, bc_vals):
+        # TODO make this efficient
+        for varkey in varlist:
+            for block in self.blocklist:
+                deltas = dict(zip(list(block.neighdict.keys()),[block.dx, block.dx, block.dy, block.dy]))
+                for location,neighbor in block.neighdict.items():
+                    if neighbor is None:
+                        self.fill_guard_cells_domain(block,varkey,location,deltas[location])
+                    else:                       
+                        # TODO self.fill_guard_cells_neighbor
+                        pass
 
-                    if bc_type == 'neumann':
-                        fill_guard_cells_neumann(block,ivar,loc,bc_val,delta)
-                    elif bc_type == 'dirichlet':
-                        fill_guard_cells_dirichlet(block,ivar,loc,bc_val)
-                    elif bc_type == 'outflow':
-                        fill_guard_cells_dirichlet(block,ivar,loc,bc_val)
-                    elif bc_type == 'periodic':
-                        fill_guard_cells_periodic(block,ivar,loc)
-                    elif bc_type == 'projection':
-                        fill_guard_cells_projection(block,ivar,loc)
-                    elif bc_type == None:
-                        None
-                    else:
-                        raise ValueError('Boundary type "{}" not implemented'
-                                        .format(bc_type))
+    def fill_guard_cells_domain(self,block,varkey,location,delta):
+        bc_type = self.bc_types[varkey][location][block.tag]
+        bc_val = self.bc_vals[varkey][location][block.tag]
+        blockdata = block[varkey]
+
+        if bc_type == 'neumann':
+            self.__class__.fill_guard_cells_neumann(blockdata,location,bc_val,delta)
+        elif bc_type == 'dirichlet':
+            self.__class__.fill_guard_cells_dirichlet(blockdata,location,bc_val)
+        elif bc_type == 'outflow':
+            self.__class__.fill_guard_cells_dirichlet(blockdata,location,bc_val)
+        elif bc_type == 'projection':
+            self.__class__.fill_guard_cells_projection(blockdata,loc)
+        elif bc_type == None:
+            None
+        else:
+            raise ValueError('Boundary type "{}" not implemented'.format(bc_type))
 
     @staticmethod
-    def fill_guard_cells_dirichlet(block, ivar, loc, bc_val):
+    def fill_guard_cells_dirichlet(blockdata, loc, bc_val):
         """Fill guard cells using a Dirichlet condition.
 
         Method implemented in child classes.
 
         Parameters
         ----------
-        block : BubbleBox Block object
-        ivar : string
-            Name of the variable to update.
         loc : string
             Boundary location;
             choices: ['left', 'right', 'bottom', 'top'].
@@ -230,14 +265,11 @@ class GridBase(library.create.Dataset):
         raise NotImplementedError()
 
     @staticmethod
-    def fill_guard_cells_neumann(block, ivar, loc, bc_val, delta):
+    def fill_guard_cells_neumann(blockdata, loc, bc_val, delta):
         """Fill guard cells using a Neumann condition.
 
         Parameters
         ----------
-        block : BubbleBox Block object
-        ivar : string
-            Name of the variable to update.
         loc : string
             Boundary location;
             choices: ['left', 'right', 'bottom', 'top'].
@@ -247,61 +279,34 @@ class GridBase(library.create.Dataset):
             Grid-cell width.
 
         """ 
-        if loc == 'left':
-            block[ivar][:,:,0]  = bc_val * delta + block[ivar][:,:,1]
-        elif loc == 'right':
-            block[ivar][:,:,-1] = bc_val * delta + block[ivar][:,:,-2]
-        elif loc == 'bottom':
-            block[ivar][:,0,:]  = bc_val * delta + block[ivar][:,1,:]
-        elif loc == 'top':
-            block[ivar][:,-1,:] = bc_val * delta + block[ivar][:,-2,:]
+        if loc == 'xlow':
+            blockdata[:,:,0]  = bc_val * delta + blockdata[:,:,1]
+        elif loc == 'xhigh':
+            blockdata[:,:,-1] = bc_val * delta + blockdata[:,:,-2]
+        elif loc == 'ylow':
+            blockdata[:,0,:]  = bc_val * delta + blockdata[:,1,:]
+        elif loc == 'yhigh':
+            blockdata[:,-1,:] = bc_val * delta + blockdata[:,-2,:]
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))
 
     @staticmethod
-    def fill_guard_cells_periodic(block, ivar, loc):
-        """Fill guard cells with periodic BC.
-
-        Parameters
-        ----------
-        block : BubbleBox Block object
-        ivar : string
-            Name of the variable to update.
-        loc : string
-            Boundary location;
-            choices: ['left', 'right', 'bottom', 'top'].
-        """
-        if loc == 'left':
-            block[ivar][:,:,0]  = block[ivar][:,:,-2]
-        elif loc == 'right':
-            block[ivar][:,:,-1] = block[ivar][:,:,1]
-        elif loc == 'bottom':
-            block[ivar][:,0,:]  = block[ivar][:,-2,:]
-        elif loc == 'top':
-            block[ivar][:,-1,:] = block[ivar][:,1,:]
-        else:
-            raise ValueError('Unknown boundary location "{}"'.format(loc))
-
-    @staticmethod
-    def fill_guard_cells_projection(block, ivar, loc):
+    def fill_guard_cells_projection(blockdata, loc):
         """Fill guard cells with projection BC.
 
         Parameters
         ----------
-        block : BubbleBox Block object
-        ivar : string
-            Name of the variable to update.
         loc : string
             Boundary location;
             choices: ['left', 'right', 'bottom', 'top'].
         """
-        if loc == 'left':
-            block[ivar][:,:,0]  = 2*block[ivar][:,:,1]  - block[ivar][:,:,2]
-        elif loc == 'right':
-            block[ivar][:,:,-1] = 2*block[ivar][:,:,-2] - block[ivar][:,:,-3]
-        elif loc == 'bottom':
-            block[ivar][:,0,:]  = 2*block[ivar][:,1,:]  - block[ivar][:,2,:]
-        elif loc == 'top':
-            block[ivar][:,-1,:] = 2*block[ivar][:,-2,:] - block[ivar][:,-3,:]
+        if loc == 'xlow':
+            blockdata[:,:,0]  = 2*blockdata[:,:,1]  - blockdata[:,:,2]
+        elif loc == 'xhigh':
+            blockdata[:,:,-1] = 2*blockdata[:,:,-2] - blockdata[:,:,-3]
+        elif loc == 'ylow':
+            blockdata[:,0,:]  = 2*blockdata[:,1,:]  - blockdata[:,2,:]
+        elif loc == 'yhigh':
+            blockdata[:,-1,:] = 2*blockdata[:,-2,:] - blockdata[:,-3,:]
         else:
             raise ValueError('Unknown boundary location "{}"'.format(loc))

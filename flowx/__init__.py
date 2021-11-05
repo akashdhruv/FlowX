@@ -4,3 +4,5 @@ from . import ins
 from . import imbound
 from . import quantum
 from . import io
+
+from . import new
