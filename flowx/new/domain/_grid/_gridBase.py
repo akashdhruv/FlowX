@@ -1,8 +1,8 @@
 """Module with implementation of the Grid classes."""
 
 import bubblebox.library as library
+import numpy
 import pymorton
-import collections
 
 class GridBase(library.create.Dataset):
     """Base class for the Grid."""
@@ -199,7 +199,7 @@ class GridBase(library.create.Dataset):
         # TODO add treatment for multiple blocks
         for block in self.blocklist:
             l2_norm = (numpy.sqrt(numpy.sum(block[eror]**2)) /
-                      ((self.nx + 2) * (self.ny + 2)))
+                      ((self.nxb) * (self.nyb)))
 
         return l2_norm
  
@@ -224,12 +224,13 @@ class GridBase(library.create.Dataset):
                 deltas = dict(zip(list(block.neighdict.keys()),[block.dx, block.dx, block.dy, block.dy]))
                 for location,neighbor in block.neighdict.items():
                     if neighbor is None:
-                        self.fill_guard_cells_domain(block,varkey,location,deltas[location])
+                        self.fill_guard_cells_physical(block,varkey,location,deltas[location])
                     else:                       
-                        # TODO self.fill_guard_cells_neighbor
+                        # TODO
+                        # self.exchange_neighdata(varkey,location)
                         pass
 
-    def fill_guard_cells_domain(self,block,varkey,location,delta):
+    def fill_guard_cells_physical(self,block,varkey,location,delta):
         bc_type = self.bc_types[varkey][location][block.tag]
         bc_val = self.bc_vals[varkey][location][block.tag]
         blockdata = block[varkey]
