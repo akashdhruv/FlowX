@@ -4,8 +4,7 @@ import numpy
 import random
 import unittest
 
-import flowx
-
+import flowx.archive as flowx
 
 class TestPoissonDirect(unittest.TestCase):
     """Unit-tests for the Poisson Direct solver."""

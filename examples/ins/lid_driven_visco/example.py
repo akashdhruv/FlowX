@@ -1,5 +1,5 @@
 import numpy
-import flowx
+import flowx.archive as flowx
 
 def example():
 

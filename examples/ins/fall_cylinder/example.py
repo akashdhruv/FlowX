@@ -1,7 +1,7 @@
 """User-defined module for simulation."""
 
 import numpy
-import flowx
+import flowx.archive as flowx
 import simulation
 import h5py
 

@@ -1,10 +1,10 @@
 """Module with implementation of the Grid classes."""
 
-import bubblebox.library as library
+import bubblebox.library as bubblebox
 import numpy
 import pymorton
 
-class GridBase(library.create.Dataset):
+class GridBase(bubblebox.create.Dataset):
     """Base class for the Grid."""
 
     type_ = 'base'
@@ -56,8 +56,8 @@ class GridBase(library.create.Dataset):
         data_attributes = self._initialize_data_attributes(xblocks,yblocks,nxb,nyb,varlist)
 
         # Create data and block objects
-        data = library.create.Data(**data_attributes)
-        blocklist = [library.create.Block(data,**attributes) for attributes in block_attributes]
+        data = bubblebox.create.Data(**data_attributes)
+        blocklist = [bubblebox.create.Block(data,**attributes) for attributes in block_attributes]
 
         # Call base class constructor
         super().__init__(blocklist,data)

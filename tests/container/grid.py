@@ -4,7 +4,7 @@ import numpy
 import random
 import unittest
 
-import flowx.new as flowx
+import flowx.develop as flowx
 
 class TestGrid(unittest.TestCase):
     """Unit-tests for the Grid class."""

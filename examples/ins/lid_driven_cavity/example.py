@@ -1,4 +1,4 @@
-import flowx
+import flowx.archive as flowx
 import numpy
 
 def example():
