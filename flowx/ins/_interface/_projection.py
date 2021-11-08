@@ -38,8 +38,8 @@ def predictor_euler(gridc, gridx, gridy, ivar, hvar, pres, Re, ifac, ipres):
     u = gridx[ivar]
     v = gridy[ivar]
 
-    u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * hx[1:-1, 1:-1] - ifac * ipres * (p[2:-1, 1:-1] - p[1:-2, 1:-1]) / dx
-    v[1:-1, 1:-1] = v[1:-1, 1:-1] + ifac * hy[1:-1, 1:-1] - ifac * ipres * (p[1:-1, 2:-1] - p[1:-1, 1:-2]) / dy
+    u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * hx[1:-1, 1:-1] - ifac * ipres * (p[1:-1, 2:-1] - p[1:-1, 1:-2]) / dx
+    v[1:-1, 1:-1] = v[1:-1, 1:-1] + ifac * hy[1:-1, 1:-1] - ifac * ipres * (p[2:-1, 1:-1] - p[1:-2, 1:-1]) / dy
 
     return
 
@@ -78,10 +78,10 @@ def predictor_ab2(gridc, gridx, gridy, ivar, hvar, pres, Re, ifac, ipres):
     v = gridy[ivar]
 
     u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * (1.5 * hx_new - 0.5 * hx_old[1:-1, 1:-1]) \
-                                  - ifac * ipres * (p[2:-1, 1:-1] - p[1:-2, 1:-1]) / dx
+                                  - ifac * ipres * (p[1:-1, 2:-1] - p[1:-1, 1:-2]) / dx
 
     v[1:-1, 1:-1] = v[1:-1, 1:-1] + ifac * (1.5 * hy_new - 0.5 * hy_old[1:-1, 1:-1]) \
-                                  - ifac * ipres * (p[1:-1, 2:-1] - p[1:-1, 1:-2]) / dy
+                                  - ifac * ipres * (p[2:-1, 1:-1] - p[1:-2, 1:-1]) / dy
  
     hx_old[1:-1,1:-1] = hx_new
     hy_old[1:-1,1:-1] = hy_new
@@ -153,8 +153,8 @@ def divergence(gridc, gridx, gridy, ivar, dvar, ifac=1.0):
 
     dx, dy = gridc.dx, gridc.dy
 
-    div[1:-1, 1:-1] = ((u[1:, 1:-1] - u[:-1, 1:-1]) / dx +
-                       (v[1:-1, 1:] - v[1:-1, :-1]) / dy) / ifac
+    div[1:-1, 1:-1] = ((u[1:-1, 1:] - u[1:-1, :-1]) / dx +
+                       (v[1:, 1:-1] - v[:-1, 1:-1]) / dy) / ifac
 
     return
 
@@ -184,8 +184,8 @@ def corrector(gridc, gridx, gridy, ivar, pvar, delp, ifac, ipres):
 
     dx, dy = gridx.dx, gridy.dy
 
-    u[:,:] = u[:, :] - ifac * (dp[1:, :] - dp[:-1, :]) / dx
-    v[: :] = v[:, :] - ifac * (dp[:, 1:] - dp[:, :-1]) / dy
+    u[:,:] = u[:, :] - ifac * (dp[:, 1:] - dp[:, :-1]) / dx
+    v[: :] = v[:, :] - ifac * (dp[1:, :] - dp[:-1, :]) / dy
 
     p[:,:] = ipres*p[:,:] + dp[:,:]
 

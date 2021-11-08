@@ -36,28 +36,28 @@ def build_sparse_matrix(grid, ivar):
 
     coeff_start = -4.0 
 
-    for i in range(1,nx+1):
-        for j in range(1,ny+1):
+    for j in range(1,ny+1):
+        for i in range(1,nx+1):
 
             coeff = coeff_start/dx**2
     
             if(j > 1):
-                matrix[counter,counter-1] = 1.0/(dx**2)
+                matrix[counter,counter-nx] = 1.0/(dx**2)
             else:
                 coeff = coeff + coeff_add[2]/(dx**2)
 
             if(j < ny):
-                matrix[counter,counter+1] = 1.0/(dx**2)
+                matrix[counter,counter+nx] = 1.0/(dx**2)
             else:
                 coeff = coeff + coeff_add[3]/(dx**2)
 
             if(i > 1):
-                matrix[counter,counter-ny] = 1.0/(dx**2)
+                matrix[counter,counter-1] = 1.0/(dx**2)
             else:
                 coeff = coeff + coeff_add[0]/(dx**2)
 
             if(i < nx):
-                matrix[counter,counter+ny] = 1.0/(dx**2)
+                matrix[counter,counter+1] = 1.0/(dx**2)
             else:
                 coeff = coeff + coeff_add[1]/(dx**2)
 

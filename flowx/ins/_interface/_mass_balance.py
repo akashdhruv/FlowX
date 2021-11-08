@@ -27,14 +27,14 @@ def get_qin(grid, ivar):
 
     if grid.type_ == 'x-face':
         if bc_type[0] != 'outflow' and bc_type[0] != 'neumann':
-            Qin += numpy.sum(vel[0, 1:-1]) * dy
+            Qin += numpy.sum(vel[1:-1,  0]) * dy
         if bc_type[1] != 'outflow' and bc_type[1] != 'neumann':
-            Qin -= numpy.sum(vel[-1, 1:-1]) * dy
+            Qin -= numpy.sum(vel[1:-1, -1]) * dy
     elif grid.type_ == 'y-face':
         if bc_type[2] != 'outflow' and bc_type[2] != 'neumann':
-            Qin += numpy.sum(vel[1:-1, 0]) * dx
+            Qin += numpy.sum(vel[0,  1:-1]) * dx
         if bc_type[3] != 'outflow' and bc_type[3] != 'neumann':
-            Qin -= numpy.sum(vel[1:-1, -1]) * dx
+            Qin -= numpy.sum(vel[-1, 1:-1]) * dx
 
     return Qin
 
@@ -65,14 +65,14 @@ def get_qout(grid, ivar):
 
     if grid.type_ == 'x-face':
         if bc_type[0] == 'outflow' or bc_type[0] == 'neumann':
-            Qout -= numpy.sum(vel[0, 1:-1]) * dy
+            Qout -= numpy.sum(vel[1:-1,  0]) * dy
         if bc_type[1] == 'outflow' or bc_type[1] == 'neumann':
-            Qout += numpy.sum(vel[-1, 1:-1]) * dy
+            Qout += numpy.sum(vel[1:-1, -1]) * dy
     elif grid.type_ == 'y-face':
         if bc_type[2] == 'outflow' or bc_type[2] == 'neumann':
-            Qout -= numpy.sum(vel[1:-1, 0]) * dx
+            Qout -= numpy.sum(vel[0,  1:-1]) * dx
         if bc_type[3] == 'outflow' or bc_type[3] == 'neumann':
-            Qout += numpy.sum(vel[1:-1, -1]) * dx
+            Qout += numpy.sum(vel[-1, 1:-1]) * dx
 
     return Qout
 
@@ -118,15 +118,15 @@ def rescale_velocity(grid, ivar, Qin, Qout):
 
     if grid.type_ == 'x-face':
         if bc_type[0] == 'outflow' or bc_type[0] == 'neumann':
-            vel[0, 1:-1] *= Qinout
+            vel[1:-1, 0] *= Qinout
         if bc_type[1] == 'outflow' or bc_type[1] == 'neumann':
-            vel[-1, 1:-1] *= Qinout
+            vel[1:-1, -1] *= Qinout
 
     if grid.type_ == 'y-face':
         if bc_type[2] == 'outflow' or bc_type[2] == 'neumann':
-            vel[1:-1, 0] *= Qinout
+            vel[0, 1:-1] *= Qinout
         if bc_type[3] == 'outflow' or bc_type[3] == 'neumann':
-            vel[1:-1, -1] *= Qinout
+            vel[-1, 1:-1] *= Qinout
 
     return
 
@@ -154,15 +154,15 @@ def get_convvel(grid, ivar):
 
     if grid.type_ == 'x-face':
         if bc_type[0] == 'outflow':
-            convvel[0] = numpy.mean(vel[0, :])
+            convvel[0] = numpy.mean(vel[:, 0])
         if bc_type[1] == 'outflow':
-            convvel[1] = numpy.mean(vel[-1, :])
+            convvel[1] = numpy.mean(vel[:, -1])
 
     if grid.type_ == 'y-face':
         if bc_type[2] == 'outflow':
-            convvel[2] = numpy.mean(vel[:, 0])
+            convvel[2] = numpy.mean(vel[0, :])
         if bc_type[3] == 'outflow':
-            convvel[3] = numpy.mean(vel[:, -1])
+            convvel[3] = numpy.mean(vel[-1, :])
 
     return convvel
 
@@ -198,17 +198,17 @@ def update_outflow_bc(grid, ivar, dt):
 
     if grid.type_ == 'x-face':
         if bc_type[0] == 'outflow':
-            bc_val[0] = vel[0, :] - convvel[0] * dt * (vel[1, :] - vel[0, :]) / dx
+            bc_val[0] = vel[:, 0] - convvel[0] * dt * (vel[:, 1] - vel[:, 0]) / dx
 
         if bc_type[1] == 'outflow':
-            bc_val[1] = vel[-1, :] - convvel[1] * dt * (vel[-1, :] - vel[-2, :]) / dx
+            bc_val[1] = vel[:, -1] - convvel[1] * dt * (vel[:, -1] - vel[:, -2]) / dx
 
     if grid.type_ == 'y-face':
         if bc_type[2] == 'outflow':
-            bc_val[2] = vel[:, 0] - convvel[2] * dt * (vel[:, 1] - vel[:, 0]) / dy
+            bc_val[2] = vel[0, :] - convvel[2] * dt * (vel[1, :] - vel[0, :]) / dy
 
         if bc_type[3] == 'outflow':
-            bc_val[3] = vel[:, -1] - convvel[3] * dt * (vel[:, -1] - vel[:, -2]) / dy
+            bc_val[3] = vel[-1, :] - convvel[3] * dt * (vel[-1, :] - vel[-2, :]) / dy
 
     grid.update_bc_val({ivar: bc_val})
 

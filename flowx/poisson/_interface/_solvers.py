@@ -56,14 +56,14 @@ def solve_cg(grid, ivar, rvar, options):
     tol = options['tol']
 
     def A(p):
-        return ((p[:-2, 1:-1] - 2 * p[1:-1, 1:-1] + p[2:, 1:-1]) / dx**2 +
-                (p[1:-1, :-2] - 2 * p[1:-1, 1:-1] + p[1:-1, 2:]) / dy**2)
+        return ((p[1:-1, :-2] - 2 * p[1:-1, 1:-1] + p[1:-1, 2:]) / dx**2 +
+                (p[:-2, 1:-1] - 2 * p[1:-1, 1:-1] + p[2:, 1:-1]) / dy**2)
 
     def fill_guard_cells_neumann(x, bc_val, dx, dy):
-        x[0, :] = bc_val * dx + x[1, :]
-        x[-1, :] = bc_val * dx + x[-2, :]
-        x[:, 0] = bc_val * dy + x[:, 1]
-        x[:, -1] = bc_val * dy + x[:, -2]
+        x[:, 0] = bc_val * dx + x[:, 1]
+        x[:, -1] = bc_val * dx + x[:, -2]
+        x[0, :] = bc_val * dy + x[1, :]
+        x[-1, :] = bc_val * dy + x[-2, :]
 
     p = grid[ivar]  # initial guess
     b = grid[rvar]  # RHS of the system
@@ -174,10 +174,10 @@ def solve_jacobi(grid, ivar, rvar, options):
     residual = tol + 1.0
     while ites < maxiter and residual > tol:
         phi_old = numpy.copy(phi)  # previous solution
-        phi[1:-1, 1:-1] = (((phi_old[1:-1, :-2] +
-                             phi_old[1:-1, 2:]) * dy**2 +
-                            (phi_old[:-2, 1:-1] +
-                             phi_old[2:, 1:-1]) * dx**2 -
+        phi[1:-1, 1:-1] = (((phi_old[:-2, 1:-1] +
+                             phi_old[2:,  1:-1]) * dy**2 +
+                            (phi_old[1:-1, :-2] +
+                             phi_old[1:-1,  2:]) * dx**2 -
                             b[1:-1, 1:-1] * dx**2 * dy**2) /
                            (2 * (dx**2 + dy**2)))
 
