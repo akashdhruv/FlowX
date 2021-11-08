@@ -22,8 +22,10 @@ class GridFaceY(GridBase):
     def initialize_data_attributes(nblocks,nxb,nyb,varlist):
         """Private method for initialization"""
         data_attributes = {'nblocks'   : nblocks,
-                           'nxb'       : nxb+2,
+                           'nxb'       : nxb,
                            'nyb'       : nyb+1,
+                           'xguard'    : 1,
+                           'yguard'    : 0,
                            'variables' : dict(zip(varlist,[None]*len(varlist)))}
 
         return data_attributes
@@ -33,7 +35,7 @@ class GridFaceY(GridBase):
         for block in self.blocklist:
             block.x = numpy.linspace(block.xmin - block.dx / 2,
                                      block.xmax + block.dx / 2,
-                                     num=self.nxb)
+                                     num=self.nxb+2*self.xguard)
             block.y = numpy.linspace(block.ymin,
                                      block.ymax,
                                      num=self.nyb)

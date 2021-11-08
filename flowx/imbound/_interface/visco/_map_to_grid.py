@@ -26,9 +26,6 @@ def map_to_grid(gridc, particles, ibmf, ibmx, ibmy, search_function, options):
     nx, ny = gridc.nx, gridc.ny
     dx, dy = gridc.dx, gridc.dy
 
-    x = x.transpose()
-    y = y.transpose()
-
     phi = gridc[ibmf]
     lmx = gridc[ibmx]
     lmy = gridc[ibmy]

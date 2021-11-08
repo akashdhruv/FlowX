@@ -1,6 +1,6 @@
 import numpy
 
-from . import solid_props, solid_stress, solid_ustar, normal_vector_solid, constant_extrapolation
+from . import _interface
 
 def force_flow(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc, options):
 
@@ -36,12 +36,12 @@ def force_flow(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc, 
 
     extrap_iter = options['extrap_solid']
 
-    u = gridx[velc]
-    v = gridy[velc]
+    u = gridx[velc].transpose()
+    v = gridy[velc].transpose()
     
-    phi = gridc[ibmf]
-    lmx = gridc[ibmx]
-    lmy = gridc[ibmy]
+    phi = gridc[ibmf].transpose()
+    lmx = gridc[ibmx].transpose()
+    lmy = gridc[ibmy].transpose()
 
     xmus = numpy.zeros_like(phi)
     lms1 = numpy.zeros_like(phi)
@@ -52,22 +52,22 @@ def force_flow(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc, 
     adfy = numpy.zeros_like(phi)
 
     #----------Assign solid properties---------------
-    solid_props(phi,xmus,mu_s,dx,dy,nx+2,ny+2)
+    _interface.solid_props(phi,xmus,mu_s,dx,dy,nx+2,ny+2)
 
     #----------Calculate solid stress terms----------
-    solid_stress(phi,lmx,lmy,lms1,lms2,lms3,lms4,dx,dy,nx+2,ny+2)
+    _interface.solid_stress(phi,lmx,lmy,lms1,lms2,lms3,lms4,dx,dy,nx+2,ny+2)
 
     #---------Find normal vectors---------------------
-    normal_vector_solid(phi,adfx,adfy,dx,dy,nx+2,ny+2)
+    _interface.normal_vector_solid(phi,adfx,adfy,dx,dy,nx+2,ny+2)
 
     #---------Extrapolation of stress terms----------    
     for _iter in range(extrap_iter):
-        constant_extrapolation(phi,lms1,adfx,adfy,dx,dy,nx+2,ny+2)
-        constant_extrapolation(phi,lms2,adfx,adfy,dx,dy,nx+2,ny+2)
-        constant_extrapolation(phi,lms3,adfx,adfy,dx,dy,nx+2,ny+2)
-        constant_extrapolation(phi,lms4,adfx,adfy,dx,dy,nx+2,ny+2)
+        _interface.constant_extrapolation(phi,lms1,adfx,adfy,dx,dy,nx+2,ny+2)
+        _interface.constant_extrapolation(phi,lms2,adfx,adfy,dx,dy,nx+2,ny+2)
+        _interface.constant_extrapolation(phi,lms3,adfx,adfy,dx,dy,nx+2,ny+2)
+        _interface.constant_extrapolation(phi,lms4,adfx,adfy,dx,dy,nx+2,ny+2)
  
     #---------------Update velocity------------------
-    solid_ustar(u,v,xmus,lms1,lms2,lms3,lms4,Re_s,dt,dx,dy,nx+2,ny+2)
+    _interface.solid_ustar(u,v,xmus,lms1,lms2,lms3,lms4,Re_s,dt,dx,dy,nx+2,ny+2)
 
     return

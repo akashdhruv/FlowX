@@ -219,7 +219,7 @@ class GridBase(bubblebox.create.Dataset):
 
         for block in self.blocklist:
             l2_norm = l2_norm + (numpy.sqrt(numpy.sum(block[eror]**2)) /
-                      ((self.nxb) * (self.nyb)))
+                      ((self.nxb+2*self.xguard) * (self.nyb+2*self.yguard)))
 
         return l2_norm/self.nblocks
  
@@ -260,15 +260,14 @@ class GridBase(bubblebox.create.Dataset):
                         elif bc_type == 'outflow':
                             self.__class__.fill_guard_cells_dirichlet(blockdata,location,bc_val)
                         elif bc_type == 'projection':
-                            self.__class__.fill_guard_cells_projection(blockdata,loc)
+                            self.__class__.fill_guard_cells_projection(blockdata,location)
                         elif bc_type == None:
                             None
                         else:
                             raise ValueError('Boundary type "{}" not implemented'.format(bc_type))
                     else:                       
                         # TODO
-                        # self.exchange_neighdata(varkey,location)
-                        pass
+                        self.exchange_neighdata(varkey,location)
 
     @staticmethod
     def fill_guard_cells_dirichlet(blockdata, loc, bc_val):

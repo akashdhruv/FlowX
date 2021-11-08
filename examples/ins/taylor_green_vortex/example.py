@@ -1,7 +1,7 @@
 """User defined module for simulation."""
   
 import numpy
-import flowx.archive
+import flowx
 import simulation
 
 def example():
@@ -64,16 +64,15 @@ def example():
     
         scalars.advance()
 
-    get_analytical(gridc, gridx, gridy, 'asol', scalars.time)
+    simulation.get_analytical(gridc, gridx, gridy, 'asol', scalars.time)
 
+    gridx.compute_error('eror','velc','asol')
+    gridy.compute_error('eror','velc','asol')
 
-    gridx.get_error('eror','velc','asol')
-    gridy.get_error('eror','velc','asol')
+    #print(numpy.max(gridx['eror']),numpy.min(gridx['eror']))
+    #print(numpy.max(gridy['eror']),numpy.min(gridy['eror']))
 
-    #print(numpy.max(gridx.get_values('eror')),numpy.min(gridx.get_values('eror')))
-    #print(numpy.max(gridy.get_values('eror')),numpy.min(gridy.get_values('eror')))
-
-    maxdivv,mindivv = numpy.max(gridc.get_values('divv')),numpy.min(gridc.get_values('divv'))
+    maxdivv,mindivv = numpy.max(gridc['divv']),numpy.min(gridc['divv'])
 
     if (abs(maxdivv) <= 1e-11 and abs(mindivv) <= 1e-11 and maxdivv*mindivv < 0.):
         print('Divergence is within tolerance')

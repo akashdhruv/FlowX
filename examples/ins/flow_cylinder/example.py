@@ -1,7 +1,7 @@
 """User-defined module for simulation."""
 
 import numpy
-import flowx.archive as flowx
+import flowx
 import simulation
 
 def example():
@@ -68,7 +68,7 @@ def example():
         if scalars.nstep % 1 == 0:
             flowx.io.display_stats(scalars)
 
-    maxdivv,mindivv = numpy.max(gridc.get_values('divv')),numpy.min(gridc.get_values('divv'))
+    maxdivv,mindivv = numpy.max(gridc['divv']),numpy.min(gridc['divv'])
 
     if (abs(maxdivv) <= 1e-11 and abs(mindivv) <= 1e-11 and maxdivv*mindivv < 0.):
         print('Divergence is within tolerance')

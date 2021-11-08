@@ -30,10 +30,10 @@ def force_flow(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc, 
     u = gridx[velc]
     v = gridy[velc]
     
-    ibc = gridc.get_values(ibmf)
+    ibc = gridc[ibmf]
 
-    ibx = (ibc[:-1,:]+ibc[1:,:])/2.0
-    iby = (ibc[:,:-1]+ibc[:,1:])/2.0
+    ibx = (ibc[:,:-1]+ibc[:,1:])/2.0
+    iby = (ibc[:-1,:]+ibc[1:,:])/2.0
 
     indx = numpy.where(ibx >= 0.0)
     indy = numpy.where(iby >= 0.0)

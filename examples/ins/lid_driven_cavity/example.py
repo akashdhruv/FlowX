@@ -1,7 +1,10 @@
 import flowx
 import numpy
+import time
 
 def example():
+
+    start = time.time()
 
     # Define grid parameters
     nx, ny = 40, 40
@@ -49,6 +52,10 @@ def example():
             flowx.io.display_stats(scalars)   
 
         scalars.advance()
+
+    end = time.time()
+
+    print('Simulation time: ',end-start)
 
     maxdivv,mindivv = numpy.max(gridc['divv']),numpy.min(gridc['divv'])
 

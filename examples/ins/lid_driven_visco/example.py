@@ -1,5 +1,5 @@
 import numpy
-import flowx.archive as flowx
+import flowx
 
 def example():
 
@@ -63,7 +63,7 @@ def example():
         
         scalars.advance()
 
-    maxdivv,mindivv = numpy.max(gridc.get_values('divv')),numpy.min(gridc.get_values('divv'))
+    maxdivv,mindivv = numpy.max(gridc['divv']),numpy.min(gridc['divv'])
 
     if (abs(maxdivv) <= 1e-11 and abs(mindivv) <= 1e-11 and maxdivv*mindivv < 0.):
         print('Divergence is within tolerance')

@@ -20,9 +20,9 @@ def set_initial_velocity(gridc, gridx, gridy, ivar, pres):
 
     """
 
-    u = gridx.get_values(ivar)
-    v = gridy.get_values(ivar)
-    p = gridc.get_values(pres)
+    u = gridx[ivar]
+    v = gridy[ivar]
+    p = gridc[pres]
 
     u[:, :] =  1.0
     v[:, :] =  0.0

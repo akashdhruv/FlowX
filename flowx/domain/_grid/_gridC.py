@@ -23,8 +23,10 @@ class GridCellCentered(GridBase):
         """Private method for initialization"""
 
         data_attributes = {'nblocks'   : nblocks,
-                           'nxb'       : nxb+2,
-                           'nyb'       : nyb+2,
+                           'nxb'       : nxb,
+                           'nyb'       : nyb,
+                           'xguard'    : 1,
+                           'yguard'    : 1,
                            'variables' : dict(zip(varlist,[None]*len(varlist)))}
 
         return data_attributes
@@ -34,10 +36,10 @@ class GridCellCentered(GridBase):
         for block in self.blocklist:
             block.x = numpy.linspace(block.xmin - block.dx / 2,
                                      block.xmax + block.dx / 2,
-                                     num=self.nxb)
+                                     num=self.nxb+2*self.xguard)
             block.y = numpy.linspace(block.ymin - block.dy / 2,
                                      block.ymax + block.dy / 2,
-                                     num=self.nyb)
+                                     num=self.nyb+2*self.yguard)
 
         self.x = numpy.linspace(self.xmin - self.dx / 2,
                                 self.xmax + self.dx / 2,

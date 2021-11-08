@@ -4,15 +4,15 @@ import numpy
 from matplotlib import pyplot
 
 
-def plot_contour(grid, var, levels=None):
-    """Plot the filled contour of a variable on a meshgrid.
+def plot_contour(grid, ivar, levels=None):
+    """Plot the filled contour of a ivariable on a meshgrid.
 
     Arguments
     ---------
     grid : Grid object
         Grid containing the data.
-    var : string
-        Name of the variable to plot.
+    ivar : string
+        Name of the ivariable to plot.
 
     """
     X, Y = numpy.meshgrid(grid.x, grid.y)
@@ -23,11 +23,11 @@ def plot_contour(grid, var, levels=None):
     pyplot.ylabel('y')
 
     if not levels:
-        pyplot.contourf(X, Y, grid.get_values(var).transpose())
+        pyplot.contourf(X, Y, grid[ivar])
     else:
-        pyplot.contourf(X, Y, grid.get_values(var).transpose(), levels)
+        pyplot.contourf(X, Y, grid[ivar], levels)
    
-    pyplot.colorbar(label=var)
+    pyplot.colorbar(label=ivar)
     pyplot.axis('scaled') #adjustable='box')
     pyplot.xlim(X.min(), X.max())
     pyplot.ylim(Y.min(), Y.max())

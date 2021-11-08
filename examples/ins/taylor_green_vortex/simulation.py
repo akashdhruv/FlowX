@@ -29,18 +29,9 @@ def get_initial(gridc, gridx, gridy, ivar, pvar):
     Xfx, Yfx = numpy.meshgrid(gridx.x, gridx.y)
     Xfy, Yfy = numpy.meshgrid(gridy.x, gridy.y)
 
-    Xcc = Xcc.transpose()
-    Ycc = Ycc.transpose()
-
-    Xfx = Xfx.transpose()
-    Yfx = Yfx.transpose()
-
-    Xfy = Xfy.transpose()
-    Yfy = Yfy.transpose()
- 
-    u = gridx.get_values(ivar)
-    v = gridy.get_values(ivar)
-    p = gridc.get_values(pvar)
+    u = gridx[ivar]
+    v = gridy[ivar]
+    p = gridc[pvar]
 
     u[:,:] =  -numpy.cos(Xfx)*numpy.sin(Yfx)
     v[:,:] =   numpy.sin(Xfy)*numpy.cos(Yfy)
@@ -74,18 +65,9 @@ def get_analytical(gridc, gridx, gridy, asol, ifac):
     Xfx, Yfx = numpy.meshgrid(gridx.x, gridx.y)
     Xfy, Yfy = numpy.meshgrid(gridy.x, gridy.y)
 
-    Xcc = Xcc.transpose()
-    Ycc = Ycc.transpose()
-
-    Xfx = Xfx.transpose()
-    Yfx = Yfx.transpose()
-
-    Xfy = Xfy.transpose()
-    Yfy = Yfy.transpose()
-
-    u = gridx.get_values(asol)
-    v = gridy.get_values(asol)
-    p = gridc.get_values(asol)
+    u = gridx[asol]
+    v = gridy[asol]
+    p = gridc[asol]
 
     u[:,:] =  -numpy.exp(-2*ifac)*numpy.cos(Xfx)*numpy.sin(Yfx)
     v[:,:] =   numpy.exp(-2*ifac)*numpy.sin(Xfy)*numpy.cos(Yfy)

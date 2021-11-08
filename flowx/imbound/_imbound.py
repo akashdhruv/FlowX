@@ -52,9 +52,9 @@ class ImBound(object):
                          'lset_redistance' : 3, \
                          'extrap_solid' : 20}
 
-        self._mapping_type = {'classical': _interface.classical_search, \
-                              'ann': _interface.ann_search, \
-                              'shapely' : _interface.shapely_search}
+        self._mapping_type = {'classical': _interface.utils.classical_search, \
+                              'ann': _interface.utils.ann_search, \
+                              'shapely' : _interface.utils.shapely_search}
 
 
         self._mapping_time = 0.0

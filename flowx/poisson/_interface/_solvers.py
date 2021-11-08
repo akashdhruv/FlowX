@@ -132,7 +132,7 @@ def solve_direct(grid, ivar, rvar, options):
     sol = linsolve.spsolve(matrix, grid[rvar][1:-1, 1:-1].flatten())
     residual = numpy.linalg.norm(matrix * sol - grid[rvar][1:-1, 1:-1].flatten())
 
-    grid[ivar][1:-1,1:-1] = numpy.reshape(sol,(nx,ny))
+    grid[ivar][1:-1,1:-1] = numpy.reshape(sol,(ny,nx))
     grid.fill_guard_cells(ivar)
 
     if verbose:
@@ -222,7 +222,7 @@ def solve_superlu(grid, ivar, rvar, options):
     sol = lu.solve(grid[rvar][1:-1, 1:-1].flatten())
     residual = numpy.linalg.norm(matrix * sol - grid[rvar][1:-1, 1:-1].flatten())
 
-    grid[ivar][1:-1,1:-1] = numpy.reshape(sol,(nx,ny))
+    grid[ivar][1:-1,1:-1] = numpy.reshape(sol,(ny,nx))
     grid.fill_guard_cells(ivar)
 
     if verbose:

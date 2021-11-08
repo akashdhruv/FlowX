@@ -24,7 +24,9 @@ class GridFaceX(GridBase):
 
         data_attributes = {'nblocks'   : nblocks,
                            'nxb'       : nxb+1,
-                           'nyb'       : nyb+2,
+                           'nyb'       : nyb,
+                           'xguard'    : 0,
+                           'yguard'    : 1,
                            'variables' : dict(zip(varlist,[None]*len(varlist)))}
 
         return data_attributes
@@ -37,7 +39,7 @@ class GridFaceX(GridBase):
                                      num=self.nxb)
             block.y = numpy.linspace(block.ymin - block.dy / 2,
                                      block.ymax + block.dy / 2,
-                                     num=self.nyb)
+                                     num=self.nyb+2*self.yguard)
  
         self.x = numpy.linspace(self.xmin,
                                 self.xmax,
