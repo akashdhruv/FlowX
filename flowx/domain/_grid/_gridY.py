@@ -18,10 +18,10 @@ class GridFaceY(GridBase):
         """Check if grid type if 'cell-centered'."""
         return gridtype == 'y-face'
 
-    def _initialize_data_attributes(self,xblocks,yblocks,nxb,nyb,varlist):
+    @staticmethod
+    def initialize_data_attributes(nblocks,nxb,nyb,varlist):
         """Private method for initialization"""
-
-        data_attributes = {'nblocks'   : xblocks*yblocks,
+        data_attributes = {'nblocks'   : nblocks,
                            'nxb'       : nxb+2,
                            'nyb'       : nyb+1,
                            'variables' : dict(zip(varlist,[None]*len(varlist)))}
@@ -37,7 +37,14 @@ class GridFaceY(GridBase):
             block.y = numpy.linspace(block.ymin,
                                      block.ymax,
                                      num=self.nyb)
-   
+ 
+        self.x = numpy.linspace(self.xmin - self.dx / 2,
+                                self.xmax + self.dx / 2,
+                                num=self.nx+2)
+        self.y = numpy.linspace(self.ymin,
+                                self.ymax,
+                                num=self.ny+1)
+  
     @staticmethod
     def fill_guard_cells_dirichlet(blockdata, loc, bc_val):
         """Fill guard cells using a Dirichlet condition.

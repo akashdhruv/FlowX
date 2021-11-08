@@ -9,8 +9,8 @@ class GridBase(bubblebox.create.Dataset):
 
     type_ = 'base'
 
-    def __init__(self, varlist, nx, ny, xblocks, yblocks, 
-                 xmin, xmax, ymin, ymax, user_bc_type=None, user_bc_val=None):
+    def __init__(self, varlist, nx, ny, xmin, xmax, ymin, ymax, xblocks=1, yblocks=1,
+                                                    user_bc_type=None, user_bc_val=None):
         """
         Initialize the Grid object and allocate the data.
 
@@ -47,13 +47,21 @@ class GridBase(bubblebox.create.Dataset):
             raise ValueError('[flowx.domain.GridBase]:(xblocks,yblocks) must be exactly '+
                                'divisible by 2')
 
-        # Organize data
-        nxb,nyb = [int(nx/xblocks),int(ny/yblocks)]
-        dx,dy   = abs(xmax-xmin)/nx,abs(ymax-ymin)/ny
+        # Organize data at coarsest level
+        dx,dy = abs(xmax-xmin)/nx,abs(ymax-ymin)/ny
+        nxb,nyb = int(nx/xblocks),int(ny/yblocks)
+        levels = None
 
-        # Initialize data and block attributes
-        block_attributes = self._initialize_block_attributes(xblocks,yblocks,dx,dy,xmin,xmax,ymin,ymax)
-        data_attributes = self._initialize_data_attributes(xblocks,yblocks,nxb,nyb,varlist)
+        # Save grid attributes at coarsest level
+        self.initialize_grid_attributes(nx,ny,dx,dy) 
+
+        # Initialize block attributes
+        block_attributes = self.__class__.initialize_block_attributes(xblocks,yblocks,dx,dy,
+                                                                      xmin,xmax,ymin,ymax,levels)
+
+        # Initialize data attributes
+        nblocks = len(block_attributes)
+        data_attributes = self.__class__.initialize_data_attributes(nblocks,nxb,nyb,varlist)
 
         # Create data and block objects
         data = bubblebox.create.Data(**data_attributes)
@@ -61,13 +69,13 @@ class GridBase(bubblebox.create.Dataset):
 
         # Call base class constructor
         super().__init__(blocklist,data)
-
+       
         # Set gridline coordinates
         self.set_gridline_coordinates()
 
         # Boundary condition information
-        self.bc_types = dict(zip(varlist,[{'xlow':{},'xhigh':{},'ylow':{},'yhigh':{}}]*len(varlist)))
-        self.bc_vals = dict(zip(varlist,[{'xlow':{},'xhigh':{},'ylow':{},'yhigh':{}}]*len(varlist)))
+        self.bc_type = {}
+        self.bc_val = {}
 
         self.set_default_bc(varlist)
         if user_bc_type is not None and user_bc_val is not None:
@@ -79,7 +87,22 @@ class GridBase(bubblebox.create.Dataset):
         """Destructor"""
         self.purge()
 
-    def _initialize_block_attributes(self,xblocks,yblocks,dx,dy,xmin,xmax,ymin,ymax):
+    # TODO use __getitem__ from base class
+    def __getitem__(self,varkey):
+        """
+        Get variable data
+        """
+        return self._data[varkey][0,0,:,:] #[block,nz,ny,nx]
+
+    # TODO use __setitem__ from base class
+    def __setitem__(self,varkey,value):
+        """
+        Set variable data
+        """
+        self._data[varkey][0,0,:,:] = value #[block,nz,ny,nx]
+
+    @staticmethod
+    def initialize_block_attributes(xblocks,yblocks,dx,dy,xmin,xmax,ymin,ymax,levels):
         """Private method for initialization"""
         block_attributes = []
 
@@ -98,11 +121,18 @@ class GridBase(bubblebox.create.Dataset):
                                      'tag'  : lblock})
         return block_attributes
 
-    def _initialize_data_attributes(self,xblocks,yblocks,nxb,nyb,varlist):
+    @staticmethod
+    def initialize_data_attributes(nblocks,nxb,nyb,varlist):
         """Private method for initialization"""
         raise NotImplementedError
 
+    def initialize_grid_attributes(self,nx,ny,dx,dy):
+        """Private method for initialization"""
+        self.nx,self.ny = nx,ny
+        self.dx,self.dy = dx,dy
+
     def addvar(self,varkey):
+        """Add a variable"""
         super().addvar(varkey)
         self.set_default_bc(varkey)
 
@@ -112,21 +142,16 @@ class GridBase(bubblebox.create.Dataset):
 
     def set_default_bc(self,varlist):
         """Set default boundary conditions (homogeneous Neumann)."""
-        # Convert single string to a list
         if type(varlist) is str:
             varlist = [varlist]
 
-        self.bc_types = {**self.bc_types,
-                         **dict(zip(varlist,[{'xlow':{},'xhigh':{},'ylow':{},'yhigh':{}}]*len(varlist)))} 
-        self.bc_vals = {**self.bc_vals,
-                         **dict(zip(varlist,[{'xlow':{},'xhigh':{},'ylow':{},'yhigh':{}}]*len(varlist)))}
-      
-        for varkey in varlist:
-            for block in self.blocklist:
-                for location,neighbor in block.neighdict.items():
-                    if neighbor is None:
-                        self.bc_types[varkey][location][block.tag] = 'neumann'
-                        self.bc_vals[varkey][location][block.tag] = 0.
+        default_bc_type = 4 * ['neumann']
+        default_bc_val = 4 * [0.0]   
+
+        num = len(varlist)
+ 
+        self.bc_type = {**self.bc_type, **dict(zip(varlist, num * [default_bc_type]))}
+        self.bc_val = {**self.bc_val, **dict(zip(varlist, num * [default_bc_val]))}
 
     def set_user_bc(self, user_bc_type, user_bc_val):
         """Overwrite default boundary conditions with user-provided ones.
@@ -139,30 +164,24 @@ class GridBase(bubblebox.create.Dataset):
             User-defined boundary values.
 
         """
-        for varkey in user_bc_type:
-            for block in self.blocklist:
-                for location,neighbor in block.neighdict.items():
-                    if neighbor is None and location in list(user_bc_type[varkey].keys()):
-                        self.bc_types[varkey][location][block.tag] = user_bc_type[varkey][location]
-                        self.bc_vals[varkey][location][block.tag] = user_bc_val[varkey][location]
+        # Overwrite default boundary types
+        self.bc_type = {**self.bc_type, **user_bc_type}
+        # Overwrite default boundary values
+        self.bc_val = {**self.bc_val, **user_bc_val}
 
-    def update_bc(self, user_bc_type, user_bc_val):
+    def update_bc_val(self, user_bc_val):
         """Overwrite boundary condition values with user-provided ones.
 
         Parameters
         ----------
-        user_bc_type : dictionary of (string, list) items
-            User-defined boundary types.
         user_bc_val : dictionary of (string, list) items
             User-defined boundary values.
 
         """
-        for varkey in user_bc_type:
-            for block in self.blocklist:
-                for location,neighbor in block.neighdict.items():
-                    if neighbor is None and location in list(user_bc_type[varkey].keys()):
-                        self.bc_types[varkey][location][block.tag] = user_bc_type[varkey][location][block.tag]
-                        self.bc_vals[varkey][location][block.tag] = user_bc_val[varkey][location][block.tag]
+        self.bc_val = {**self.bc_val, **user_bc_val}
+ 
+    def update_bc_type(self, user_bc_type):
+        self.bc_type = {**self.bc_type, **user_bc_type}
 
     def compute_error(self, eror, ivar, asol):
         """Compute the error between the numerical and analytical solutions.
@@ -196,12 +215,13 @@ class GridBase(bubblebox.create.Dataset):
             The L2-norm.
 
         """
-        # TODO add treatment for multiple blocks
+        l2_norm = 0.
+
         for block in self.blocklist:
-            l2_norm = (numpy.sqrt(numpy.sum(block[eror]**2)) /
+            l2_norm = l2_norm + (numpy.sqrt(numpy.sum(block[eror]**2)) /
                       ((self.nxb) * (self.nyb)))
 
-        return l2_norm
+        return l2_norm/self.nblocks
  
     def fill_guard_cells(self, varlist):
         """Fill value at guard cells for given variable names.
@@ -216,37 +236,39 @@ class GridBase(bubblebox.create.Dataset):
         if type(varlist) is str:
             varlist = [varlist]
 
+        locations = ['xlow','xhigh','ylow','yhigh']
+
         # TODO add a call to exchange data between blocks
         # TODO figure out how to tag blocks at boundary etc.
         # TODO make this efficient
         for varkey in varlist:
+            bc_type_var = self.bc_type[varkey]
+            bc_val_var = self.bc_val[varkey]
+
             for block in self.blocklist:
-                deltas = dict(zip(list(block.neighdict.keys()),[block.dx, block.dx, block.dy, block.dy]))
-                for location,neighbor in block.neighdict.items():
+                deltas = [block.dx, block.dx, block.dy, block.dy]
+                neighbors = list(block.neighdict.values())
+                blockdata = block[varkey]
+
+                for location,neighbor,delta,bc_type,bc_val in zip(locations,neighbors,deltas,
+                                                                  bc_type_var,bc_val_var):
                     if neighbor is None:
-                        self.fill_guard_cells_physical(block,varkey,location,deltas[location])
+                        if bc_type == 'neumann':
+                            self.__class__.fill_guard_cells_neumann(blockdata,location,bc_val,delta)
+                        elif bc_type == 'dirichlet':
+                            self.__class__.fill_guard_cells_dirichlet(blockdata,location,bc_val)
+                        elif bc_type == 'outflow':
+                            self.__class__.fill_guard_cells_dirichlet(blockdata,location,bc_val)
+                        elif bc_type == 'projection':
+                            self.__class__.fill_guard_cells_projection(blockdata,loc)
+                        elif bc_type == None:
+                            None
+                        else:
+                            raise ValueError('Boundary type "{}" not implemented'.format(bc_type))
                     else:                       
                         # TODO
                         # self.exchange_neighdata(varkey,location)
                         pass
-
-    def fill_guard_cells_physical(self,block,varkey,location,delta):
-        bc_type = self.bc_types[varkey][location][block.tag]
-        bc_val = self.bc_vals[varkey][location][block.tag]
-        blockdata = block[varkey]
-
-        if bc_type == 'neumann':
-            self.__class__.fill_guard_cells_neumann(blockdata,location,bc_val,delta)
-        elif bc_type == 'dirichlet':
-            self.__class__.fill_guard_cells_dirichlet(blockdata,location,bc_val)
-        elif bc_type == 'outflow':
-            self.__class__.fill_guard_cells_dirichlet(blockdata,location,bc_val)
-        elif bc_type == 'projection':
-            self.__class__.fill_guard_cells_projection(blockdata,loc)
-        elif bc_type == None:
-            None
-        else:
-            raise ValueError('Boundary type "{}" not implemented'.format(bc_type))
 
     @staticmethod
     def fill_guard_cells_dirichlet(blockdata, loc, bc_val):

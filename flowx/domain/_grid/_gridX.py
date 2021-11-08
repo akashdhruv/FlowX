@@ -4,10 +4,10 @@ import numpy
 
 from . import GridBase
 
-class GridCellCentered(GridBase):
-    """Class for a cell-centered grid."""
+class GridFaceX(GridBase):
+    """Class for a x-face grid."""
 
-    type_ = 'cell-centered'
+    type_ = 'x-face'
 
     def __init__(self,*args,**kwargs):
         """Call the constructor of the base class."""
@@ -16,28 +16,36 @@ class GridCellCentered(GridBase):
     @classmethod
     def check_gridtype(cls, gridtype):
         """Check if grid type if 'cell-centered'."""
-        return gridtype == 'cell-centered'
+        return gridtype == 'x-face'
 
-    def _initialize_data_attributes(self,xblocks,yblocks,nxb,nyb,varlist):
+    @staticmethod
+    def initialize_data_attributes(nblocks,nxb,nyb,varlist):
         """Private method for initialization"""
 
-        data_attributes = {'nblocks'   : xblocks*yblocks,
-                           'nxb'       : nxb+2,
+        data_attributes = {'nblocks'   : nblocks,
+                           'nxb'       : nxb+1,
                            'nyb'       : nyb+2,
                            'variables' : dict(zip(varlist,[None]*len(varlist)))}
 
         return data_attributes
- 
+
     def set_gridline_coordinates(self):
         """Set the gridline coordinates."""
         for block in self.blocklist:
-            block.x = numpy.linspace(block.xmin - block.dx / 2,
-                                     block.xmax + block.dx / 2,
+            block.x = numpy.linspace(block.xmin,
+                                     block.xmax,
                                      num=self.nxb)
             block.y = numpy.linspace(block.ymin - block.dy / 2,
                                      block.ymax + block.dy / 2,
                                      num=self.nyb)
-  
+ 
+        self.x = numpy.linspace(self.xmin,
+                                self.xmax,
+                                num=self.nx+1)
+        self.y = numpy.linspace(self.ymin - self.dy / 2,
+                                self.ymax + self.dy / 2,
+                                num=self.ny+2)
+
     @staticmethod
     def fill_guard_cells_dirichlet(blockdata, loc, bc_val):
         """Fill guard cells using a Dirichlet condition.
@@ -52,11 +60,11 @@ class GridCellCentered(GridBase):
 
         """
         if loc == 'xlow':
-            blockdata[:,:,0]  = 2 * bc_val - blockdata[:,:,1]
+            blockdata[:,:,0] = bc_val
         elif loc == 'xhigh':
-            blockdata[:,:,-1] = 2 * bc_val - blockdata[:,:,-2]
+            blockdata[:,:,-1] = bc_val
         elif loc == 'ylow':
-            blockdata[:,0,:]  = 2 * bc_val - blockdata[:,1,:]
+            blockdata[:,0,:] = 2 * bc_val - blockdata[:,1,:]
         elif loc == 'yhigh':
             blockdata[:,-1,:] = 2 * bc_val - blockdata[:,-2,:]
         else:

@@ -4,7 +4,7 @@ import numpy
 import random
 import unittest
 
-import flowx.archive as flowx
+import flowx
 
 class TestPoissonJacobi(unittest.TestCase):
     """Unit-tests for the Poisson Jacobi solver."""
@@ -17,11 +17,8 @@ class TestPoissonJacobi(unittest.TestCase):
         ymin, ymax = -0.5, 0.5
         bc_type = {'ivar': 4 * ['dirichlet']}
         bc_val = {'ivar': 4 * [0.0]}
-        self.domain = flowx.domain.Domain(nx, ny,
-                                          xmin, xmax, ymin, ymax, center_vars,
-                                          bc_type_center=bc_type, bc_val_center=bc_val)
-        self.grid = self.domain[0]
-
+        self.grid = flowx.domain.Grid("cell-centered", center_vars, nx, ny, xmin, xmax, ymin, ymax,
+                                       user_bc_type=bc_type, user_bc_val=bc_val)
         self._set_analytical('asol')
         self._set_rhs('rvar')
 
@@ -30,18 +27,16 @@ class TestPoissonJacobi(unittest.TestCase):
         X, Y = numpy.meshgrid(self.grid.x, self.grid.y)
         Lx = self.grid.xmax - self.grid.xmin
         Ly = self.grid.ymax - self.grid.ymin
-        values = numpy.sin(numpy.pi * X / Lx) * numpy.cos(numpy.pi * Y / Ly)
-        self.grid.set_values(var_name, values)
+        self.grid[var_name] = numpy.sin(numpy.pi * X / Lx) * numpy.cos(numpy.pi * Y / Ly)
 
     def _set_rhs(self, var_name):
         """Private method to set the right-hand side of the system."""
         X, Y = numpy.meshgrid(self.grid.x, self.grid.y)
         Lx = self.grid.xmax - self.grid.xmin
         Ly = self.grid.ymax - self.grid.ymin
-        values = (-((numpy.pi / Lx)**2 + (numpy.pi / Ly)**2) *
-                  numpy.sin(numpy.pi * X / Lx) *
-                  numpy.cos(numpy.pi * Y / Ly))
-        self.grid.set_values(var_name, values)
+        self.grid[var_name] = (-((numpy.pi / Lx)**2 + (numpy.pi / Ly)**2) *
+                                  numpy.sin(numpy.pi * X / Lx) *
+                                  numpy.cos(numpy.pi * Y / Ly))
 
     def test_number_of_iterations(self):
         """Test the solver reaches the maximum number of iterations."""
