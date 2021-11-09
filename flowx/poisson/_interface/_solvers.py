@@ -65,8 +65,8 @@ def solve_cg(grid, ivar, rvar, options):
         x[0, :] = bc_val * dy + x[1, :]
         x[-1, :] = bc_val * dy + x[-2, :]
 
-    p = grid[ivar]  # initial guess
-    b = grid[rvar]  # RHS of the system
+    p = grid[ivar][0,0,:,:]  # initial guess
+    b = grid[rvar][0,0,:,:]  # RHS of the system
     dx, dy = grid.dx, grid.dy  # cell widths
 
     r = b[1:-1, 1:-1] - A(p)  # initial residuals
@@ -129,10 +129,13 @@ def solve_direct(grid, ivar, rvar, options):
     dx, dy = grid.dx, grid.dy
     nx, ny = grid.nx, grid.ny
 
-    sol = linsolve.spsolve(matrix, grid[rvar][1:-1, 1:-1].flatten())
-    residual = numpy.linalg.norm(matrix * sol - grid[rvar][1:-1, 1:-1].flatten())
+    rhs = grid[rvar][0,0,:,:]
+    phi = grid[ivar][0,0,:,:]
 
-    grid[ivar][1:-1,1:-1] = numpy.reshape(sol,(ny,nx))
+    sol = linsolve.spsolve(matrix, rhs[1:-1, 1:-1].flatten())
+    residual = numpy.linalg.norm(matrix * sol - rhs[1:-1, 1:-1].flatten())
+
+    phi[1:-1,1:-1] = numpy.reshape(sol,(ny,nx))
     grid.fill_guard_cells(ivar)
 
     if verbose:
@@ -166,8 +169,8 @@ def solve_jacobi(grid, ivar, rvar, options):
     tol = options['tol']
     verbose = options['verbose']
 
-    phi = grid[ivar]
-    b = grid[rvar]
+    phi = grid[ivar][0,0,:,:]
+    b = grid[rvar][0,0,:,:]
     dx, dy = grid.dx, grid.dy
 
     ites = 0
@@ -219,10 +222,13 @@ def solve_superlu(grid, ivar, rvar, options):
     dx, dy = grid.dx, grid.dy
     nx, ny = grid.nx, grid.ny
 
-    sol = lu.solve(grid[rvar][1:-1, 1:-1].flatten())
-    residual = numpy.linalg.norm(matrix * sol - grid[rvar][1:-1, 1:-1].flatten())
+    rhs = grid[rvar][0,0,:,:]
+    phi = grid[ivar][0,0,:,:]
 
-    grid[ivar][1:-1,1:-1] = numpy.reshape(sol,(ny,nx))
+    sol = lu.solve(rhs[1:-1, 1:-1].flatten())
+    residual = numpy.linalg.norm(matrix * sol - rhs[1:-1, 1:-1].flatten())
+
+    phi[1:-1,1:-1] = numpy.reshape(sol,(ny,nx))
     grid.fill_guard_cells(ivar)
 
     if verbose:

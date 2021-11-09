@@ -53,7 +53,8 @@ class GridBase(bubblebox.create.Dataset):
         levels = None
 
         # Save grid attributes at coarsest level
-        self.initialize_grid_attributes(nx,ny,dx,dy) 
+        self.nx,self.ny = nx,ny
+        self.dx,self.dy = dx,dy
 
         # Initialize block attributes
         block_attributes = self.__class__.initialize_block_attributes(xblocks,yblocks,dx,dy,
@@ -87,20 +88,6 @@ class GridBase(bubblebox.create.Dataset):
         """Destructor"""
         self.purge()
 
-    # TODO use __getitem__ from base class
-    def __getitem__(self,varkey):
-        """
-        Get variable data
-        """
-        return self._data[varkey][0,0,:,:] #[block,nz,ny,nx]
-
-    # TODO use __setitem__ from base class
-    def __setitem__(self,varkey,value):
-        """
-        Set variable data
-        """
-        self._data[varkey][0,0,:,:] = value #[block,nz,ny,nx]
-
     @staticmethod
     def initialize_block_attributes(xblocks,yblocks,dx,dy,xmin,xmax,ymin,ymax,levels):
         """Private method for initialization"""
@@ -126,19 +113,14 @@ class GridBase(bubblebox.create.Dataset):
         """Private method for initialization"""
         raise NotImplementedError
 
-    def initialize_grid_attributes(self,nx,ny,dx,dy):
-        """Private method for initialization"""
-        self.nx,self.ny = nx,ny
-        self.dx,self.dy = dx,dy
+    def set_gridline_coordinates(self):
+        """Set the gridline coordinates."""
+        raise NotImplementedError
 
     def addvar(self,varkey):
         """Add a variable"""
         super().addvar(varkey)
         self.set_default_bc(varkey)
-
-    def set_gridline_coordinates(self):
-        """Set the gridline coordinates."""
-        raise NotImplementedError
 
     def set_default_bc(self,varlist):
         """Set default boundary conditions (homogeneous Neumann)."""
@@ -267,7 +249,7 @@ class GridBase(bubblebox.create.Dataset):
                             raise ValueError('Boundary type "{}" not implemented'.format(bc_type))
                     else:                       
                         # TODO
-                        self.exchange_neighdata(varkey,location)
+                        block.exchange_neighdata(varkey,location)
 
     @staticmethod
     def fill_guard_cells_dirichlet(blockdata, loc, bc_val):

@@ -36,12 +36,12 @@ def force_flow(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc, 
 
     extrap_iter = options['extrap_solid']
 
-    u = gridx[velc].transpose()
-    v = gridy[velc].transpose()
+    u = gridx[velc][0,0,:,:].transpose()
+    v = gridy[velc][0,0,:,:].transpose()
     
-    phi = gridc[ibmf].transpose()
-    lmx = gridc[ibmx].transpose()
-    lmy = gridc[ibmy].transpose()
+    phi = gridc[ibmf][0,0,:,:].transpose()
+    lmx = gridc[ibmx][0,0,:,:].transpose()
+    lmy = gridc[ibmy][0,0,:,:].transpose()
 
     xmus = numpy.zeros_like(phi)
     lms1 = numpy.zeros_like(phi)

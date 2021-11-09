@@ -1,14 +1,28 @@
-import numpy
-from numba import jit
 from annoy import AnnoyIndex
+import numpy
 
-def ann_search(x, y, points, nx, ny, np, options):
+def ann_search(grid,particle,ibmf,options):
+    """
+    Approximate nearest neighbor search
+ 
+    grid : grid object
+         flowx Grid object
+
+    particle : particle object
+         flowx Particle object
+
+    ibmf : string
+         level set variable
+
+    options : dictionary of options
+    """ 
+    xmesh, ymesh = numpy.meshgrid(grid.x, grid.y)
+    phi = grid[ibmf][0,0,:,:]
+    points = particle.x[1:,:]
+
+    max_panel_length = particle.max_panel_length
 
     iter_count = 0
-
-    phi = numpy.zeros((ny,nx), dtype=float)
-
-    max_panel_length = options['max_panel_length']
 
     nodesA = points
     nodesB = numpy.vstack((points[1:],points[0]))
@@ -25,31 +39,31 @@ def ann_search(x, y, points, nx, ny, np, options):
     nquery_trees = options['nquery_trees']
     nquery_trace = options['nquery_trace']
 
-    for i in range(np): 
+    for i in range(len(points)): 
         tree.add_item(i,nodesC[i])
         trace.add_item(i,[nodesY[i]])
 
     tree.build(ntrees)
     trace.build(ntrees)
 
-    for j in range(ny):
-        for i in range(nx):
+    for j in range(grid.ny+2):
+        for i in range(grid.nx+2):
 
-            tree_index = tree.get_nns_by_vector([x[j,i],y[j,i]], nquery_trees)
+            tree_index = tree.get_nns_by_vector([xmesh[j,i],ymesh[j,i]], nquery_trees)
             dist = 1E13
 
-            trace_index, trace_distance = trace.get_nns_by_vector([y[j,i]], nquery_trace, include_distances=True) 
+            trace_index,trace_distance = trace.get_nns_by_vector([ymesh[j,i]],nquery_trace,include_distances=True) 
             countit = 0
 
             niter_trace = numpy.size(numpy.where(numpy.array(trace_distance) < max_panel_length))
 
-            for p in range(nquery_trees):
+            for pindex in range(nquery_trees):
 
-                PA = nodesA[tree_index[p]]
-                PB = nodesB[tree_index[p]]
+                PA = nodesA[tree_index[pindex]]
+                PB = nodesB[tree_index[pindex]]
 
                 # Tag P1 with grid point co-ordinates
-                P1 = numpy.array([x[j,i], y[j,i]])
+                P1 = numpy.array([xmesh[j,i], ymesh[j,i]])
 
                 # Find intersection of point P1 to node PA-PB
                 u = ((P1[0]-PA[0])*(PB[0]-PA[0]) + (P1[1]-PA[1])*(PB[1]-PA[1]))/(((PB[0]-PA[0])**2)+((PB[1]-PA[1])**2))
@@ -81,28 +95,28 @@ def ann_search(x, y, points, nx, ny, np, options):
 
             phi[j,i] = -dist
 
-            for p in range(niter_trace):
+            for pindex in range(niter_trace):
 
-                PA = nodesA[trace_index[p]]
-                PB = nodesB[trace_index[p]]
+                PA = nodesA[trace_index[pindex]]
+                PB = nodesB[trace_index[pindex]]
 
                 # Find if the horizontal ray on right-side intersects with body
                 miny = min(PA[1],PB[1])
                 maxy = max(PA[1],PB[1])
 
-                if(y[j,i] > miny and y[j,i] < maxy):
+                if(ymesh[j,i] > miny and ymesh[j,i] < maxy):
 
                     # Method #1 use ratios to divide the current panel using
                     # y intersection and find x
-                    mratio = PA[1] - y[j,i]
-                    nratio = y[j,i] - PB[1]
+                    mratio = PA[1] - ymesh[j,i]
+                    nratio = ymesh[j,i] - PB[1]
                     xit = (mratio*PB[0] + nratio*PA[0])/(mratio + nratio)
 
                     # Method #2 use the equation of line instead
                     #mratio = (PB[1]-PA[1])/(PB[0]-PA[0])          
-                    #xit = PA[0] + (y[j,i] - PA[1])/mratio
+                    #xit = PA[0] + (ymesh[j,i] - PA[1])/mratio
 
-                    if(xit >= x[j,i]): countit += 1
+                    if(xit >= xmesh[j,i]): countit += 1
                 
                 iter_count += 1
 

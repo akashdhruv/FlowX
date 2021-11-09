@@ -27,10 +27,10 @@ def force_flow(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc, 
     velc : string for velocity variable
     """
 
-    u = gridx[velc]
-    v = gridy[velc]
+    u = gridx[velc][0,0,:,:]
+    v = gridy[velc][0,0,:,:]
     
-    ibc = gridc[ibmf]
+    ibc = gridc[ibmf][0,0,:,:]
 
     ibx = (ibc[:,:-1]+ibc[:,1:])/2.0
     iby = (ibc[:-1,:]+ibc[1:,:])/2.0

@@ -15,12 +15,12 @@ def advect(gridc, gridx, gridy, scalars, ibmf, ibmx, ibmy, velc, options):
     lset_iter = options['lset_redistance']
     extrap_iter = options['extrap_solid']
 
-    u = gridx[velc].transpose()
-    v = gridy[velc].transpose()
+    u = gridx[velc][0,0,:,:].transpose()
+    v = gridy[velc][0,0,:,:].transpose()
 
-    phi = gridc[ibmf].transpose()
-    lmx = gridc[ibmx].transpose()
-    lmy = gridc[ibmy].transpose()
+    phi = gridc[ibmf][0,0,:,:].transpose()
+    lmx = gridc[ibmx][0,0,:,:].transpose()
+    lmy = gridc[ibmy][0,0,:,:].transpose()
 
     adfx = numpy.zeros_like(phi)
     adfy = numpy.zeros_like(phi)

@@ -21,7 +21,7 @@ def diffusion(grid, ivar, alpha):
         Diffusion terms as an array of floats.
 
     """
-    f = grid[ivar]
+    f = grid[ivar][0,0,:,:]
 
     dx, dy = grid.dx, grid.dy
 
@@ -48,8 +48,8 @@ def convective_facex(gridx, gridy, ivar):
         Convective terms in the x direction as an array of floats.
 
     """
-    u = gridx[ivar]
-    v = gridy[ivar]
+    u = gridx[ivar][0,0,:,:]
+    v = gridy[ivar][0,0,:,:]
     dx, dy = gridx.dx, gridy.dy
 
     u_P = u[1:-1, 1:-1]
@@ -87,8 +87,8 @@ def convective_facey(gridx, gridy, ivar):
         Convective terms in the y direction as an array of floats.
 
     """
-    u = gridx[ivar]
-    v = gridy[ivar]
+    u = gridx[ivar][0,0,:,:]
+    v = gridy[ivar][0,0,:,:]
     dx, dy = gridx.dx, gridy.dy
 
     v_P = v[1:-1, 1:-1]

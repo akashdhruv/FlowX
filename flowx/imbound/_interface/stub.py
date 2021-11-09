@@ -23,8 +23,7 @@ def force_flow(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc, 
 
     velc : string for velocity variable
     """
-
-    return
+    pass
 
 def map_to_grid(gridc, particles, ibmf, ibmx, ibmy, search_function, options):
 

@@ -33,8 +33,8 @@ class TestGrid(unittest.TestCase):
         varkey = self.varlist[0]
         value = 0.123456
         i, j = random.randint(0, self.nx + 1), random.randint(0, self.ny + 1)
-        self.grid[varkey][j,i] = value
-        value2 = self.grid[varkey][j,i]
+        self.grid[varkey][0,0,j,i] = value
+        value2 = self.grid[varkey][0,0,j,i]
         self.assertEqual(value, value2)
 
     def test_get_cell_centered_coordinates(self):

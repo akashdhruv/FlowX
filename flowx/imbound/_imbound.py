@@ -50,7 +50,7 @@ class ImBound(object):
                          'nquery_trace' : 30, \
                          'ib_type' : 'rigid', \
                          'lset_redistance' : 3, \
-                         'extrap_solid' : 20}
+                         'extrap_solid' : 20, 'monitor' : False, 'nthreads' : 1, 'backend' : 'serial'}
 
         self._mapping_type = {'classical': _interface.utils.classical_search, \
                               'ann': _interface.utils.ann_search, \
@@ -71,7 +71,7 @@ class ImBound(object):
             self._map_to_grid = _interface.stub.map_to_grid
             self._advect = _interface.stub.advect
             print('Warning: Immersed Boundary unit is a stub, no forcing will be applied.')
- 
+
         else:
             if self._options['ib_type'] == 'rigid':
                 self._force_flow = _interface.rigid.force_flow
@@ -95,10 +95,7 @@ class ImBound(object):
         self._mapping_ites = self._map_to_grid(self._gridc, self._particles, self._ibmf, \
                                                self._ibmx, self._ibmy, self._search_function, self._options)
         t2 = time.time()
-
         self._mapping_time = t2-t1
-
-        return
 
     def force_flow(self):
         """
@@ -106,8 +103,6 @@ class ImBound(object):
         """
         self._force_flow(self._gridc, self._gridx, self._gridy, self._scalars, self._particles, \
                          self._ibmf, self._ibmx, self._ibmy, self._velc, self._options)
-
-        return
 
     def advect(self):
         """
@@ -119,5 +114,3 @@ class ImBound(object):
         t2 = time.time()
 
         self._advection_time = t2-t1
-
-        return

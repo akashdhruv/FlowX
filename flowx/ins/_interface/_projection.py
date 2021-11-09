@@ -23,20 +23,20 @@ def predictor_euler(gridc, gridx, gridy, ivar, hvar, pres, Re, ifac, ipres):
         Time-step size.
 
     """
-    hx = gridx[hvar]
-    hy = gridy[hvar]
+    hx = gridx[hvar][0,0,:,:]
+    hy = gridy[hvar][0,0,:,:]
 
     dx, dy = gridx.dx, gridy.dy
 
-    p = gridc[pres]
+    p = gridc[pres][0,0,:,:]
 
     hx[1:-1, 1:-1] = (_operators.convective_facex(gridx, gridy, ivar) +
                       _operators.diffusion(gridx, ivar, 1 / Re))
     hy[1:-1, 1:-1] = (_operators.convective_facey(gridx, gridy, ivar) +
                       _operators.diffusion(gridy, ivar, 1 / Re))
 
-    u = gridx[ivar]
-    v = gridy[ivar]
+    u = gridx[ivar][0,0,:,:]
+    v = gridy[ivar][0,0,:,:]
 
     u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * hx[1:-1, 1:-1] - ifac * ipres * (p[1:-1, 2:-1] - p[1:-1, 1:-2]) / dx
     v[1:-1, 1:-1] = v[1:-1, 1:-1] + ifac * hy[1:-1, 1:-1] - ifac * ipres * (p[2:-1, 1:-1] - p[1:-2, 1:-1]) / dy
@@ -62,20 +62,20 @@ def predictor_ab2(gridc, gridx, gridy, ivar, hvar, pres, Re, ifac, ipres):
         Time-step size.
 
     """
-    hx_old = gridx[hvar]
-    hy_old = gridy[hvar]
+    hx_old = gridx[hvar][0,0,:,:]
+    hy_old = gridy[hvar][0,0,:,:]
 
     dx, dy = gridx.dx, gridy.dy
 
-    p = gridc[pres]
+    p = gridc[pres][0,0,:,:]
 
     hx_new = (_operators.convective_facex(gridx, gridy, ivar) +
               _operators.diffusion(gridx, ivar, 1 / Re)) 
     hy_new = (_operators.convective_facey(gridx, gridy, ivar) +
               _operators.diffusion(gridy, ivar, 1 / Re)) 
 
-    u = gridx[ivar]
-    v = gridy[ivar]
+    u = gridx[ivar][0,0,:,:]
+    v = gridy[ivar][0,0,:,:]
 
     u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * (1.5 * hx_new - 0.5 * hx_old[1:-1, 1:-1]) \
                                   - ifac * ipres * (p[1:-1, 2:-1] - p[1:-1, 1:-2]) / dx
@@ -107,20 +107,20 @@ def predictor_rk3(gridc, gridx, gridy, ivar, hvar, pres, Re, ifac, ipres, hconst
         Time-step size.
 
     """
-    hx = gridx[hvar]
-    hy = gridy[hvar]
+    hx = gridx[hvar][0,0,:,:]
+    hy = gridy[hvar][0,0,:,:]
 
     dx, dy = gridx.dx, gridy.dy
 
-    p = gridc[pres]
+    p = gridc[pres][0,0,:,:]
 
     hx[1:-1, 1:-1] = (_operators.convective_facex(gridx, gridy, ivar) +
                       _operators.diffusion(gridx, ivar, 1 / Re)) + hconst * hx[1:-1,1:-1]
     hy[1:-1, 1:-1] = (_operators.convective_facey(gridx, gridy, ivar) +
                       _operators.diffusion(gridy, ivar, 1 / Re)) + hconst * hy[1:-1,1:-1]
 
-    u = gridx[ivar]
-    v = gridy[ivar]
+    u = gridx[ivar][0,0,:,:]
+    v = gridy[ivar][0,0,:,:]
 
     u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * hx[1:-1, 1:-1]
     v[1:-1, 1:-1] = v[1:-1, 1:-1] + ifac * hy[1:-1, 1:-1]
@@ -146,10 +146,10 @@ def divergence(gridc, gridx, gridy, ivar, dvar, ifac=1.0):
         Multiplying factor for time-step; default: 1.0.
 
     """
-    u = gridx[ivar]
-    v = gridy[ivar]
+    u = gridx[ivar][0,0,:,:]
+    v = gridy[ivar][0,0,:,:]
 
-    div = gridc[dvar]
+    div = gridc[dvar][0,0,:,:]
 
     dx, dy = gridc.dx, gridc.dy
 
@@ -177,10 +177,10 @@ def corrector(gridc, gridx, gridy, ivar, pvar, delp, ifac, ipres):
         Time-step size.
 
     """
-    u = gridx[ivar]
-    v = gridy[ivar]
-    p = gridc[pvar]
-    dp = gridc[delp]
+    u = gridx[ivar][0,0,:,:]
+    v = gridy[ivar][0,0,:,:]
+    p = gridc[pvar][0,0,:,:]
+    dp = gridc[delp][0,0,:,:]
 
     dx, dy = gridx.dx, gridy.dy
 

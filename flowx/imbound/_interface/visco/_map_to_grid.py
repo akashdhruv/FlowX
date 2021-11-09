@@ -20,26 +20,16 @@ def map_to_grid(gridc, particles, ibmf, ibmx, ibmy, search_function, options):
          Search function
 
     """
+    xgrid, ygrid = numpy.meshgrid(gridc.x, gridc.y)
 
-    x, y = numpy.meshgrid(gridc.x, gridc.y)
+    lambdax = gridc[ibmx][0,0,:,:]
+    lambday = gridc[ibmy][0,0,:,:]
 
-    nx, ny = gridc.nx, gridc.ny
-    dx, dy = gridc.dx, gridc.dy
-
-    phi = gridc[ibmf]
-    lmx = gridc[ibmx]
-    lmy = gridc[ibmy]
-
-    lmx[:,:] = x
-    lmy[:,:] = y
+    lambdax[:,:] = xgrid
+    lambday[:,:] = ygrid
 
     for particle in particles:
-
-        points =  particle.x[1:,:]
-        np = particle.nnp-1
-        options['max_panel_length'] = particle.max_panel_length
-
-        ites, phi[:,:] = search_function(x, y, points, nx+2, ny+2, np, options)
+        ites = search_function(gridc,particle,ibmf,options)
 
     if (options['verbose']):
         print("Mapping Iterations: ", ites)

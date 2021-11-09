@@ -1,16 +1,31 @@
 import numpy
 from numba import jit
 
-def classical_search(x, y, points, nx, ny, np, options):
+def classical_search(grid,particle,ibmf,options={}):
+    """
+    Approximate nearest neighbor search
+ 
+    grid : grid object
+         flowx Grid object
 
-    phi = numpy.zeros((ny,nx), dtype=float)
+    particle : particle object
+         flowx Particle object
 
-    iter_count = _jit_classical_search(x, y, phi, points, nx, ny, np)
+    ibmf : string
+         level set variable
 
-    return iter_count, phi
+    options : dictionary of options
+    """ 
+    xmesh, ymesh = numpy.meshgrid(grid.x, grid.y)
+    phi = grid[ibmf][0,0,:,:]
+    points = particle.x[1:,:]
+
+    iter_count = _search_jit(xmesh, ymesh, phi, points, grid.nx+2, grid.ny+2, len(points))
+
+    return iter_count
 
 @jit(nopython=True)
-def _jit_classical_search(x, y, phi, points, nx, ny, np):
+def _search_jit(x, y, phi, points, nx, ny, np):
   
     iter_count = 0
    

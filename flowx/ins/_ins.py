@@ -43,7 +43,6 @@ class IncompNS(object):
         self._imbound = imbound
         self._poisson = poisson
 
-
         #----------Setup default parameters for the current unit---------------------------------
         self._options = {'time_stepping' : 'ab2', \
                          'pressure_correct' : True}
@@ -59,6 +58,10 @@ class IncompNS(object):
         if None in domain_data_struct or None in ins_vars or imbound is None or poisson is None:
             self._ins_advance = self._advance_stub
             print('Warning: Incomp NS unit is a stub because one or more parameters were not supplied.') 
+
+        elif self._gridc.nblocks > 1 or self._gridx.nblocks > 1 or self._gridy.nblocks > 1:
+            self._ins_advance = self._advance_stub
+            print('Warning: Incomp NS unit is a stub because nblocks > 1.') 
 
         else:
             self._ipres = self._options['pressure_correct']

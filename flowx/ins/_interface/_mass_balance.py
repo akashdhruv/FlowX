@@ -18,7 +18,7 @@ def get_qin(grid, ivar):
         Mass getting in the domain.
 
     """
-    vel = grid[ivar]
+    vel = grid[ivar][0,0,:,:]
     dx, dy = grid.dx, grid.dy
 
     bc_type = grid.bc_type[ivar]
@@ -55,8 +55,9 @@ def get_qout(grid, ivar):
     Qout : float
         Mass getting out the domain.
 
+
     """
-    vel = grid[ivar]
+    vel = grid[ivar][0,0,:,:]
     dx, dy = grid.dx, grid.dy
 
     bc_type = grid.bc_type[ivar]
@@ -108,7 +109,7 @@ def rescale_velocity(grid, ivar, Qin, Qout):
         Mass out.
 
     """
-    vel = grid[ivar]
+    vel = grid[ivar][0,0,:,:]
 
     bc_type = grid.bc_type[ivar]
 
@@ -146,7 +147,7 @@ def get_convvel(grid, ivar):
         Variable containing outflow velocity.
 
     """
-    vel = grid[ivar]
+    vel = grid[ivar][0,0,:,:]
 
     bc_type = grid.bc_type[ivar]
 
@@ -186,7 +187,7 @@ def update_outflow_bc(grid, ivar, dt):
         default: None (will compute the convective velocity).
 
     """
-    vel = grid[ivar]
+    vel = grid[ivar][0,0,:,:]
     dx,dy = grid.dx, grid.dy
 
     bc_type = grid.bc_type[ivar]
