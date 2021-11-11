@@ -22,8 +22,12 @@ end = time.time()
 
 print("Search time: ",end-start,"Iterations: ",ites)
 
+xerror = grid.blocklist[3]['phi'][:,:,0].copy()
 start = time.time()
 grid.fill_guard_cells('phi')
 end = time.time()
+xerror = xerror-grid.blocklist[3]['phi'][:,:,0].copy()
 
 print("Fill guardcells time: ",end-start)
+print("Error: ",xerror)
+
