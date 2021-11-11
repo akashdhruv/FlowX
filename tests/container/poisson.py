@@ -28,16 +28,16 @@ class TestPoissonDirect(unittest.TestCase):
         X, Y = numpy.meshgrid(self.grid.x, self.grid.y)
         Lx = self.grid.xmax - self.grid.xmin
         Ly = self.grid.ymax - self.grid.ymin
-        self.grid[var_name] = numpy.sin(numpy.pi * X / Lx) * numpy.cos(numpy.pi * Y / Ly)
+        self.grid[var_name][0,0,:,:] = numpy.sin(numpy.pi * X / Lx) * numpy.cos(numpy.pi * Y / Ly)
 
     def _set_rhs(self, var_name):
         """Private method to set the right-hand side of the system."""
         X, Y = numpy.meshgrid(self.grid.x, self.grid.y)
         Lx = self.grid.xmax - self.grid.xmin
         Ly = self.grid.ymax - self.grid.ymin
-        self.grid[var_name] = (-((numpy.pi / Lx)**2 + (numpy.pi / Ly)**2) *
-                                  numpy.sin(numpy.pi * X / Lx) *
-                                  numpy.cos(numpy.pi * Y / Ly))
+        self.grid[var_name][0,0,:,:] = (-((numpy.pi / Lx)**2 + (numpy.pi / Ly)**2) *
+                                           numpy.sin(numpy.pi * X / Lx) *
+                                           numpy.cos(numpy.pi * Y / Ly))
 
     def test_number_of_iterations(self):
         """Test the solver reaches the maximum number of iterations."""
@@ -81,16 +81,16 @@ class TestPoissonCG(unittest.TestCase):
         X, Y = numpy.meshgrid(self.grid.x, self.grid.y)
         Lx = self.grid.xmax - self.grid.xmin
         Ly = self.grid.ymax - self.grid.ymin
-        self.grid[var_name] = numpy.sin(numpy.pi * X / Lx) * numpy.cos(numpy.pi * Y / Ly)
+        self.grid[var_name][0,0,:,:] = numpy.sin(numpy.pi * X / Lx) * numpy.cos(numpy.pi * Y / Ly)
 
     def _set_rhs(self, var_name):
         """Private method to set the right-hand side of the system."""
         X, Y = numpy.meshgrid(self.grid.x, self.grid.y)
         Lx = self.grid.xmax - self.grid.xmin
         Ly = self.grid.ymax - self.grid.ymin
-        self.grid[var_name] = (-((numpy.pi / Lx)**2 + (numpy.pi / Ly)**2) *
-                                  numpy.sin(numpy.pi * X / Lx) *
-                             numpy.cos(numpy.pi * Y / Ly))
+        self.grid[var_name][0,0,:,:] = (-((numpy.pi / Lx)**2 + (numpy.pi / Ly)**2) *
+                                           numpy.sin(numpy.pi * X / Lx) *
+                                           numpy.cos(numpy.pi * Y / Ly))
 
     def test_number_of_iterations(self):
         """Test the solver reaches the maximum number of iterations."""
@@ -133,16 +133,16 @@ class TestPoissonJacobi(unittest.TestCase):
         X, Y = numpy.meshgrid(self.grid.x, self.grid.y)
         Lx = self.grid.xmax - self.grid.xmin
         Ly = self.grid.ymax - self.grid.ymin
-        self.grid[var_name] = numpy.sin(numpy.pi * X / Lx) * numpy.cos(numpy.pi * Y / Ly)
+        self.grid[var_name][0,0,:,:] = numpy.sin(numpy.pi * X / Lx) * numpy.cos(numpy.pi * Y / Ly)
 
     def _set_rhs(self, var_name):
         """Private method to set the right-hand side of the system."""
         X, Y = numpy.meshgrid(self.grid.x, self.grid.y)
         Lx = self.grid.xmax - self.grid.xmin
         Ly = self.grid.ymax - self.grid.ymin
-        self.grid[var_name] = (-((numpy.pi / Lx)**2 + (numpy.pi / Ly)**2) *
-                                  numpy.sin(numpy.pi * X / Lx) *
-                                  numpy.cos(numpy.pi * Y / Ly))
+        self.grid[var_name][0,0,:,:] = (-((numpy.pi / Lx)**2 + (numpy.pi / Ly)**2) *
+                                           numpy.sin(numpy.pi * X / Lx) *
+                                           numpy.cos(numpy.pi * Y / Ly))
 
     def test_number_of_iterations(self):
         """Test the solver reaches the maximum number of iterations."""
@@ -193,16 +193,16 @@ class TestPoissonSuperLU(unittest.TestCase):
         X, Y = numpy.meshgrid(self.grid.x, self.grid.y)
         Lx = self.grid.xmax - self.grid.xmin
         Ly = self.grid.ymax - self.grid.ymin
-        self.grid[var_name] = numpy.sin(numpy.pi * X / Lx) * numpy.cos(numpy.pi * Y / Ly)
+        self.grid[var_name][0,0,:,:] = numpy.sin(numpy.pi * X / Lx) * numpy.cos(numpy.pi * Y / Ly)
 
     def _set_rhs(self, var_name):
         """Private method to set the right-hand side of the system."""
         X, Y = numpy.meshgrid(self.grid.x, self.grid.y)
         Lx = self.grid.xmax - self.grid.xmin
         Ly = self.grid.ymax - self.grid.ymin
-        self.grid[var_name] = (-((numpy.pi / Lx)**2 + (numpy.pi / Ly)**2) *
-                                  numpy.sin(numpy.pi * X / Lx) *
-                                  numpy.cos(numpy.pi * Y / Ly))
+        self.grid[var_name][0,0,:,:] = (-((numpy.pi / Lx)**2 + (numpy.pi / Ly)**2) *
+                                           numpy.sin(numpy.pi * X / Lx) *
+                                           numpy.cos(numpy.pi * Y / Ly))
 
     def test_number_of_iterations(self):
         """Test the solver reaches the maximum number of iterations."""

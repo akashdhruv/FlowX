@@ -2,10 +2,10 @@ import flowx
 import time
 
 # Define grid parameters
-nx, ny = 400, 400
+nx, ny = 448, 448
 xmin, xmax = -1, 1
 ymin, ymax = -1, 1
-xblocks, yblocks = 16,16
+xblocks, yblocks = 32,32
 
 # Create flowx objects
 varlist = ['phi']
@@ -21,3 +21,9 @@ ites = flowx.imbound.utils.shapely_search(grid,particle,'phi',search_options)
 end = time.time()
 
 print("Search time: ",end-start,"Iterations: ",ites)
+
+start = time.time()
+grid.fill_guard_cells('phi')
+end = time.time()
+
+print("Fill guardcells time: ",end-start)

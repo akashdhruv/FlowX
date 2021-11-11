@@ -24,8 +24,8 @@ class TestGrid(unittest.TestCase):
         """Test set/get values of a cell-centered variables."""
         varkey = self.varlist[0]
         values = numpy.ones((self.ny + 2,self.nx + 2))
-        self.grid[varkey] = values
-        values2 = self.grid[varkey]
+        self.grid[varkey][0,0,:,:] = values
+        values2 = self.grid[varkey][0,0,:,:]
         self.assertTrue(numpy.allclose(values, values2, atol=1e-12))
 
     def test_get_set(self):
@@ -52,10 +52,10 @@ class TestGrid(unittest.TestCase):
         """Test the error between two identical data arrays is zero."""
         ivar, asol, eror = self.varlist
         values = numpy.random.rand(self.ny + 2, self.nx + 2)
-        self.grid[ivar] = values
-        self.grid[asol] = values
+        self.grid[ivar][0,0,:,:] = values
+        self.grid[asol][0,0,:,:] = values
         self.grid.compute_error(ivar, asol, eror)
-        errors = self.grid[eror]
+        errors = self.grid[eror][0,0,:,:]
         expected_errors = numpy.zeros((self.ny + 2, self.nx + 2))
         self.assertTrue(numpy.allclose(errors, expected_errors, atol=1e-12))
 
@@ -63,7 +63,7 @@ class TestGrid(unittest.TestCase):
         """Compare the L2-norm implementation with the NumPy implementation."""
         ivar = self.varlist[0]
         values = numpy.random.rand(self.ny + 2, self.nx + 2)
-        self.grid[ivar] = values
+        self.grid[ivar][0,0,:,:] = values
         l2_norm = self.grid.get_l2_norm(ivar)
         num = (self.nx + 2) * (self.ny + 2)
         expected_l2_norm = numpy.linalg.norm(values) / num

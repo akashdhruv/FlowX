@@ -1,10 +1,11 @@
 """Module with implementation of the Grid classes."""
 
-import bubblebox.library as bubblebox
+from bubblebox.library.create import Dataset,Block,Data
+from bubblebox.library.utilities import Action
 import numpy
 import pymorton
 
-class GridBase(bubblebox.create.Dataset):
+class GridBase(Dataset):
     """Base class for the Grid."""
 
     type_ = 'base'
@@ -65,14 +66,17 @@ class GridBase(bubblebox.create.Dataset):
         data_attributes = self.__class__.initialize_data_attributes(nblocks,nxb,nyb,varlist)
 
         # Create data and block objects
-        data = bubblebox.create.Data(**data_attributes)
-        blocklist = [bubblebox.create.Block(data,**attributes) for attributes in block_attributes]
+        data = Data(**data_attributes)
+        blocklist = [Block(data,**attributes) for attributes in block_attributes]
 
         # Call base class constructor
         super().__init__(blocklist,data)
        
         # Set gridline coordinates
         self.set_gridline_coordinates()
+
+        # Set boundary blocks
+        #self.set_domain_boundaries()
 
         # Boundary condition information
         self.bc_type = {}
@@ -214,6 +218,8 @@ class GridBase(bubblebox.create.Dataset):
             Name of variables to update.
 
         """
+        self.halo_exchange(varlist)
+
         # Convert single string to a list
         if type(varlist) is str:
             varlist = [varlist]
@@ -226,7 +232,7 @@ class GridBase(bubblebox.create.Dataset):
         for varkey in varlist:
             bc_type_var = self.bc_type[varkey]
             bc_val_var = self.bc_val[varkey]
-
+               
             for block in self.blocklist:
                 deltas = [block.dx, block.dx, block.dy, block.dy]
                 neighbors = list(block.neighdict.values())
@@ -247,9 +253,6 @@ class GridBase(bubblebox.create.Dataset):
                             None
                         else:
                             raise ValueError('Boundary type "{}" not implemented'.format(bc_type))
-                    else:                       
-                        # TODO
-                        block.exchange_neighdata(varkey,location)
 
     @staticmethod
     def fill_guard_cells_dirichlet(blockdata, loc, bc_val):
