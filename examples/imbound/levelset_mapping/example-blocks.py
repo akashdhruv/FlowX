@@ -26,8 +26,8 @@ xerror = grid.blocklist[3]['phi'][:,:,0].copy()
 start = time.time()
 grid.fill_guard_cells('phi')
 end = time.time()
-xerror = xerror-grid.blocklist[3]['phi'][:,:,0].copy()
+xerror = abs(xerror-grid.blocklist[3]['phi'][:,:,0].copy())
 
 print("Fill guardcells time: ",end-start)
-print("Error: ",xerror)
+print("Absolute error: ",xerror)
 
