@@ -209,7 +209,7 @@ class GridBase(Dataset):
 
         return l2_norm/self.nblocks
  
-    def fill_guard_cells(self, varlist):
+    def fill_guard_cells(self, varlist, **kwargs):
         """Fill value at guard cells for given variable names.
 
         Parameters
@@ -218,7 +218,7 @@ class GridBase(Dataset):
             Name of variables to update.
 
         """
-        self.halo_exchange(varlist)
+        self.halo_exchange(varlist, **kwargs)
 
         # Convert single string to a list
         if type(varlist) is str:
@@ -235,7 +235,7 @@ class GridBase(Dataset):
                
             for block in self.blocklist:
                 deltas = [block.dx, block.dx, block.dy, block.dy]
-                neighbors = list(block.neighdict.values())
+                neighbors = [block.neighdict[location] for location in locations]
                 blockdata = block[varkey]
 
                 for location,neighbor,delta,bc_type,bc_val in zip(locations,neighbors,deltas,
