@@ -48,10 +48,7 @@ jobs:
     - name: Run FlowX tests
       run: |
           cd container
-          maple pour
-          maple execute --command='"./setup develop && ./setup clean && \
-                                    python3 tests/container"'
-          maple rinse
+          maple run
     - name: Clean FlowX env
       run: |
           cd container

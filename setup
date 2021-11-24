@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# At present `flowx` should only be installed in development mode
-# No other option is supported
+#
 if [ $1 = "develop" ]; then
     #
     # Build the Python library in development mode
@@ -10,7 +9,17 @@ if [ $1 = "develop" ]; then
 
 fi
 
+#
+if [ $1 = "install" ]; then
+    #
+    # Build the Python library in development mode
+    #
+    python3 setup.py build
+    python3 setup.py install --user
+fi
+
 # Clean after installation
 if [ $1 = "clean" ]; then
     rm -rf *.egg-info
+    rm -rf build dist
 fi
