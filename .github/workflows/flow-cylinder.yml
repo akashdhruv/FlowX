@@ -49,9 +49,9 @@ jobs:
       run: |
           cd container
           maple pour
-          maple execute --command='"./setup develop && ./setup clean && \
-                                    cd examples/ins/flow_cylinder && \
-                                    python3 example.py"'
+          maple execute --command='./setup develop && ./setup clean && \
+                                   cd examples/ins/flow_cylinder && \
+                                   python3 example.py'
           maple rinse
     - name: Clean FlowX env
       run: |
