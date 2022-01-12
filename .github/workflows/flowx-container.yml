@@ -42,14 +42,13 @@ jobs:
           ./setup clean
     - name: Setup FlowX env
       run: |
-          cd container
-          python3 dependencies.py
+          maple build
     - name: Run FlowX tests
       run: |
-          cd container
-          maple run
+          maple pour
+          maple execute "cd tools/bubblebox && ./setup develop && ./setup clean"
+          maple execute "./setup develop && ./setup clean && python3 tests/container"
     - name: Clean FlowX env
       run: |
-          cd container
           maple clean
           maple remove

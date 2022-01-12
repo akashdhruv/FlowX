@@ -1,6 +1,6 @@
 # Maplefile
 
 maple_container="flowx"
-maple_image="flowx_image"
+maple_image="akashdhruv/flowx:latest"
 maple_target="/home/mount/flowx"
-maple_source="$PWD/.."
+maple_port="3000"
