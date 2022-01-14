@@ -45,9 +45,9 @@ jobs:
           maple build
     - name: Run FlowX tests
       run: |
-          maple pour
-          maple execute "cd tools/bubblebox && ./setup develop && ./setup clean"
-          maple execute "./setup develop && ./setup clean && \
+          maple execute "cd tools/bubblebox && ./setup develop && \
+                         ./setup clean && cd ../../ && \
+                         ./setup develop && ./setup clean && \
                          cd examples/ins/fall_cylinder && \
                          python3 example.py"
     - name: Clean FlowX env
