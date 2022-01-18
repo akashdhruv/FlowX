@@ -1,6 +1,5 @@
 # Maplefile
-
-maple_container="flowx"
-maple_image="akashdhruv/flowx:debug"
-maple_target="/home/mount/flowx"
-maple_port="3000"
+container="flowx"
+base="akashdhruv/flowx:debug"
+target="/home/mount/flowx"
+port="3000"
