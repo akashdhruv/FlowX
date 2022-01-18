@@ -1,0 +1,38 @@
+name: examples
+
+on:
+  pull_request:
+    branches: 
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - 'CITATION'
+
+  push:
+    branches: 
+      - development
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - 'CITATION'
+
+jobs:
+  driven-cavity:
+    name: "driven-cavity"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: akashdhruv/Maple/.github/actions/maple@main
+    - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
+      with:
+        base-image: akashdhruv/flowx:debug
+    - uses: ./.github/actions/install
+      with:
+        base-image: akashdhruv/flowx:debug
+    - name: Run FlowX tests
+      run: |
+          maple image build
+          maple container execute "cd examples/ins/lid_driven_cavity python3 example.py"
+          maple image clean
+          maple image remove

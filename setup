@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#
+# Development mode
 if [ $1 = "develop" ]; then
     #
     # Build the Python library in development mode
@@ -9,7 +9,7 @@ if [ $1 = "develop" ]; then
 
 fi
 
-#
+# Install mode
 if [ $1 = "install" ]; then
     #
     # Build the Python library in development mode

@@ -1,6 +1,0 @@
-[submodule "tools/bubblebox"]
-	path = tools/bubblebox
-	url = git@github.com:akashdhruv/BubbleBox.git
-[submodule "tools/maple"]
-	path = tools/maple
-	url = git@github.com:akashdhruv/Maple.git
