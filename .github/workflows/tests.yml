@@ -34,5 +34,5 @@ jobs:
       run: |
           maple image build
           maple container execute "python3 container"
-          maple image clean
+          maple container clean
           maple image remove
