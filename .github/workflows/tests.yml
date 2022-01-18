@@ -33,6 +33,6 @@ jobs:
     - uses: ./.github/actions/install
     - name: Run FlowX tests
       run: |
-          maple container execute "python3 container"
+          maple container execute "python3 tests/container"
           maple container clean
           maple image remove
