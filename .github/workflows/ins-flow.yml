@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: akashdhruv/Maple/.github/actions/maple@v2
+    - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
           maple image build "local"
@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: akashdhruv/Maple/.github/actions/maple@v2
+    - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
           maple image build "local"
@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: akashdhruv/Maple/.github/actions/maple@v2
+    - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
           maple image build "local"
@@ -86,7 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: akashdhruv/Maple/.github/actions/maple@v2
+    - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
           maple image build "local"
