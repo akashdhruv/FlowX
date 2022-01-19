@@ -26,13 +26,15 @@ jobs:
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
-          maple image build
+          maple image build "local"
     - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
       with:
-        base-image: flowx
+        image: "local"
     - uses: ./.github/actions/install
+      with:
+        image: "local"
     - name: Run FlowX tests
       run: |
+          maple container pour --image=local
           maple container execute "cd examples/ins/lid_driven_cavity && python3 example.py"
-          maple container clean
-          maple image remove
+          maple container rinse

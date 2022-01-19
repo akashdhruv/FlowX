@@ -26,13 +26,15 @@ jobs:
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
-          maple image build
+          maple image build "local"
     - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
       with:
-        base-image: flowx
+        base-image: "local"
     - uses: ./.github/actions/install
+      with:
+        base-image: "local"
     - name: Run FlowX tests
       run: |
+          maple container pour --image=local
           maple container execute "python3 tests/container"
-          maple container clean
-          maple image remove
+          maple container rinse
