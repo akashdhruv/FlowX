@@ -29,10 +29,10 @@ jobs:
           maple image build "local"
     - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
       with:
-        base-image: "local"
+        image: "local"
     - uses: ./.github/actions/install
       with:
-        base-image: "local"
+        image: "local"
     - name: Run FlowX tests
       run: |
           maple container pour --image=local
