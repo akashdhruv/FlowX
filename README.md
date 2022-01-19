@@ -1,10 +1,7 @@
 ## FlowX
 
-![flowx-container](https://github.com/akashdhruv/FlowX/workflows/flowx-container/badge.svg)
-![falling-cylinder](https://github.com/akashdhruv/FlowX/workflows/falling-cylinder/badge.svg)
-![flow-cylinder](https://github.com/akashdhruv/FlowX/workflows/flow-cylinder/badge.svg)
-![driven-cavity](https://github.com/akashdhruv/FlowX/workflows/driven-cavity/badge.svg)
-![visco-elastic](https://github.com/akashdhruv/FlowX/workflows/visco-elastic/badge.svg)
+![ins-flow](https://github.com/akashdhruv/FlowX/workflows/ins-flow/badge.svg)
+![flowx-test](https://github.com/akashdhruv/FlowX/workflows/tests/badge.svg)
 
 ### Installation
 
