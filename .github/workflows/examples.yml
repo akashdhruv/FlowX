@@ -38,3 +38,66 @@ jobs:
           maple container pour --image=local
           maple container execute "cd examples/ins/lid_driven_cavity && python3 example.py"
           maple container rinse
+
+  flow-cylinder:
+    name: "flow-cylinder"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: akashdhruv/Maple/.github/actions/maple@main
+    - name: Build Container
+      run: |
+          maple image build "local"
+    - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
+      with:
+        image: "local"
+    - uses: ./.github/actions/install
+      with:
+        image: "local"
+    - name: Run FlowX tests
+      run: |
+          maple container pour --image=local
+          maple container execute "cd examples/ins/flow_cylinder && python3 example.py"
+          maple container rinse
+
+  falling-cylinder:
+    name: "falling-cylinder"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: akashdhruv/Maple/.github/actions/maple@main
+    - name: Build Container
+      run: |
+          maple image build "local"
+    - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
+      with:
+        image: "local"
+    - uses: ./.github/actions/install
+      with:
+        image: "local"
+    - name: Run FlowX tests
+      run: |
+          maple container pour --image=local
+          maple container execute "cd examples/ins/fall_cylinder && python3 example.py"
+          maple container rinse
+
+  visco-elastic:
+    name: "visco-elastic"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: akashdhruv/Maple/.github/actions/maple@main
+    - name: Build Container
+      run: |
+          maple image build "local"
+    - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
+      with:
+        image: "local"
+    - uses: ./.github/actions/install
+      with:
+        image: "local"
+    - name: Run FlowX tests
+      run: |
+          maple container pour --image=local
+          maple container execute "cd examples/ins/lid_driven_visco && python3 example.py"
+          maple container rinse
