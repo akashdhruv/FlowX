@@ -1,5 +1,5 @@
 # Maplefile
 container="flowx"
-base="akashdhruv/flowx:debug"
+base="akashdhruv/flowx:latest"
 target="/home/mount/flowx"
 backend="docker"

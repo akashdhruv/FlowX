@@ -22,6 +22,13 @@ jobs:
     name: "driven-cavity"
     runs-on: ubuntu-latest
     steps:
+    - name: Login to Docker Hub
+      run: |
+          echo "::add-mask::${{secrets.DOCKER_HUB_PSK}}"
+    - uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PSK }}
     - uses: actions/checkout@v2
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
@@ -43,6 +50,13 @@ jobs:
     name: "flow-cylinder"
     runs-on: ubuntu-latest
     steps:
+    - name: Login to Docker Hub
+      run: |
+          echo "::add-mask::${{secrets.DOCKER_HUB_PSK}}"
+    - uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PSK }}
     - uses: actions/checkout@v2
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
@@ -64,6 +78,13 @@ jobs:
     name: "falling-cylinder"
     runs-on: ubuntu-latest
     steps:
+    - name: Login to Docker Hub
+      run: |
+          echo "::add-mask::${{secrets.DOCKER_HUB_PSK}}"
+    - uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PSK }}
     - uses: actions/checkout@v2
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
@@ -85,6 +106,13 @@ jobs:
     name: "visco-elastic"
     runs-on: ubuntu-latest
     steps:
+    - name: Login to Docker Hub
+      run: |
+          echo "::add-mask::${{secrets.DOCKER_HUB_PSK}}"
+    - uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PSK }}
     - uses: actions/checkout@v2
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
