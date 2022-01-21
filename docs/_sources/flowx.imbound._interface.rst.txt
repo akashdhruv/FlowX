@@ -1,0 +1,33 @@
+flowx.imbound.\_interface package
+=================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   flowx.imbound._interface.rigid
+   flowx.imbound._interface.utils
+   flowx.imbound._interface.visco
+
+Submodules
+----------
+
+flowx.imbound.\_interface.stub module
+-------------------------------------
+
+.. automodule:: flowx.imbound._interface.stub
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+Module contents
+---------------
+
+.. automodule:: flowx.imbound._interface
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

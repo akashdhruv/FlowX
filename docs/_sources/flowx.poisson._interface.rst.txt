@@ -1,0 +1,32 @@
+flowx.poisson.\_interface package
+=================================
+
+Submodules
+----------
+
+flowx.poisson.\_interface.\_helpers module
+------------------------------------------
+
+.. automodule:: flowx.poisson._interface._helpers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.poisson.\_interface.\_solvers module
+------------------------------------------
+
+.. automodule:: flowx.poisson._interface._solvers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+Module contents
+---------------
+
+.. automodule:: flowx.poisson._interface
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

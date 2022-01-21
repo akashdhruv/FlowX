@@ -10,7 +10,7 @@ Welcome to FlowX's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   modules
+   flowx
 
 Indices and tables
 ==================

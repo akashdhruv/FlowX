@@ -1,0 +1,41 @@
+flowx.imbound.\_interface.utils package
+=======================================
+
+Submodules
+----------
+
+flowx.imbound.\_interface.utils.\_ann\_search module
+----------------------------------------------------
+
+.. automodule:: flowx.imbound._interface.utils._ann_search
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.imbound.\_interface.utils.\_classical\_search module
+----------------------------------------------------------
+
+.. automodule:: flowx.imbound._interface.utils._classical_search
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.imbound.\_interface.utils.\_shapely\_search module
+--------------------------------------------------------
+
+.. automodule:: flowx.imbound._interface.utils._shapely_search
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+Module contents
+---------------
+
+.. automodule:: flowx.imbound._interface.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

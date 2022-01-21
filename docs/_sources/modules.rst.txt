@@ -1,8 +1,7 @@
-FlowX
+flowx
 =====
 
 .. toctree::
    :maxdepth: 4
 
    flowx
-   setup

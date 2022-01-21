@@ -1,6 +1,44 @@
 flowx.domain package
 ====================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   flowx.domain._grid
+
+Submodules
+----------
+
+flowx.domain.\_domain module
+----------------------------
+
+.. automodule:: flowx.domain._domain
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.domain.\_particles module
+-------------------------------
+
+.. automodule:: flowx.domain._particles
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.domain.\_scalars module
+-----------------------------
+
+.. automodule:: flowx.domain._scalars
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
 Module contents
 ---------------
 
@@ -8,3 +46,4 @@ Module contents
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:

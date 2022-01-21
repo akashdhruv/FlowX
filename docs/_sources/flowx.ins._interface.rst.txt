@@ -1,0 +1,50 @@
+flowx.ins.\_interface package
+=============================
+
+Submodules
+----------
+
+flowx.ins.\_interface.\_mass\_balance module
+--------------------------------------------
+
+.. automodule:: flowx.ins._interface._mass_balance
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.ins.\_interface.\_operators module
+----------------------------------------
+
+.. automodule:: flowx.ins._interface._operators
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.ins.\_interface.\_projection module
+-----------------------------------------
+
+.. automodule:: flowx.ins._interface._projection
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.ins.\_interface.\_stats module
+------------------------------------
+
+.. automodule:: flowx.ins._interface._stats
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+Module contents
+---------------
+
+.. automodule:: flowx.ins._interface
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

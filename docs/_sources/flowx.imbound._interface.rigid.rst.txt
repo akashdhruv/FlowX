@@ -1,0 +1,32 @@
+flowx.imbound.\_interface.rigid package
+=======================================
+
+Submodules
+----------
+
+flowx.imbound.\_interface.rigid.\_force\_flow module
+----------------------------------------------------
+
+.. automodule:: flowx.imbound._interface.rigid._force_flow
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.imbound.\_interface.rigid.\_map\_to\_grid module
+------------------------------------------------------
+
+.. automodule:: flowx.imbound._interface.rigid._map_to_grid
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+Module contents
+---------------
+
+.. automodule:: flowx.imbound._interface.rigid
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

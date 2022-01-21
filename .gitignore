@@ -5,3 +5,5 @@ __pycache__
 boxmem*
 build/
 dist/
+*.rst
+!.sphinx/source/index.rst

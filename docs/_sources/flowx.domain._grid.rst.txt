@@ -1,0 +1,59 @@
+flowx.domain.\_grid package
+===========================
+
+Submodules
+----------
+
+flowx.domain.\_grid.\_grid module
+---------------------------------
+
+.. automodule:: flowx.domain._grid._grid
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.domain.\_grid.\_gridBase module
+-------------------------------------
+
+.. automodule:: flowx.domain._grid._gridBase
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.domain.\_grid.\_gridC module
+----------------------------------
+
+.. automodule:: flowx.domain._grid._gridC
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.domain.\_grid.\_gridX module
+----------------------------------
+
+.. automodule:: flowx.domain._grid._gridX
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.domain.\_grid.\_gridY module
+----------------------------------
+
+.. automodule:: flowx.domain._grid._gridY
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+Module contents
+---------------
+
+.. automodule:: flowx.domain._grid
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

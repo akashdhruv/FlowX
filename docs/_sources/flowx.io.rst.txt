@@ -1,6 +1,14 @@
 flowx.io package
 ================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   flowx.io._interface
+
 Module contents
 ---------------
 
@@ -8,3 +16,4 @@ Module contents
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:

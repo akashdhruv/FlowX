@@ -1,0 +1,86 @@
+flowx.io.\_interface package
+============================
+
+Submodules
+----------
+
+flowx.io.\_interface.\_display\_stats module
+--------------------------------------------
+
+.. automodule:: flowx.io._interface._display_stats
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.io.\_interface.\_plot\_contour module
+-------------------------------------------
+
+.. automodule:: flowx.io._interface._plot_contour
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.io.\_interface.\_plot\_line module
+----------------------------------------
+
+.. automodule:: flowx.io._interface._plot_line
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.io.\_interface.\_plot\_mesh module
+----------------------------------------
+
+.. automodule:: flowx.io._interface._plot_mesh
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.io.\_interface.\_plot\_scatter module
+-------------------------------------------
+
+.. automodule:: flowx.io._interface._plot_scatter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.io.\_interface.\_plot\_vector module
+------------------------------------------
+
+.. automodule:: flowx.io._interface._plot_vector
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.io.\_interface.\_write\_hdf5\_checkpoint module
+-----------------------------------------------------
+
+.. automodule:: flowx.io._interface._write_hdf5_checkpoint
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+flowx.io.\_interface.\_write\_hdf5\_output module
+-------------------------------------------------
+
+.. automodule:: flowx.io._interface._write_hdf5_output
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+Module contents
+---------------
+
+.. automodule:: flowx.io._interface
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:

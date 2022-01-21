@@ -1,6 +1,26 @@
 flowx.quantum package
 =====================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   flowx.quantum._interface
+
+Submodules
+----------
+
+flowx.quantum.\_quantum module
+------------------------------
+
+.. automodule:: flowx.quantum._quantum
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
 Module contents
 ---------------
 
@@ -8,3 +28,4 @@ Module contents
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:

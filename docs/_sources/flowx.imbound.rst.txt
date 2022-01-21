@@ -1,6 +1,26 @@
 flowx.imbound package
 =====================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   flowx.imbound._interface
+
+Submodules
+----------
+
+flowx.imbound.\_imbound module
+------------------------------
+
+.. automodule:: flowx.imbound._imbound
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
 Module contents
 ---------------
 
@@ -8,3 +28,4 @@ Module contents
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
