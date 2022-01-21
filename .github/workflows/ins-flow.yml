@@ -33,7 +33,7 @@ jobs:
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
-          maple image build "local"
+          maple image build local ${{secrets.DOCKER_HUB_USERNAME}}/flowx:latest
     - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
       with:
         image: "local"
@@ -61,7 +61,7 @@ jobs:
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
-          maple image build "local"
+          maple image build local ${{secrets.DOCKER_HUB_USERNAME}}/flowx:latest
     - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
       with:
         image: "local"
@@ -89,13 +89,13 @@ jobs:
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
-          maple image build "local"
+          maple image build local ${{secrets.DOCKER_HUB_USERNAME}}/flowx:latest
     - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
       with:
-        image: "local"
+        image: local
     - uses: ./.github/actions/install
       with:
-        image: "local"
+        image: local
     - name: Run FlowX tests
       run: |
           maple container pour --image=local
@@ -117,13 +117,13 @@ jobs:
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
-          maple image build "local"
+          maple image build local ${{secrets.DOCKER_HUB_USERNAME}}/flowx:latest
     - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
       with:
-        image: "local"
+        image: local
     - uses: ./.github/actions/install
       with:
-        image: "local"
+        image: local
     - name: Run FlowX tests
       run: |
           maple container pour --image=local

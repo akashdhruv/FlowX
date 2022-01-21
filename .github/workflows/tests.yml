@@ -33,7 +33,7 @@ jobs:
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
-          maple image build "local"
+          maple image build "local" ${{secrets.DOCKER_HUB_USERNAME}}/flowx:latest
     - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
       with:
         image: "local"
