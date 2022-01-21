@@ -1,1 +1,1 @@
-sphinx-apidoc -f -P -o source ../flowx
+sphinx-apidoc -f -P -o source ../../FlowX
