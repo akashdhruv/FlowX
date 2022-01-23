@@ -1,4 +1,4 @@
-name: ins-flow
+name: INS
 
 on:
   pull_request:
@@ -18,8 +18,9 @@ on:
       - 'CITATION'
 
 jobs:
-  driven-cavity:
-    name: "driven-cavity"
+
+  Lidcav:
+    name: "Lidcav"
     runs-on: ubuntu-latest
     steps:
     - name: Login to Docker Hub
@@ -27,27 +28,24 @@ jobs:
           echo "::add-mask::${{secrets.DOCKER_HUB_PSK}}"
     - uses: docker/login-action@v1
       with:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_PSK }}
+        username: ${{secrets.DOCKER_HUB_USERNAME}}
+        password: ${{secrets.DOCKER_HUB_PSK}}
     - uses: actions/checkout@v2
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
-          maple image build local ${{secrets.DOCKER_HUB_USERNAME}}/flowx:latest
-    - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
-      with:
-        image: "local"
+          maple image build flowx
     - uses: ./.github/actions/install
       with:
-        image: "local"
+        image: flowx
     - name: Run FlowX tests
       run: |
-          maple container pour --image=local
+          maple container pour --image=flowx
           maple container execute "cd examples/ins/lid_driven_cavity && python3 example.py"
           maple container rinse
 
-  flow-cylinder:
-    name: "flow-cylinder"
+  FlowCylinder:
+    name: "FlowCylinder"
     runs-on: ubuntu-latest
     steps:
     - name: Login to Docker Hub
@@ -55,27 +53,24 @@ jobs:
           echo "::add-mask::${{secrets.DOCKER_HUB_PSK}}"
     - uses: docker/login-action@v1
       with:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_PSK }}
+        username: ${{secrets.DOCKER_HUB_USERNAME}}
+        password: ${{secrets.DOCKER_HUB_PSK}}
     - uses: actions/checkout@v2
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
-          maple image build local ${{secrets.DOCKER_HUB_USERNAME}}/flowx:latest
-    - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
-      with:
-        image: "local"
+          maple image build flowx
     - uses: ./.github/actions/install
       with:
-        image: "local"
+        image: "flowx"
     - name: Run FlowX tests
       run: |
-          maple container pour --image=local
+          maple container pour --image=flowx
           maple container execute "cd examples/ins/flow_cylinder && python3 example.py"
           maple container rinse
 
-  falling-cylinder:
-    name: "falling-cylinder"
+  FallCylinder:
+    name: "FallCylinder"
     runs-on: ubuntu-latest
     steps:
     - name: Login to Docker Hub
@@ -83,27 +78,24 @@ jobs:
           echo "::add-mask::${{secrets.DOCKER_HUB_PSK}}"
     - uses: docker/login-action@v1
       with:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_PSK }}
+        username: ${{secrets.DOCKER_HUB_USERNAME}}
+        password: ${{secrets.DOCKER_HUB_PSK}}
     - uses: actions/checkout@v2
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
-          maple image build local ${{secrets.DOCKER_HUB_USERNAME}}/flowx:latest
-    - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
-      with:
-        image: local
+          maple image build flowx
     - uses: ./.github/actions/install
       with:
-        image: local
+        image: flowx
     - name: Run FlowX tests
       run: |
-          maple container pour --image=local
+          maple container pour --image=flowx
           maple container execute "cd examples/ins/fall_cylinder && python3 example.py"
           maple container rinse
 
-  visco-elastic:
-    name: "visco-elastic"
+  ViscoElastic:
+    name: "ViscoElastic"
     runs-on: ubuntu-latest
     steps:
     - name: Login to Docker Hub
@@ -117,15 +109,12 @@ jobs:
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
-          maple image build local ${{secrets.DOCKER_HUB_USERNAME}}/flowx:latest
-    - uses: akashdhruv/BubbleBox/.github/actions/bubblebox@main
-      with:
-        image: local
+          maple image build flowx
     - uses: ./.github/actions/install
       with:
-        image: local
+        image: flowx
     - name: Run FlowX tests
       run: |
-          maple container pour --image=local
+          maple container pour --image=flowx
           maple container execute "cd examples/ins/lid_driven_visco && python3 example.py"
           maple container rinse

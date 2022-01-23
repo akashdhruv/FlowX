@@ -1,5 +1,6 @@
 # Maplefile
 
+base="akashdhruv/bubblebox:latest"
 container="flowx"
-target="/home/mount/flowx"
+target="/home/mount/FlowX"
 backend="docker"
