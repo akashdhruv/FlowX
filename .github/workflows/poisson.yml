@@ -1,9 +1,9 @@
 name: Poisson
 
 on:
-  pull_request:
+  push:
     branches: 
-      - main
+      - development
     paths-ignore:
       - '**.md'
       - 'LICENSE'
