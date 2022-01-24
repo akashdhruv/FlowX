@@ -1,25 +1,30 @@
 #!/bin/bash
 
-# Development mode
+#Development mode
 if [ $1 = "develop" ]; then
-    #
-    # Build the Python library in development mode
-    #
     python3 setup.py develop --user
 
 fi
 
-# Install mode
+#Install mode
 if [ $1 = "install" ]; then
-    #
-    # Build the Python library in development mode
-    #
     python3 setup.py build
     python3 setup.py install --user
 fi
 
-# Clean after installation
+#Clean after installation
 if [ $1 = "clean" ]; then
     rm -rf *.egg-info
     rm -rf build dist
+fi
+
+#Publish image
+if [ $1 = "publish" ]; then
+    maple image build --as-root flowx
+    maple container pour --image=flowx
+    maple container execute "python3 setup.py develop && python3 setup.py install && ./setup clean"
+    maple container commit --image=flowx
+    maple container rinse
+    maple push flowx akashdhruv/flowx:latest
+    maple image delete flowx
 fi
