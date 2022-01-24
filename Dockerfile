@@ -15,6 +15,5 @@
 # but can be implemented if needed.
 # ---------------------------------------------------------------------------------------------
 
-# Install vim and jupyter 
-# Comment this when building images to reduce size
-RUN apt-get install -y vim && pip3 install jupyter
+# Install vim and jupyter - do not install when building production images to reduce size
+RUN apt-get install -y vim git && pip3 install jupyter
