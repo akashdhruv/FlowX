@@ -1,6 +1,11 @@
-# Maplefile
+# Maplefile for FlowX
+#
+# VARIABLE            DESCRIPTION
+# ----------------------------------------------------------------
+# base                Name of the base image
+# container           Name of the local container
+# backend             Container backend (docker/singularity)
 
 base="akashdhruv/bubblebox:latest"
 container="flowx"
-target="/home/mount/FlowX"
 backend="docker"
