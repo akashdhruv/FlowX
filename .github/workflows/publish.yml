@@ -3,7 +3,7 @@ name: Publish
 on:
   push:
     branches: 
-      - development
+      - main
     paths-ignore:
       - '**.md'
       - 'LICENSE'
