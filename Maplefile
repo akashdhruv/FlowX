@@ -3,6 +3,9 @@
 # Name of the base image
 base="akashdhruv/bubblebox"
 
+# Name of the default image
+image="flowx"
+
 # Name of the local container
 container="flowx"
 
