@@ -1,11 +1,13 @@
 # Maplefile for FlowX
-#
-# VARIABLE            DESCRIPTION
-# ----------------------------------------------------------------
-# base                Name of the base image
-# container           Name of the local container
-# backend             Container backend (docker/singularity)
 
+# Name of the base image
 base="akashdhruv/bubblebox"
+
+# Name of the local container
 container="flowx"
+
+# Container backend
 backend="docker"
+
+# Default commands for execute
+execute=["python3 setup.py develop && python3 setup.py install && ./setup clean"]
