@@ -1,16 +1,21 @@
 # Maplefile for FlowX
 
-# Name of the base image
-base="akashdhruv/bubblebox"
+# Name of the base image which will
+# be used to build the local image 
+base='akashdhruv/bubblebox:latest'
 
-# Name of the default image
-image="flowx"
+# Name of the local image that will be
+# used to pour the container and add layers
+image='flowx'
 
-# Name of the local container
-container="flowx"
+# Name of the local container that will be used
+# to run/modify the image
+# Note: 'container' is a writable instance of an 'image'
+container='flowx'
 
-# Container backend
-backend="docker"
+# Commands to execute inside the container and update the
+# image
+publish=['python3 setup.py develop && python3 setup.py install && ./setup clean']
 
-# Default commands for execute
-execute=["python3 setup.py develop && python3 setup.py install && ./setup clean"]
+# Backend for service docker/singularity
+backend='docker'
