@@ -1,9 +1,9 @@
 ## FlowX
 
-![INS](https://github.com/akashdhruv/FlowX/.github/workflows/INS/badge.svg)
-![Poisson](https://github.com/akashdhruv/FlowX/.github/workflows/Poisson/badge.svg)
-![Grid](https://github.com/akashdhruv/FlowX/.github/workflows/Grid/badge.svg)
-![Publish](https://github.com/akashdhruv/FlowX/.github/workflows/Publish/badge.svg)
+![INS](https://github.com/akashdhruv/FlowX/workflows/INS/badge.svg)
+![Poisson](https://github.com/akashdhruv/FlowX/workflows/Poisson/badge.svg)
+![Grid](https://github.com/akashdhruv/FlowX/workflows/Grid/badge.svg)
+![Publish](https://github.com/akashdhruv/FlowX/workflows/Publish/badge.svg)
 
 ### Installation
 
