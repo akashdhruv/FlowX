@@ -1,7 +1,9 @@
-def force_flow(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc, options):
+def force_flow(
+    gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc, options
+):
     """
     Stub subroutine to compute forces
- 
+
     Arguments
     ---------
     gridc : object
@@ -17,7 +19,7 @@ def force_flow(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc, 
        Scalars object to access time-step and Reynold number
 
     particles: object
-       Particles object to access time-step 
+       Particles object to access time-step
 
     ibmf : string for forcing variable
 
@@ -25,11 +27,12 @@ def force_flow(gridc, gridx, gridy, scalars, particles, ibmf, ibmx, ibmy, velc, 
     """
     pass
 
+
 def map_to_grid(gridc, particles, ibmf, ibmx, ibmy, search_function, options):
 
     """
     Stub subroutine to compute IB mapping on grid
- 
+
     Arguments
     ---------
     gridc : object
@@ -45,6 +48,7 @@ def map_to_grid(gridc, particles, ibmf, ibmx, ibmy, search_function, options):
     """
 
     return None
+
 
 def advect(gridc, gridx, gridy, scalars, ibmf, ibmx, ibmy, velc, options):
 

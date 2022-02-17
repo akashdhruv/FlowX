@@ -1,7 +1,10 @@
 import numpy
 import h5py
 
-def write_hdf5_checkpoint(domain_data_struct=[None]*5, center_vars=None, face_vars=None):
+
+def write_hdf5_checkpoint(
+    domain_data_struct=[None] * 5, center_vars=None, face_vars=None
+):
     """
     Subroutine to write checkpoint to hdf5 file.
 

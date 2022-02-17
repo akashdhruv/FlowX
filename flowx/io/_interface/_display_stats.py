@@ -11,14 +11,24 @@ def display_stats(scalars):
     scalars : object
             Scalar class object containing neccesary information for head up display
     """
-    print('------------ Time = {} ---------------'.format(scalars.time))
-    print('Number of poisson iterations    : {}'.format(scalars.stats['ites']))
-    print('Final poisson residual : {}'.format(scalars.stats['res']))
-    print('Total poisson time : {}'.format(scalars.stats['poisson_time']))
-    print('Total INS time : {}'.format(scalars.stats['ins_time']))
-    print('Max, Min, U   : {}, {}'.format(scalars.stats['max_u'], scalars.stats['min_u']))
-    print('Max, Min, V   : {}, {}'.format(scalars.stats['max_v'], scalars.stats['min_v']))
-    print('Max, Min, P   : {}, {}'.format(scalars.stats['max_p'], scalars.stats['min_p']))
-    print('Max, Min, DIV : {}, {}'.format(scalars.stats['max_div'], scalars.stats['min_div']))
-    print('Qin, Qout     : {}, {}'.format(scalars.stats['qin'], scalars.stats['qout']))
-    print('\n')
+    print("------------ Time = {} ---------------".format(scalars.time))
+    print("Number of poisson iterations    : {}".format(scalars.stats["ites"]))
+    print("Final poisson residual : {}".format(scalars.stats["res"]))
+    print("Total poisson time : {}".format(scalars.stats["poisson_time"]))
+    print("Total INS time : {}".format(scalars.stats["ins_time"]))
+    print(
+        "Max, Min, U   : {}, {}".format(scalars.stats["max_u"], scalars.stats["min_u"])
+    )
+    print(
+        "Max, Min, V   : {}, {}".format(scalars.stats["max_v"], scalars.stats["min_v"])
+    )
+    print(
+        "Max, Min, P   : {}, {}".format(scalars.stats["max_p"], scalars.stats["min_p"])
+    )
+    print(
+        "Max, Min, DIV : {}, {}".format(
+            scalars.stats["max_div"], scalars.stats["min_div"]
+        )
+    )
+    print("Qin, Qout     : {}, {}".format(scalars.stats["qin"], scalars.stats["qout"]))
+    print("\n")
