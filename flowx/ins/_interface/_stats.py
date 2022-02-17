@@ -38,13 +38,13 @@ def stats(gridc, gridx, gridy, ivar, pvar, divc):
     max_div, min_div = numpy.amax(div), numpy.amin(div)
 
     ins_stats = dict()
-    ins_stats['max_u'] = max_u
-    ins_stats['min_u'] = min_u
-    ins_stats['max_v'] = max_v
-    ins_stats['min_v'] = min_v
-    ins_stats['max_p'] = max_p
-    ins_stats['min_p'] = min_p
-    ins_stats['max_div'] = max_div
-    ins_stats['min_div'] = min_div
+    ins_stats["max_u"] = max_u
+    ins_stats["min_u"] = min_u
+    ins_stats["max_v"] = max_v
+    ins_stats["min_v"] = min_v
+    ins_stats["max_p"] = max_p
+    ins_stats["min_p"] = min_p
+    ins_stats["max_div"] = max_div
+    ins_stats["min_div"] = min_div
 
     return ins_stats

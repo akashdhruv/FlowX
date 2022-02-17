@@ -4,28 +4,40 @@ from qiskit.providers.ibmq import least_busy
 from qiskit.tools.monitor import job_monitor
 from qiskit.providers.aer.noise import NoiseModel
 
+
 def calibrate_circuit_QASM(register, backend, calibrate):
- 
+
     provider = IBMQ.load_account()
     device_backend = provider.get_backend(backend)
- 
-    device = provider.get_backend('ibmq_qasm_simulator') # Aer.get_backend('qasm_simulator') #
+
+    device = provider.get_backend(
+        "ibmq_qasm_simulator"
+    )  # Aer.get_backend('qasm_simulator') #
     print("Running on device: ", device)
-   
-    meas_fitter, noise_model, basis_gates = [None]*3
+
+    meas_fitter, noise_model, basis_gates = [None] * 3
 
     if calibrate:
         noise_model = NoiseModel.from_backend(device_backend)
         basis_gates = noise_model.basis_gates
-        circuit, state_labels = complete_meas_cal(qubit_list=list(range(0, len(register))), qr=register, circlabel='mcal')
+        circuit, state_labels = complete_meas_cal(
+            qubit_list=list(range(0, len(register))), qr=register, circlabel="mcal"
+        )
 
-        job = execute(circuit, backend=device, shots=1024, noise_model=noise_model, basis_gates=basis_gates)
-        job_monitor(job, interval = 2)
+        job = execute(
+            circuit,
+            backend=device,
+            shots=1024,
+            noise_model=noise_model,
+            basis_gates=basis_gates,
+        )
+        job_monitor(job, interval=2)
         cal_results = job.result()
 
-        meas_fitter = CompleteMeasFitter(cal_results, state_labels, circlabel='mcal')
+        meas_fitter = CompleteMeasFitter(cal_results, state_labels, circlabel="mcal")
 
     return meas_fitter, device, [noise_model, basis_gates]
+
 
 def calibrate_circuit_IBMQ(register, backend, calibrate):
 
@@ -35,16 +47,18 @@ def calibrate_circuit_IBMQ(register, backend, calibrate):
     device = device_backend
     print("Running on device: ", device)
 
-    meas_fitter, noise_model, basis_gates = [None]*3
+    meas_fitter, noise_model, basis_gates = [None] * 3
 
     if calibrate:
-        circuit, state_labels = complete_meas_cal(qubit_list=list(range(0, len(register))), qr=register, circlabel='mcal')
+        circuit, state_labels = complete_meas_cal(
+            qubit_list=list(range(0, len(register))), qr=register, circlabel="mcal"
+        )
 
         job = execute(circuit, backend=device, shots=1024, max_credits=10)
-        job_monitor(job, interval = 2)
+        job_monitor(job, interval=2)
 
         cal_results = job.result()
 
-        meas_fitter = CompleteMeasFitter(cal_results, state_labels, circlabel='mcal')
+        meas_fitter = CompleteMeasFitter(cal_results, state_labels, circlabel="mcal")
 
     return meas_fitter, device, [noise_model, basis_gates]

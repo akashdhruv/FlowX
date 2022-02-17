@@ -1,11 +1,12 @@
 import numpy
 import time
 
+
 def map_to_grid(gridc, particles, ibmf, ibmx, ibmy, search_function, options):
 
     """
     Subroutine to compute IB mapping on grid using the level set function
- 
+
     Arguments
     ---------
     gridc : object
@@ -16,14 +17,14 @@ def map_to_grid(gridc, particles, ibmf, ibmx, ibmy, search_function, options):
 
     ibmf : string for forcing variable
 
-    search_function : 
+    search_function :
          Search function
 
     """
     for particle in particles:
-        ites = search_function(gridc,particle,ibmf,options)
+        ites = search_function(gridc, particle, ibmf, options)
 
-    if (options['verbose']):
+    if options["verbose"]:
         print("Mapping Iterations: ", ites)
 
     return ites

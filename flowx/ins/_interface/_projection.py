@@ -4,6 +4,7 @@ import numpy
 
 from . import _operators
 
+
 def predictor_euler(gridc, gridx, gridy, ivar, hvar, pres, Re, ifac, ipres):
     """Velocity prediction step in x and y direction.
 
@@ -23,25 +24,36 @@ def predictor_euler(gridc, gridx, gridy, ivar, hvar, pres, Re, ifac, ipres):
         Time-step size.
 
     """
-    hx = gridx[hvar][0,0,:,:]
-    hy = gridy[hvar][0,0,:,:]
+    hx = gridx[hvar][0, 0, :, :]
+    hy = gridy[hvar][0, 0, :, :]
 
     dx, dy = gridx.dx, gridy.dy
 
-    p = gridc[pres][0,0,:,:]
+    p = gridc[pres][0, 0, :, :]
 
-    hx[1:-1, 1:-1] = (_operators.convective_facex(gridx, gridy, ivar) +
-                      _operators.diffusion(gridx, ivar, 1 / Re))
-    hy[1:-1, 1:-1] = (_operators.convective_facey(gridx, gridy, ivar) +
-                      _operators.diffusion(gridy, ivar, 1 / Re))
+    hx[1:-1, 1:-1] = _operators.convective_facex(
+        gridx, gridy, ivar
+    ) + _operators.diffusion(gridx, ivar, 1 / Re)
+    hy[1:-1, 1:-1] = _operators.convective_facey(
+        gridx, gridy, ivar
+    ) + _operators.diffusion(gridy, ivar, 1 / Re)
 
-    u = gridx[ivar][0,0,:,:]
-    v = gridy[ivar][0,0,:,:]
+    u = gridx[ivar][0, 0, :, :]
+    v = gridy[ivar][0, 0, :, :]
 
-    u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * hx[1:-1, 1:-1] - ifac * ipres * (p[1:-1, 2:-1] - p[1:-1, 1:-2]) / dx
-    v[1:-1, 1:-1] = v[1:-1, 1:-1] + ifac * hy[1:-1, 1:-1] - ifac * ipres * (p[2:-1, 1:-1] - p[1:-2, 1:-1]) / dy
+    u[1:-1, 1:-1] = (
+        u[1:-1, 1:-1]
+        + ifac * hx[1:-1, 1:-1]
+        - ifac * ipres * (p[1:-1, 2:-1] - p[1:-1, 1:-2]) / dx
+    )
+    v[1:-1, 1:-1] = (
+        v[1:-1, 1:-1]
+        + ifac * hy[1:-1, 1:-1]
+        - ifac * ipres * (p[2:-1, 1:-1] - p[1:-2, 1:-1]) / dy
+    )
 
     return
+
 
 def predictor_ab2(gridc, gridx, gridy, ivar, hvar, pres, Re, ifac, ipres):
     """Velocity prediction step in x and y direction.
@@ -62,31 +74,40 @@ def predictor_ab2(gridc, gridx, gridy, ivar, hvar, pres, Re, ifac, ipres):
         Time-step size.
 
     """
-    hx_old = gridx[hvar][0,0,:,:]
-    hy_old = gridy[hvar][0,0,:,:]
+    hx_old = gridx[hvar][0, 0, :, :]
+    hy_old = gridy[hvar][0, 0, :, :]
 
     dx, dy = gridx.dx, gridy.dy
 
-    p = gridc[pres][0,0,:,:]
+    p = gridc[pres][0, 0, :, :]
 
-    hx_new = (_operators.convective_facex(gridx, gridy, ivar) +
-              _operators.diffusion(gridx, ivar, 1 / Re)) 
-    hy_new = (_operators.convective_facey(gridx, gridy, ivar) +
-              _operators.diffusion(gridy, ivar, 1 / Re)) 
+    hx_new = _operators.convective_facex(gridx, gridy, ivar) + _operators.diffusion(
+        gridx, ivar, 1 / Re
+    )
+    hy_new = _operators.convective_facey(gridx, gridy, ivar) + _operators.diffusion(
+        gridy, ivar, 1 / Re
+    )
 
-    u = gridx[ivar][0,0,:,:]
-    v = gridy[ivar][0,0,:,:]
+    u = gridx[ivar][0, 0, :, :]
+    v = gridy[ivar][0, 0, :, :]
 
-    u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * (1.5 * hx_new - 0.5 * hx_old[1:-1, 1:-1]) \
-                                  - ifac * ipres * (p[1:-1, 2:-1] - p[1:-1, 1:-2]) / dx
+    u[1:-1, 1:-1] = (
+        u[1:-1, 1:-1]
+        + ifac * (1.5 * hx_new - 0.5 * hx_old[1:-1, 1:-1])
+        - ifac * ipres * (p[1:-1, 2:-1] - p[1:-1, 1:-2]) / dx
+    )
 
-    v[1:-1, 1:-1] = v[1:-1, 1:-1] + ifac * (1.5 * hy_new - 0.5 * hy_old[1:-1, 1:-1]) \
-                                  - ifac * ipres * (p[2:-1, 1:-1] - p[1:-2, 1:-1]) / dy
- 
-    hx_old[1:-1,1:-1] = hx_new
-    hy_old[1:-1,1:-1] = hy_new
+    v[1:-1, 1:-1] = (
+        v[1:-1, 1:-1]
+        + ifac * (1.5 * hy_new - 0.5 * hy_old[1:-1, 1:-1])
+        - ifac * ipres * (p[2:-1, 1:-1] - p[1:-2, 1:-1]) / dy
+    )
+
+    hx_old[1:-1, 1:-1] = hx_new
+    hy_old[1:-1, 1:-1] = hy_new
 
     return
+
 
 def predictor_rk3(gridc, gridx, gridy, ivar, hvar, pres, Re, ifac, ipres, hconst):
     """Velocity prediction step in x and y direction.
@@ -107,25 +128,30 @@ def predictor_rk3(gridc, gridx, gridy, ivar, hvar, pres, Re, ifac, ipres, hconst
         Time-step size.
 
     """
-    hx = gridx[hvar][0,0,:,:]
-    hy = gridy[hvar][0,0,:,:]
+    hx = gridx[hvar][0, 0, :, :]
+    hy = gridy[hvar][0, 0, :, :]
 
     dx, dy = gridx.dx, gridy.dy
 
-    p = gridc[pres][0,0,:,:]
+    p = gridc[pres][0, 0, :, :]
 
-    hx[1:-1, 1:-1] = (_operators.convective_facex(gridx, gridy, ivar) +
-                      _operators.diffusion(gridx, ivar, 1 / Re)) + hconst * hx[1:-1,1:-1]
-    hy[1:-1, 1:-1] = (_operators.convective_facey(gridx, gridy, ivar) +
-                      _operators.diffusion(gridy, ivar, 1 / Re)) + hconst * hy[1:-1,1:-1]
+    hx[1:-1, 1:-1] = (
+        _operators.convective_facex(gridx, gridy, ivar)
+        + _operators.diffusion(gridx, ivar, 1 / Re)
+    ) + hconst * hx[1:-1, 1:-1]
+    hy[1:-1, 1:-1] = (
+        _operators.convective_facey(gridx, gridy, ivar)
+        + _operators.diffusion(gridy, ivar, 1 / Re)
+    ) + hconst * hy[1:-1, 1:-1]
 
-    u = gridx[ivar][0,0,:,:]
-    v = gridy[ivar][0,0,:,:]
+    u = gridx[ivar][0, 0, :, :]
+    v = gridy[ivar][0, 0, :, :]
 
     u[1:-1, 1:-1] = u[1:-1, 1:-1] + ifac * hx[1:-1, 1:-1]
     v[1:-1, 1:-1] = v[1:-1, 1:-1] + ifac * hy[1:-1, 1:-1]
 
     return
+
 
 def divergence(gridc, gridx, gridy, ivar, dvar, ifac=1.0):
     """Compute the divergence of the variable tagged "ivar".
@@ -146,17 +172,19 @@ def divergence(gridc, gridx, gridy, ivar, dvar, ifac=1.0):
         Multiplying factor for time-step; default: 1.0.
 
     """
-    u = gridx[ivar][0,0,:,:]
-    v = gridy[ivar][0,0,:,:]
+    u = gridx[ivar][0, 0, :, :]
+    v = gridy[ivar][0, 0, :, :]
 
-    div = gridc[dvar][0,0,:,:]
+    div = gridc[dvar][0, 0, :, :]
 
     dx, dy = gridc.dx, gridc.dy
 
-    div[1:-1, 1:-1] = ((u[1:-1, 1:] - u[1:-1, :-1]) / dx +
-                       (v[1:, 1:-1] - v[:-1, 1:-1]) / dy) / ifac
+    div[1:-1, 1:-1] = (
+        (u[1:-1, 1:] - u[1:-1, :-1]) / dx + (v[1:, 1:-1] - v[:-1, 1:-1]) / dy
+    ) / ifac
 
     return
+
 
 def corrector(gridc, gridx, gridy, ivar, pvar, delp, ifac, ipres):
     """Velocity correction in x and y direction.
@@ -177,16 +205,16 @@ def corrector(gridc, gridx, gridy, ivar, pvar, delp, ifac, ipres):
         Time-step size.
 
     """
-    u = gridx[ivar][0,0,:,:]
-    v = gridy[ivar][0,0,:,:]
-    p = gridc[pvar][0,0,:,:]
-    dp = gridc[delp][0,0,:,:]
+    u = gridx[ivar][0, 0, :, :]
+    v = gridy[ivar][0, 0, :, :]
+    p = gridc[pvar][0, 0, :, :]
+    dp = gridc[delp][0, 0, :, :]
 
     dx, dy = gridx.dx, gridy.dy
 
-    u[:,:] = u[:, :] - ifac * (dp[:, 1:] - dp[:, :-1]) / dx
-    v[: :] = v[:, :] - ifac * (dp[1:, :] - dp[:-1, :]) / dy
+    u[:, :] = u[:, :] - ifac * (dp[:, 1:] - dp[:, :-1]) / dx
+    v[::] = v[:, :] - ifac * (dp[1:, :] - dp[:-1, :]) / dy
 
-    p[:,:] = ipres*p[:,:] + dp[:,:]
+    p[:, :] = ipres * p[:, :] + dp[:, :]
 
     return

@@ -7,3 +7,4 @@ build/
 dist/
 *.rst
 !.sphinx/source/index.rst
+!README.rst

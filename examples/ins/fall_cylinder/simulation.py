@@ -3,6 +3,7 @@
 import numpy
 import flowx
 
+
 def set_initial_velocity(gridc, gridx, gridy, ivar, pres):
     """Set the initial velocity field.
 
@@ -24,8 +25,8 @@ def set_initial_velocity(gridc, gridx, gridy, ivar, pres):
     v = gridy.get_values(ivar)
     p = gridc.get_values(pres)
 
-    u[:, :] =  1.0
-    v[:, :] =  0.0
-    p[:, :] =  0.0
+    u[:, :] = 1.0
+    v[:, :] = 0.0
+    p[:, :] = 0.0
 
     return

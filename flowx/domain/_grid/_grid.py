@@ -5,6 +5,7 @@ from . import GridFaceX
 from . import GridFaceY
 from . import GridCellCentered
 
+
 def Grid(gridtype, *args, **kwargs):
     """Return an instance of the GridBase child class based on type.
 
@@ -45,5 +46,7 @@ def Grid(gridtype, *args, **kwargs):
     for cls in GridBase.__subclasses__():
         if cls.check_gridtype(gridtype):
             return cls(*args, **kwargs)
-    raise ValueError('Parameter "gridtype" should be either '
-                     '"cell-centered", "x-face", or "y-face"')
+    raise ValueError(
+        'Parameter "gridtype" should be either '
+        '"cell-centered", "x-face", or "y-face"'
+    )

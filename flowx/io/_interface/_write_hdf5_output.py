@@ -1,7 +1,8 @@
 import numpy
 import h5py
 
-def write_hdf5_output(domain_data_struct=[None]*5, center_vars=None, face_vars=None):
+
+def write_hdf5_output(domain_data_struct=[None] * 5, center_vars=None, face_vars=None):
     """
     Subroutine to write output to hdf5 file.
 
@@ -36,9 +37,11 @@ def map_center_to_edge(grid, ivar):
 
     return
 
+
 def map_facex_to_edge(grid, ivar):
 
     return
+
 
 def map_facey_to_edge(grid, ivar):
 
