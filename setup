@@ -1,19 +1,35 @@
-#!/bin/bash
+#!/usr/bin/env python3
 
-#Development mode
-if [ $1 = "develop" ]; then
-    python3 setup.py develop --user
+"""Setup CLI script"""
 
-fi
+import subprocess
+import click
 
-#Install mode
-if [ $1 = "install" ]; then
-    python3 setup.py build
-    python3 setup.py install --user
-fi
 
-#Clean after installation
-if [ $1 = "clean" ]; then
-    rm -rf *.egg-info
-    rm -rf build dist
-fi
+@click.group(name="setup")
+def setup():
+    """Setup toolkit for FlowX"""
+
+
+@setup.command(name="develop")
+def develop():
+    """Development mode"""
+    subprocess.run("python3 setup.py develop --user", shell=True, check=True)
+
+
+@setup.command(name="install")
+def install():
+    """Installation command"""
+    subprocess.run("python3 setup.py develop --user", shell=True, check=True)
+    subprocess.run("python3 setup.py build", shell=True, check=True)
+    subprocess.run("python3 setup.py install --user", shell=True, check=True)
+
+
+@setup.command(name="clean")
+def clean():
+    """Clean installation artifacts"""
+    subprocess.run("rm -rf *.egg-info build dist", shell=True, check=True)
+
+
+if __name__ == "__main__":
+    setup()
