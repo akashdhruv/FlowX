@@ -31,7 +31,6 @@ DEPENDENCIES = [
     "numpy",
     "shapely",
     "scipy",
-    "PyBubbleBox",
 ]
 
 setup(
