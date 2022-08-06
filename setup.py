@@ -28,9 +28,10 @@ DEPENDENCIES = [
     "matplotlib",
     "h5py",
     "annoy",
-    "numpy==1.23.0",
+    "numpy==1.21.0",
     "shapely",
     "scipy",
+    "cython==0.29.14",
 ]
 
 setup(
