@@ -28,7 +28,7 @@ DEPENDENCIES = [
     "matplotlib",
     "h5py",
     "annoy",
-    "numpy==1.21.0",
+    "numpy==1.23.0",
     "shapely",
     "scipy",
 ]
