@@ -5,7 +5,7 @@
 base = "akashdhruv/boxkit:latest"
 
 # Uncomment follow to install jupyter notebook
-build = ["pip3 install cython==0.29.14", "pip3 install notebook"]
+build = ["pip3 install cython==0.29.14"]
 
 # Name of the local image that will be
 # used to pour the container and add layers
