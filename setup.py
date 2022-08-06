@@ -31,7 +31,6 @@ DEPENDENCIES = [
     "numpy==1.21.0",
     "shapely",
     "scipy",
-    "cython==0.29.14",
 ]
 
 setup(
