@@ -1,4 +1,4 @@
-"""Build and installation script for BubbleBox."""
+"""Build and installation script for FlowX."""
 
 # standard libraries
 import re

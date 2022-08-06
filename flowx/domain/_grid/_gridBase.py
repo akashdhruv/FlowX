@@ -1,7 +1,7 @@
 """Module with implementation of the Grid classes."""
 
-from bubblebox.library.create import Dataset, Block, Data
-from bubblebox.library.utilities import Action
+from boxkit.library.create import Dataset, Block, Data
+from boxkit.library.utilities import Action
 import numpy
 import pymorton
 

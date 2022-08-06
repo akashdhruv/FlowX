@@ -47,13 +47,16 @@
 <li class="toctree-l3 current"><a class="reference internal" href="flowx.poisson.html">flowx.poisson package</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="flowx.poisson.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="flowx.poisson.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="flowx.poisson.html#module-flowx.poisson._poisson">flowx.poisson._poisson module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="flowx.poisson.html#module-flowx.poisson">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flowx.poisson.html#flowx-poisson-poisson-module">flowx.poisson._poisson module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flowx.poisson.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="flowx.quantum.html">flowx.quantum package</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="flowx.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flowx.html#flowx-meta-module">flowx.__meta__ module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flowx.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -89,132 +92,14 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
 </div>
-<div class="section" id="module-flowx.poisson._interface._helpers">
-<span id="flowx-poisson-interface-helpers-module"></span><h2>flowx.poisson._interface._helpers module<a class="headerlink" href="#module-flowx.poisson._interface._helpers" title="Permalink to this headline"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="flowx.poisson._interface._helpers.build_sparse_matrix">
-<span class="sig-prename descclassname"><span class="pre">flowx.poisson._interface._helpers.</span></span><span class="sig-name descname"><span class="pre">build_sparse_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivar</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flowx.poisson._interface._helpers.build_sparse_matrix" title="Permalink to this definition"></a></dt>
-<dd><p>Solve the Poisson system using a direct solver from the scipy library.</p>
-<blockquote>
-<div><dl class="simple">
-<dt>grid<span class="classifier">Grid object</span></dt><dd><p>Grid containing data.</p>
-</dd>
-</dl>
-</div></blockquote>
-<dl class="simple">
-<dt>Returns</dt><dd><p>matrix : CSR format matrix</p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="flowx-poisson-interface-helpers-module">
+<h2>flowx.poisson._interface._helpers module<a class="headerlink" href="#flowx-poisson-interface-helpers-module" title="Permalink to this headline"></a></h2>
 </div>
-<div class="section" id="module-flowx.poisson._interface._solvers">
-<span id="flowx-poisson-interface-solvers-module"></span><h2>flowx.poisson._interface._solvers module<a class="headerlink" href="#module-flowx.poisson._interface._solvers" title="Permalink to this headline"></a></h2>
-<p>Routine to solve the Poisson equation.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="flowx.poisson._interface._solvers.solve_cg">
-<span class="sig-prename descclassname"><span class="pre">flowx.poisson._interface._solvers.</span></span><span class="sig-name descname"><span class="pre">solve_cg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rvar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flowx.poisson._interface._solvers.solve_cg" title="Permalink to this definition"></a></dt>
-<dd><p>Solve the Poisson system using a conjugate-gradient method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>grid</strong> (<em>Grid object</em>) – Grid containing data.</p></li>
-<li><p><strong>ivar</strong> (<em>string</em>) – Name of the grid variable of the numerical solution.</p></li>
-<li><p><strong>rvar</strong> (<em>string</em>) – Name of the grid variable of the right-hand side.</p></li>
-<li><p><strong>options</strong> (<em>dictionary</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>ites</strong> (<em>integer</em>) – Number of iterations computed.</p></li>
-<li><p><strong>residual</strong> (<em>float</em>) – Final residual.</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="flowx.poisson._interface._solvers.solve_direct">
-<span class="sig-prename descclassname"><span class="pre">flowx.poisson._interface._solvers.</span></span><span class="sig-name descname"><span class="pre">solve_direct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rvar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flowx.poisson._interface._solvers.solve_direct" title="Permalink to this definition"></a></dt>
-<dd><p>Solve the Poisson system using a direct solver from the scipy library.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>grid</strong> (<em>Grid object</em>) – Grid containing data.</p></li>
-<li><p><strong>ivar</strong> (<em>string</em>) – Name of the grid variable of the numerical solution.</p></li>
-<li><p><strong>rvar</strong> (<em>string</em>) – Name of the grid variable of the right-hand side.</p></li>
-<li><p><strong>options</strong> (<em>dictionary</em>) – </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="flowx.poisson._interface._solvers.solve_jacobi">
-<span class="sig-prename descclassname"><span class="pre">flowx.poisson._interface._solvers.</span></span><span class="sig-name descname"><span class="pre">solve_jacobi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rvar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flowx.poisson._interface._solvers.solve_jacobi" title="Permalink to this definition"></a></dt>
-<dd><p>Solve the Poisson system using a Jacobi method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>grid</strong> (<em>Grid object</em>) – Grid containing data.</p></li>
-<li><p><strong>ivar</strong> (<em>string</em>) – Name of the grid variable of the numerical solution.</p></li>
-<li><p><strong>rvar</strong> (<em>string</em>) – Name of the grid variable of the right-hand side.</p></li>
-<li><p><strong>options</strong> (<em>dictionary</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>ites</strong> (<em>integer</em>) – Number of iterations computed.</p></li>
-<li><p><strong>residual</strong> (<em>float</em>) – Final residual.</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="flowx.poisson._interface._solvers.solve_stub">
-<span class="sig-prename descclassname"><span class="pre">flowx.poisson._interface._solvers.</span></span><span class="sig-name descname"><span class="pre">solve_stub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rvar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flowx.poisson._interface._solvers.solve_stub" title="Permalink to this definition"></a></dt>
-<dd><p>Stub for poisson solver.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>grid</strong> (<em>Grid object</em>) – Grid containing data.</p></li>
-<li><p><strong>ivar</strong> (<em>string</em>) – Name of the grid variable of the numerical solution.</p></li>
-<li><p><strong>rvar</strong> (<em>string</em>) – Name of the grid variable of the right-hand side.</p></li>
-<li><p><strong>options</strong> (<em>dictionary</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>ites</strong> (<em>None</em>) – Number of iterations computed.</p></li>
-<li><p><strong>residual</strong> (<em>None</em>) – Final residual.</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="flowx.poisson._interface._solvers.solve_superlu">
-<span class="sig-prename descclassname"><span class="pre">flowx.poisson._interface._solvers.</span></span><span class="sig-name descname"><span class="pre">solve_superlu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rvar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flowx.poisson._interface._solvers.solve_superlu" title="Permalink to this definition"></a></dt>
-<dd><p>Solve the Poisson system using a direct solver from the scipy library.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>grid</strong> (<em>Grid object</em>) – Grid containing data.</p></li>
-<li><p><strong>ivar</strong> (<em>string</em>) – Name of the grid variable of the numerical solution.</p></li>
-<li><p><strong>rvar</strong> (<em>string</em>) – Name of the grid variable of the right-hand side.</p></li>
-<li><p><strong>options</strong> (<em>dictionary</em>) – </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="flowx-poisson-interface-solvers-module">
+<h2>flowx.poisson._interface._solvers module<a class="headerlink" href="#flowx-poisson-interface-solvers-module" title="Permalink to this headline"></a></h2>
 </div>
-<div class="section" id="module-flowx.poisson._interface">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-flowx.poisson._interface" title="Permalink to this headline"></a></h2>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline"></a></h2>
 </div>
 </div>
 
