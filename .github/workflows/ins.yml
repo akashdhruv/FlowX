@@ -101,7 +101,7 @@ jobs:
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
-          maple image build flowx --as-root
+          maple image build flowx
     - uses: ./.github/actions/install
       with:
         image: flowx

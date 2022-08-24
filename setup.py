@@ -22,15 +22,7 @@ with open("flowx/__meta__.py", mode="r") as source:
     }
 
 # core dependancies
-DEPENDENCIES = [
-    "numba",
-    "matplotlib",
-    "h5py",
-    "annoy",
-    "numpy==1.21.0",
-    "shapely",
-    "scipy",
-]
+DEPENDENCIES = []
 
 setup(
     name=metadata["__pkgname__"],

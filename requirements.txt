@@ -1,3 +1,9 @@
-Cython
-BoxKit
-QisKit
+cython
+qiskit
+numpy==1.21.0
+scipy
+numba
+matplotlib
+h5py
+annoy
+shapely
