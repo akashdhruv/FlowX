@@ -101,12 +101,10 @@ jobs:
     - uses: akashdhruv/Maple/.github/actions/maple@main
     - name: Build Container
       run: |
-          maple image build flowx
+          maple image build flowx --as-root
     - uses: ./.github/actions/install
       with:
         image: flowx
     - name: Run FlowX tests
       run: |
-          maple container pour --image=flowx
-          maple container execute "cd examples/ins/lid_driven_visco && python3 example.py"
-          maple container rinse
+          maple container run "cd examples/ins/lid_driven_visco && python3 example.py"
