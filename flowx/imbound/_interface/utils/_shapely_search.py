@@ -1,6 +1,6 @@
 from shapely.geometry import Point, Polygon
-from bubblebox.library.utilities import Action
-from bubblebox.library.create import Block
+from boxkit.library.utilities import Action
+from boxkit.library.create import Block
 import numpy
 
 

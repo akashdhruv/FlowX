@@ -2,7 +2,10 @@
 
 # Name of the base image which will
 # be used to build the local image
-base = "akashdhruv/bubblebox:latest"
+base = "akashdhruv/boxkit:latest"
+
+# Uncomment follow to install jupyter notebook
+build = []
 
 # Name of the local image that will be
 # used to pour the container and add layers
@@ -15,7 +18,10 @@ container = "flowx"
 
 # Commands to execute inside the container and update the
 # image
-publish = ["python3 setup.py develop && python3 setup.py install && ./setup clean"]
+publish = [
+    "pip3 install -r requirements.txt --user",
+    "python3 setup.py develop && python3 setup.py install && ./setup clean",
+]
 
 # Backend for service docker/singularity
 backend = "docker"

@@ -1,5 +1,8 @@
-FlowX
-=====
+.. |icon| image:: ./icon.svg
+  :width: 25 
+  
+|icon| FlowX
+============
 
 |Code style: black|
 

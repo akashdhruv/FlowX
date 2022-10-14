@@ -13,3 +13,24 @@ Subpackages
    flowx.io
    flowx.poisson
    flowx.quantum
+
+Submodules
+----------
+
+flowx.\_\_meta\_\_ module
+-------------------------
+
+.. automodule:: flowx.__meta__
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+
+Module contents
+---------------
+
+.. automodule:: flowx
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
