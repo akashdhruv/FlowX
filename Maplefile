@@ -19,7 +19,6 @@ container = "flowx"
 # Commands to execute inside the container and update the
 # image
 publish = [
-    "pip3 install -r requirements.txt --user",
     "python3 setup.py develop && python3 setup.py install && ./setup clean",
 ]
 

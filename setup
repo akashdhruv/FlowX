@@ -14,14 +14,12 @@ def setup():
 @setup.command(name="develop")
 def develop():
     """Development mode"""
-    subprocess.run("pip3 install -r requirements.txt --user", shell=True, check=True)
     subprocess.run("python3 setup.py develop --user", shell=True, check=True)
 
 
 @setup.command(name="install")
 def install():
     """Installation command"""
-    subprocess.run("pip3 install -r requirements.txt --user", shell=True, check=True)
     subprocess.run("python3 setup.py develop --user", shell=True, check=True)
     subprocess.run("python3 setup.py build", shell=True, check=True)
     subprocess.run("python3 setup.py install --user", shell=True, check=True)

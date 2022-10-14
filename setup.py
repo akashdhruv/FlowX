@@ -22,7 +22,16 @@ with open("flowx/__meta__.py", mode="r") as source:
     }
 
 # core dependancies
-DEPENDENCIES = []
+DEPENDENCIES = [
+    "cython",
+    "numpy",
+    "scipy",
+    "numba",
+    "matplotlib",
+    "h5py",
+    "annoy",
+    "shapely",
+]
 
 setup(
     name=metadata["__pkgname__"],
@@ -32,6 +41,11 @@ setup(
     license=metadata["__license__"],
     packages=find_packages(where="./"),
     package_dir={"": "./"},
+    package_data={
+        "": [
+            "envfile",
+        ]
+    },
     include_package_data=True,
     long_description=long_description,
     classifiers=[
