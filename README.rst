@@ -1,6 +1,6 @@
-.. |icon| image:: ./icon.svg
-  :width: 25
-  
+.. |icon| image:: ./media/icon.svg
+  :width: 25 
+ 
 ============  
 |icon| FlowX
 ============
