@@ -1,7 +1,7 @@
 """Module with implementation of the Grid classes."""
 
-from boxkit.library.create import Dataset, Block, Data
-from boxkit.library.utilities import Action
+from boxkit.library import Dataset, Block, Data
+from boxkit.library import Action
 import numpy
 import pymorton
 

@@ -1,6 +1,6 @@
 from shapely.geometry import Point, Polygon
-from boxkit.library.utilities import Action
-from boxkit.library.create import Block
+from boxkit.library import Action
+from boxkit.library import Block
 import numpy
 
 
@@ -33,7 +33,7 @@ def shapely_search(grid, particle, ibmf, options={}):
 
 
 @Action(unit=Block)
-def _search_block(self, unit, polygon, ibmf):
+def _search_block(unit, polygon, ibmf):
     """
     Block search operation
     """
